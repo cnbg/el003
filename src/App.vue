@@ -1,11 +1,12 @@
 <script setup>
 import AccordionComponent from '@/components/AccordionComponent.vue'
-import EditorComponent from '@/components/EditorComponent.vue'
+
+const date = new Date()
 </script>
 
 <template>
   <AccordionComponent />
-  <EditorComponent />
+  <Calendar v-model="date" inline showWeek />
 </template>
 
 <style scoped>

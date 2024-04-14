@@ -1,6 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 export default {
     content: ["./index.html", "./src/**/*.{vue,js,ts,jsx,tsx}"],
+    darkMode: false,
     theme: {
         extend: {
             colors: {
@@ -29,6 +30,9 @@ export default {
                 "surface-950": "rgb(var(--surface-950))",
             },
         },
+    },
+    variants: {
+        extend: {},
     },
     plugins: [],
 }

@@ -1,6 +1,4 @@
 <script setup>
-import Accordion from 'primevue/accordion'
-import AccordionTab from 'primevue/accordiontab'
 </script>
 
 <template>
