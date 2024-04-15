@@ -1,13 +1,7 @@
 <script setup>
-import AccordionComponent from '@/components/AccordionComponent.vue'
-
-const date = new Date()
+import { RouterView } from 'vue-router'
 </script>
 
 <template>
-  <AccordionComponent />
-  <Calendar v-model="date" inline showWeek />
+  <RouterView />
 </template>
-
-<style scoped>
-</style>
