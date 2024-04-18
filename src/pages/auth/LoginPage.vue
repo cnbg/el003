@@ -5,18 +5,15 @@ import InputGroupAddon from 'primevue/inputgroupaddon'
 import Button from 'primevue/button'
 
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { useUserStore } from '@/stores'
+import { useUserStore } from '../../stores'
 
 const email = ref('')
-const router = useRouter()
 const userStore = useUserStore()
 
 const save = async () => {
   await userStore.saveUser({
     email: email.value,
   })
-  router.push({name: 'home'})
 }
 </script>
 
