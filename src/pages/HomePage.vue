@@ -1,11 +1,10 @@
 <script setup>
-
+import BookListPage from '@/pages/book/BookListPage.vue'
 </script>
 
 <template>
-<h1>homepage</h1>
+  <BookListPage />
 </template>
 
 <style scoped>
-
 </style>

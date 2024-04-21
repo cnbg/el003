@@ -1,5 +1,4 @@
 import { fileURLToPath, URL } from 'node:url'
-
 import { defineConfig } from 'vite'
 import { pluginExposeRenderer } from './vite.base.config.mjs'
 import vue from '@vitejs/plugin-vue'
