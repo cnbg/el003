@@ -19,12 +19,13 @@ const save = () => {
 <template>
   <div class="h-full flex align-items-center justify-content-center">
     <div style="width: 350px" class="text-center">
-      <InputGroup>
-        <InputText v-model.trim="email" required autofocus
-                   :placeholder="$t('general.enter-your-email')"
-                   :invalid="!valid" />
-        <Button @click="save" icon="pi pi-check" severity="contrast" />
-      </InputGroup>
+      <FloatLabel>
+        <InputGroup>
+          <InputText v-model.trim="email" required autofocus :invalid="!valid" />
+          <Button @click="save" icon="pi pi-check" severity="contrast" />
+        </InputGroup>
+        <label>{{ $t('general.enter-your-email') }}</label>
+      </FloatLabel>
       <div :class="{invisible: valid}" class="text-red-700 mt-3 lowercase p-error">
         {{ $t('validation.invalid-email') }}
       </div>

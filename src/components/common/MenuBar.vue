@@ -5,7 +5,7 @@ import { useI18n } from 'vue-i18n'
 const {t} = useI18n()
 
 const mainMenuItems = [
-  {icon: 'pi pi-home', label: t('general.book-list'), path: '/book/list'},
+  {icon: 'pi pi-book', label: t('general.book-list'), path: '/book/list'},
 ]
 
 const endMenuItems = [

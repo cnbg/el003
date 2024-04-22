@@ -1,14 +1,15 @@
 <script setup>
 import MenuBar from '@/components/common/MenuBar.vue'
 
-import { onMounted, ref } from 'vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { FilterMatchMode } from 'primevue/api'
 import { useConfirm } from "primevue/useconfirm"
 import { useToast } from 'primevue/usetoast'
 import { useI18n } from 'vue-i18n'
-import { v4 as uuidv4 } from 'uuid'
-import { BookService } from '@/services/BookService'
+import { useBookStore } from '@/stores/bookStore'
+
+const bookStore = useBookStore()
 
 const {t} = useI18n()
 const router = useRouter()
@@ -17,7 +18,8 @@ const toast = useToast()
 const cm = ref()
 const books = ref()
 const selectedBook = ref()
-const newBook = ref({})
+const book = ref({})
+const title = ref('')
 const submitted = ref(false)
 const createBookDialog = ref(false)
 const filters = ref({
@@ -33,20 +35,14 @@ const menuModel = ref([
   },
   {
     label: t('general.edit'), icon: 'pi pi-fw pi-pen-to-square', command: () => {
-      console.log('edit book')
+      book.value = selectedBook.value
+      title.value = book.value.title
+      createBookDialog.value = true
     },
   },
   {separator: true},
   {label: t('general.delete'), icon: 'pi pi-fw pi-times', command: () => confirmBookDelete()},
 ])
-
-onMounted(() => {
-  loading.value = true
-  BookService.getBooks().then((data) => {
-    books.value = data
-    loading.value = false
-  })
-})
 
 const confirmBookDelete = () => {
   confirm.require({
@@ -72,27 +68,24 @@ const onRowContextMenu = (event) => {
   cm.value.show(event.originalEvent)
 }
 
-const hideDialog = () => {
+const hideCreateBookDialog = () => {
   createBookDialog.value = false
   submitted.value = false
+  title.value = ''
 }
 
 const saveBook = () => {
   submitted.value = true
 
-  if (newBook?.value.title?.trim()) {
-    if (newBook.value.id) {
-      toast.add({severity:'success', summary: 'Successful', detail: 'Product Updated', life: 4000})
-    }
-    else {
-      newBook.value.id = uuidv4()
-      books.value.push(newBook.value)
-      toast.add({severity:'success', summary: 'Successful', detail: 'Product Created', life: 4000})
-    }
-
+  if (title.value.trim()) {
+    book.value.title = title.value
+    bookStore.saveBook(book.value)
     createBookDialog.value = false
     submitted.value = false
-    newBook.value = {}
+    title.value = ''
+    book.value = {}
+
+    toast.add({severity: 'success', summary: t('general.successfully-saved'), life: 4000})
   }
 }
 </script>
@@ -101,7 +94,8 @@ const saveBook = () => {
   <MenuBar />
 
   <div class="flex surface-50 p-2">
-    <Button :label="t('general.create-new-book')" icon="pi pi-plus" text severity="success" @click="createBookDialog = true" />
+    <Button :label="t('general.create-new-book')" icon="pi pi-plus" text severity="success"
+            @click="createBookDialog = true" />
     <div class="flex-grow-1"></div>
     <IconField iconPosition="left">
       <InputIcon>
@@ -112,24 +106,28 @@ const saveBook = () => {
   </div>
 
 
-  <DataTable :value="books" dataKey="id" v-model:filters="filters"
+  <DataTable :value="bookStore.books" dataKey="id" v-model:filters="filters"
+             v-model:selection="selectedBook" selectionMode="single"
              contextMenu v-model:contextMenuSelection="selectedBook" @rowContextmenu="onRowContextMenu"
              :globalFilterFields="['title']" :loading="loading"
-             paginator :rows="5" :rowsPerPageOptions="[5, 10, 20, 50]"
+             paginator :rows="10" :rowsPerPageOptions="[5, 10, 20, 50]"
              paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
              tableStyle="min-width: 20rem" class="mx-2"
   >
     <Column field="title"></Column>
   </DataTable>
 
-  <Dialog v-model:visible="createBookDialog" :style="{width: '450px'}" :header="t('general.create-book')" :modal="true" class="p-fluid">
+  <Dialog v-model:visible="createBookDialog" :style="{width: '450px'}"
+          :header="t('general.create-book')" :modal="true" class="p-fluid">
     <div class="field">
       <label for="name">{{ t('general.title') }}</label>
-      <InputText v-model.trim="newBook.title" required autofocus :invalid="submitted && !newBook.title" />
-      <small class="p-error" v-if="submitted && !newBook.title">{{ t('general.required-field') }}</small>
+      <InputText v-model.trim="title" required :invalid="submitted && !title" />
+      <small class="p-error" v-if="submitted && !title">{{ t('general.required-field') }}</small>
     </div>
     <template #footer>
-      <Button :label="t('general.close')" icon="pi pi-times" text @click="hideDialog" />
+      <Button :label="t('general.close')" icon="pi pi-times"
+              severity="secondary"
+              text @click="hideCreateBookDialog" />
       <Button :label="t('general.save')" icon="pi pi-check" text @click="saveBook" />
     </template>
   </Dialog>

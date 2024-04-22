@@ -23,4 +23,8 @@ export default {
     'cancel': 'Отменить',
     'save': 'Сохранить',
     'required-field': 'Обязательное поле',
+    'successfully-saved': 'Успешно сохранен',
+    'page-not-found': 'Страница не найдена',
+    'add-chapter': 'Добавить главу',
+    'add-new-chapter': 'Добавить новую главу',
 }

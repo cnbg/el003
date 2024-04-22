@@ -23,4 +23,8 @@ export default {
     'cancel': 'Жокко чыгаруу',
     'save': 'Сактоо',
     'required-field': 'Талап кылынган талаа',
+    'successfully-saved': 'Ийгиликтүү сакталды',
+    'page-not-found': 'Баракча табылган жок',
+    'add-chapter': 'Бөлүм кошуу',
+    'add-new-chapter': 'Жаңы бөлүм кошуу',
 }
