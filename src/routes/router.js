@@ -4,6 +4,7 @@ import { useUserStore } from '@/stores/userStore';
 import StartPage from '@/pages/StartPage.vue'
 import BookListPage from '@/pages/book/BookListPage.vue'
 import BookShowPage from '@/pages/book/BookShowPage.vue'
+import BookViewPage from '@/pages/book/BookViewPage.vue'
 import UserSettingsPage from '@/pages/user/UserSettingsPage.vue'
 
 const router = createRouter({
@@ -23,6 +24,12 @@ const router = createRouter({
             path: '/book/show/:bookId',
             name: 'book-show',
             component: BookShowPage,
+            props: true,
+        },
+        {
+            path: '/book/view/:bookId',
+            name: 'book-view',
+            component: BookViewPage,
             props: true,
         },
         {

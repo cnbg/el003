@@ -15,6 +15,10 @@ export const useBookStore = defineStore('book', {
     actions: {
         saveBook(book) {
             const index = this.books.findIndex(b => b.id === book.id)
+            if(book.chapters === undefined) {
+                book.chapters = []
+            }
+
             if (index >= 0) {
                 this.books[index] = book
             } else {

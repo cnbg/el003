@@ -16,7 +16,7 @@ const router = useRouter()
 const confirm = useConfirm()
 const toast = useToast()
 const cm = ref()
-const books = ref()
+const books = ref(bookStore.books || [])
 const selectedBook = ref()
 const book = ref({})
 const title = ref('')
@@ -24,7 +24,7 @@ const submitted = ref(false)
 const createBookDialog = ref(false)
 const filters = ref({
   global: {value: null, matchMode: FilterMatchMode.CONTAINS},
-  // title: {value: null, matchMode: FilterMatchMode.STARTS_WITH},
+  title: {value: null, matchMode: FilterMatchMode.STARTS_WITH},
 })
 const loading = ref(false)
 const menuModel = ref([
@@ -54,7 +54,7 @@ const confirmBookDelete = () => {
     rejectClass: 'p-button-secondary p-button-outlined',
     acceptClass: 'p-button-danger p-button-outlined',
     accept: () => {
-      books.value = books.value.filter((b) => b.id !== selectedBook.value.id)
+      bookStore.books = books.value.filter((b) => b.id !== selectedBook.value.id)
       toast.add({severity: 'info', summary: t('general.book-deleted'), detail: selectedBook.value.title, life: 4000})
       selectedBook.value = null
     },
@@ -105,7 +105,6 @@ const saveBook = () => {
     </IconField>
   </div>
 
-
   <DataTable :value="bookStore.books" dataKey="id" v-model:filters="filters"
              v-model:selection="selectedBook" selectionMode="single"
              contextMenu v-model:contextMenuSelection="selectedBook" @rowContextmenu="onRowContextMenu"
@@ -143,10 +142,6 @@ const saveBook = () => {
       </a>
     </template>
   </ContextMenu>
-
-  <ConfirmDialog />
-
-  <Toast position="bottom-right" />
 </template>
 
 <style scoped>
