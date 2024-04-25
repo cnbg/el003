@@ -172,7 +172,7 @@ onMounted(() => {
             <Menu ref="contentMenu" :model="contentPanelMenuItems" popup />
           </template>
           <Editor v-if="editing" v-model="chapter.content" editorStyle="height: 320px" />
-          <p v-else class="my-1" v-html="chapter.content"></p>
+          <p v-else v-html="chapter.content" class="ql-editor my-1"></p>
         </Panel>
         <Panel v-else />
       </div>
