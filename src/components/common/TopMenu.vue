@@ -1,5 +1,5 @@
 <script setup>
-import MenuItem from '@/components/common/MenuItem.vue'
+import MenuItem from './MenuItem.vue'
 import { useI18n } from 'vue-i18n'
 
 const {t} = useI18n()
@@ -14,7 +14,7 @@ const endMenuItems = [
 </script>
 
 <template>
-  <Menubar :model="mainMenuItems">
+  <Menubar :model="mainMenuItems" class="border-noround border-x-none border-top-none">
     <template #item="{ item, props, hasSubmenu, root }">
       <MenuItem :item="item" :props="props" :hasSubmenu="hasSubmenu" :root="root" />
     </template>

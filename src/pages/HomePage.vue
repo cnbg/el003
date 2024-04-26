@@ -1,5 +1,5 @@
 <script setup>
-import BookListPage from '@/pages/book/BookListPage.vue'
+import BookListPage from '../pages/book/BookListPage.vue'
 </script>
 
 <template>

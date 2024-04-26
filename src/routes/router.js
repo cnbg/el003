@@ -1,11 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { useUserStore } from '@/stores/userStore';
+import { useUserStore } from '../stores/userStore'
 
-import StartPage from '@/pages/StartPage.vue'
-import BookListPage from '@/pages/book/BookListPage.vue'
-import BookShowPage from '@/pages/book/BookShowPage.vue'
-import BookViewPage from '@/pages/book/BookViewPage.vue'
-import UserSettingsPage from '@/pages/user/UserSettingsPage.vue'
+import StartPage from '../pages/StartPage.vue'
+import BookListPage from '../pages/book/BookListPage.vue'
+import BookEditPage from '../pages/book/BookEditPage.vue'
+import BookViewPage from '../pages/book/BookViewPage.vue'
+import UserSettingsPage from '../pages/user/UserSettingsPage.vue'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -21,9 +21,9 @@ const router = createRouter({
             component: BookListPage,
         },
         {
-            path: '/book/show/:bookId',
-            name: 'book-show',
-            component: BookShowPage,
+            path: '/book/edit/:bookId',
+            name: 'book-edit',
+            component: BookEditPage,
             props: true,
         },
         {
@@ -46,10 +46,9 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from) => {
-    const userStore = useUserStore()
-    userStore.syncSettings()
+    const user = useUserStore()
 
-    if (to.name !== 'start' && (userStore.isEmptyLocale || userStore.isEmptyEmail)) return {name: 'start'}
+    if (to.name !== 'start' && (!user.email || !user.locale)) return {name: 'start'}
 })
 
 export default router

@@ -1,7 +1,6 @@
 <script setup>
-import NotFoundPage from '@/pages/error/NotFoundPage.vue'
-import MenuBar from '@/components/common/MenuBar.vue'
-import { useBookStore } from '@/stores/bookStore'
+import NotFoundPage from '../../pages/error/NotFoundPage.vue'
+import { useBookStore } from '../../stores/bookStore'
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useToast } from 'primevue/usetoast'
@@ -138,12 +137,22 @@ onMounted(() => {
 </script>
 
 <template>
-  <MenuBar />
+  <TopMenu />
   <div v-if="book">
-    <h2 class="mx-3">{{ book.title }}</h2>
+    <div class="flex flex-wrap align-items-center justify-content-between gap-3 px-3 py-2">
+      <div class="col">
+        <h3 class="m-0">{{ book.title }}</h3>
+      </div>
+      <div class="col-fixed text-right w-max">
+        <RouterLink :to="{name:'book-list'}" class="flex align-items-center">
+          <span class="pi pi-chevron-left"></span>
+          {{ t('general.back') }}
+        </RouterLink>
+      </div>
+    </div>
     <div class="grid mx-1">
       <div class="col-12 md:col-5 lg:col-4 xl:col-3">
-        <Panel>
+        <Panel class="max-height">
           <template #header>
             <h4 class="m-0">{{ t('general.chapters') }}</h4>
           </template>
@@ -160,7 +169,7 @@ onMounted(() => {
         </Panel>
       </div>
       <div class="col">
-        <Panel v-if="selectedKey">
+        <Panel v-if="selectedKey" class="max-height">
           <template #header>
             <InputText v-if="editing" v-model="chapter.label" class="w-11" />
             <h3 v-else class="mt-1 mb-2">{{ chapter.label }}</h3>
@@ -171,10 +180,10 @@ onMounted(() => {
             </button>
             <Menu ref="contentMenu" :model="contentPanelMenuItems" popup />
           </template>
-          <Editor v-if="editing" v-model="chapter.content" editorStyle="height: 320px" />
+          <Editor v-if="editing" v-model="chapter.content" editorStyle="min-height: calc(100vh - 310px)"></Editor>
           <p v-else v-html="chapter.content" class="ql-editor my-1"></p>
         </Panel>
-        <Panel v-else />
+        <Panel v-else class="max-height" />
       </div>
     </div>
   </div>
@@ -182,8 +191,8 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.p-panel {
-  min-height: calc(100vh - 150px);
+.p-panel.max-height {
+  min-height: calc(100vh - 120px);
   margin-bottom: 10px;
 }
 </style>

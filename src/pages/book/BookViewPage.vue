@@ -1,7 +1,7 @@
 <script setup>
 import BookChapters from './BookChapters.vue'
 
-import { useBookStore } from '@/stores/bookStore'
+import { useBookStore } from '../../stores/bookStore'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
@@ -20,7 +20,7 @@ const book = bookStore.findBookById(props.bookId)
 const panelMenuItems = ref([
   {
     label: t('general.back-to-editing'), icon: 'pi pi-arrow-left', command: () => {
-      router.push({name: 'book-show', params: {bookId: props.bookId}})
+      router.push({name: 'book-edit', params: {bookId: props.bookId}})
     },
   },
   {

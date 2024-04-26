@@ -1,13 +1,11 @@
 <script setup>
-import MenuBar from '@/components/common/MenuBar.vue'
-
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { FilterMatchMode } from 'primevue/api'
 import { useConfirm } from "primevue/useconfirm"
 import { useToast } from 'primevue/usetoast'
 import { useI18n } from 'vue-i18n'
-import { useBookStore } from '@/stores/bookStore'
+import { useBookStore } from '../../stores/bookStore'
 
 const bookStore = useBookStore()
 
@@ -30,7 +28,7 @@ const loading = ref(false)
 const menuModel = ref([
   {
     label: t('general.open'), icon: 'pi pi-fw pi-eye', command: () => {
-      router.push({name: 'book-show', params: {bookId: selectedBook.value.id}})
+      router.push({name: 'book-edit', params: {bookId: selectedBook.value.id}})
     },
   },
   {
@@ -91,12 +89,11 @@ const saveBook = () => {
 </script>
 
 <template>
-  <MenuBar />
+  <TopMenu />
 
-  <div class="flex surface-50 p-2">
+  <div class="px-2 py-3 flex align-items-center justify-content-between">
     <Button :label="t('general.create-new-book')" icon="pi pi-plus" text severity="success"
             @click="createBookDialog = true" />
-    <div class="flex-grow-1"></div>
     <IconField iconPosition="left">
       <InputIcon>
         <i class="pi pi-search" />

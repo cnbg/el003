@@ -1,6 +1,3 @@
-<script setup>
-</script>
-
 <template>
   <div class="h-full flex align-items-center justify-content-center flex-column">
     <h3 class="my-2 uppercase">{{ $t('general.page-not-found') }}</h3>
@@ -10,6 +7,3 @@
     </RouterLink>
   </div>
 </template>
-
-<style scoped>
-</style>

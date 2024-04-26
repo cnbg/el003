@@ -1,15 +1,13 @@
 <script setup>
-import HomePage from '@/pages/HomePage.vue'
-import LangPage from '@/pages/init/LangPage.vue'
-import LoginPage from '@/pages/init/EmailPage.vue'
+import HomePage from '../pages/HomePage.vue'
+import LangPage from '../pages/init/LangPage.vue'
+import LoginPage from '../pages/init/EmailPage.vue'
 
 import { storeToRefs } from 'pinia'
-import { useUserStore } from "@/stores/userStore"
+import { useUserStore } from "../stores/userStore"
 
 const userStore = useUserStore()
 const {locale, email} = storeToRefs(userStore)
-
-userStore.syncSettings()
 </script>
 
 <template>

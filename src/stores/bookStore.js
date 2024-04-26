@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { v4 as uuidv4 } from 'uuid'
-import books from '@/data/books'
+import books from '../data/books'
 
 export const useBookStore = defineStore('book', {
     state: () => ({

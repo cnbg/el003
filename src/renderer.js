@@ -1,16 +1,17 @@
-import '@/assets/base.css'
-import 'primeflex/primeflex.css'
+import './assets/base.css'
 import 'primeicons/primeicons.css'
+import 'primeflex/primeflex.css'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
-import App from '@/App.vue'
-import i18n from '@/locale'
-import router from '@/routes/router'
-
-import Icon from '@/components/common/Icon.vue'
+import App from './App.vue'
+import i18n from './locale'
+import router from './routes/router'
 
 import PrimeVue from 'primevue/config'
+import PrimeOne from 'primevue/themes/primeone'
+import Aura from 'primevue/themes/primeone/aura'
+
 import AutoComplete from 'primevue/autocomplete'
 import Accordion from 'primevue/accordion'
 import AccordionTab from 'primevue/accordiontab'
@@ -39,7 +40,6 @@ import ConfirmationService from 'primevue/confirmationservice'
 import ContextMenu from 'primevue/contextmenu'
 import DataTable from 'primevue/datatable'
 import DataView from 'primevue/dataview'
-import DataViewLayoutOptions from 'primevue/dataviewlayoutoptions'
 import DeferredContent from 'primevue/deferredcontent'
 import Dialog from 'primevue/dialog'
 import DialogService from 'primevue/dialogservice'
@@ -117,14 +117,9 @@ import Tooltip from 'primevue/tooltip'
 import Tree from 'primevue/tree'
 import TreeSelect from 'primevue/treeselect'
 import TreeTable from 'primevue/treetable'
-import TriStateCheckbox from 'primevue/tristatecheckbox'
 import VirtualScroller from 'primevue/virtualscroller'
 
-if (localStorage.getItem('darkMode') === 'true') {
-    import('primevue/resources/themes/aura-dark-green/theme.css')
-} else {
-    import('primevue/resources/themes/aura-light-green/theme.css')
-}
+import TopMenu from './components/common/TopMenu.vue'
 
 const app = createApp(App)
 const pinia = createPinia()
@@ -133,9 +128,18 @@ app.use(pinia)
 app.use(i18n)
 app.use(router)
 
-app.component('Icon', Icon)
+app.use(PrimeVue, {
+    theme: {
+        base: PrimeOne,
+        preset: Aura,
+        options: {
+            prefix: 'p',
+            darkModeSelector: '.p-dark',
+            cssLayer: false,
+        },
+    },
+})
 
-app.use(PrimeVue, {ripple: true})
 app.use(ConfirmationService)
 app.use(ToastService)
 app.use(DialogService)
@@ -172,7 +176,6 @@ app.component('ConfirmPopup', ConfirmPopup)
 app.component('ContextMenu', ContextMenu)
 app.component('DataTable', DataTable)
 app.component('DataView', DataView)
-app.component('DataViewLayoutOptions', DataViewLayoutOptions)
 app.component('DeferredContent', DeferredContent)
 app.component('Dialog', Dialog)
 app.component('Divider', Divider)
@@ -244,7 +247,14 @@ app.component('ToggleButton', ToggleButton)
 app.component('Tree', Tree)
 app.component('TreeSelect', TreeSelect)
 app.component('TreeTable', TreeTable)
-app.component('TriStateCheckbox', TriStateCheckbox)
 app.component('VirtualScroller', VirtualScroller)
+
+app.component('TopMenu', TopMenu)
+
+if (localStorage.getItem('darkMode') === 'true') {
+    document.querySelector('html').classList.add('p-dark')
+} else {
+    document.querySelector('html').classList.remove('p-dark')
+}
 
 app.mount('#app')

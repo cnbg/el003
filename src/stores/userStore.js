@@ -1,32 +1,37 @@
 import { defineStore } from 'pinia'
+import { isValidEmail } from '../lib/validation/inputValidation'
 
 export const useUserStore = defineStore('user', {
     state: () => ({
-        email: '',
-        locale: '',
-        darkMode: false,
+        email: localStorage.getItem('email') ?? '',
+        locale: localStorage.getItem('locale') ?? '',
+        darkMode: localStorage.getItem('darkMode') === 'true',
     }),
-    getters: {
-        isEmptyEmail: state => !state.email,
-        isEmptyLocale: state => !state.locale,
-    },
+    getters: {},
     actions: {
-        setEmail(email) {
-            this.email = email
-            localStorage.setItem('email', email)
+        async setEmail(email) {
+            const isValid = isValidEmail(email)
+
+            if (isValid) {
+                this.email = email
+                await localStorage.setItem('email', email)
+            }
+
+            return isValid
         },
-        setLocale(locale) {
+        async setLocale(locale) {
             this.locale = locale
-            localStorage.setItem('locale', locale)
+            await localStorage.setItem('locale', locale)
         },
-        setDarkMode(darkMode) {
+        async setDarkMode(darkMode) {
             this.darkMode = darkMode
             localStorage.setItem('darkMode', darkMode)
-        },
-        syncSettings() {
-            this.email = localStorage.getItem('email') ?? ''
-            this.locale = localStorage.getItem('locale') ?? ''
-            this.darkMode = localStorage.getItem('darkMode') === 'true'
+
+            if (darkMode) {
+                await document.querySelector('html').classList.add('p-dark')
+            } else {
+                await document.querySelector('html').classList.remove('p-dark')
+            }
         },
     },
 })
