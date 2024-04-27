@@ -1,6 +1,6 @@
 <script setup>
 import { reactive, ref, watch } from 'vue'
-import { useUserStore } from "../../stores/userStore"
+import { useUserStore } from "../../stores/user"
 
 const user = useUserStore()
 const locales = [{key: 'kg', name: 'Кыргызча'}, {key: 'ru', name: 'Русский'}]
@@ -17,7 +17,7 @@ watch(locale, (val) => {
 </script>
 
 <template>
-  <TopMenu />
+  <TopMenu class="m-3" />
   <div class="m-4">
     <div class="flex align-items-center">
       <span class="w-10rem">{{ $t('general.language') }}</span>

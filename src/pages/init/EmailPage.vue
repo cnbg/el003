@@ -1,6 +1,6 @@
 <script setup>
 import { ref, watch } from 'vue'
-import { useUserStore } from '../../stores/userStore'
+import { useUserStore } from '../../stores/user'
 
 const user = useUserStore()
 

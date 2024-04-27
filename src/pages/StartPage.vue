@@ -4,7 +4,7 @@ import LangPage from '../pages/init/LangPage.vue'
 import LoginPage from '../pages/init/EmailPage.vue'
 
 import { storeToRefs } from 'pinia'
-import { useUserStore } from "../stores/userStore"
+import { useUserStore } from "../stores/user"
 
 const userStore = useUserStore()
 const {locale, email} = storeToRefs(userStore)

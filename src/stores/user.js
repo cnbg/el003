@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { isValidEmail } from '../lib/validation/inputValidation'
+import { isValidEmail } from '../lib/validation'
 
 export const useUserStore = defineStore('user', {
     state: () => ({

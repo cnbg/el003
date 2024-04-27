@@ -1,11 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { useUserStore } from '../stores/userStore'
+import { useUserStore } from '../stores/user'
 
 import StartPage from '../pages/StartPage.vue'
-import BookListPage from '../pages/book/BookListPage.vue'
-import BookEditPage from '../pages/book/BookEditPage.vue'
-import BookViewPage from '../pages/book/BookViewPage.vue'
-import UserSettingsPage from '../pages/user/UserSettingsPage.vue'
+import BookListPage from '../pages/book/ListPage.vue'
+import BookCreatePage from '../pages/book/CreatePage.vue'
+import BookEditPage from '../pages/book/EditPage.vue'
+import BookViewPage from '../pages/book/ViewPage.vue'
+import UserSettingsPage from '../pages/user/SettingsPage.vue'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -19,6 +20,11 @@ const router = createRouter({
             path: '/book/list',
             name: 'book-list',
             component: BookListPage,
+        },
+        {
+            path: '/book/create',
+            name: 'book-create',
+            component: BookCreatePage,
         },
         {
             path: '/book/edit/:bookId',

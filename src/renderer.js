@@ -120,6 +120,8 @@ import TreeTable from 'primevue/treetable'
 import VirtualScroller from 'primevue/virtualscroller'
 
 import TopMenu from './components/common/TopMenu.vue'
+import BookCard from './components/book/Card.vue'
+import BookChapter from './components/book/Chapter.vue'
 
 const app = createApp(App)
 const pinia = createPinia()
@@ -250,6 +252,8 @@ app.component('TreeTable', TreeTable)
 app.component('VirtualScroller', VirtualScroller)
 
 app.component('TopMenu', TopMenu)
+app.component('BookCard', BookCard)
+app.component('BookChapter', BookChapter)
 
 if (localStorage.getItem('darkMode') === 'true') {
     document.querySelector('html').classList.add('p-dark')

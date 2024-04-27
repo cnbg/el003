@@ -1,35 +1,51 @@
 <script setup>
-import MenuItem from './MenuItem.vue'
+import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 
+const props = defineProps({
+  searchable: {type: Boolean, default: false},
+})
+
+const route = useRoute()
+const router = useRouter()
 const {t} = useI18n()
 
-const mainMenuItems = [
-  {icon: 'pi pi-book', label: t('general.book-list'), path: '/book/list'},
+const startRoutes = [
+  {name: 'book-list', icon: 'pi pi-book', label: t('general.book-list'), type: 'primary'},
+  {name: 'book-create', icon: 'pi pi-plus', label: t('general.create-new-book'), type: 'primary', cl: 'ml-2'},
 ]
-
-const endMenuItems = [
-  {icon: 'pi pi-user', path: '/user/settings', root: true, hasSubmenus: false},
+const endRoutes = [
+  {name: 'user-settings', icon: 'pi pi-user', label: '', type: 'primary'},
 ]
 </script>
 
 <template>
-  <Menubar :model="mainMenuItems" class="border-noround border-x-none border-top-none">
-    <template #item="{ item, props, hasSubmenu, root }">
-      <MenuItem :item="item" :props="props" :hasSubmenu="hasSubmenu" :root="root" />
-    </template>
-    <template #end>
-      <ul class="p-menubar-root-list">
-        <li v-for="(endMenuItem, index) in endMenuItems" :key="index" class="p-menuitem">
-          <div class="p-menuitem-content">
-            <MenuItem :item="endMenuItem" :hasSubmenu="false" :root="true" />
-          </div>
-        </li>
-      </ul>
-    </template>
-  </Menubar>
+  <div>
+    <Toolbar>
+      <template #start>
+        <Button v-for="{name, icon, label, type, cl} in startRoutes" :key="name"
+                @click="route.name === name ? void(0) : router.push({name: name})"
+                :icon="icon" :label="label" text
+                :severity="route.name === name ? type : 'secondary'"
+                :class="cl" />
+      </template>
+
+      <template #center v-if="searchable">
+        <IconField iconPosition="left">
+          <InputIcon>
+            <i class="pi pi-search" />
+          </InputIcon>
+          <InputText :placeholder="$t('general.search').concat('...')" class="md:w-20rem lg:w-30rem" />
+        </IconField>
+      </template>
+
+      <template #end>
+        <Button v-for="{name, icon, label, type, cl} in endRoutes" :key="name"
+                @click="route.name === name ? void(0) : router.push({name: name})"
+                :icon="icon" :label="label" text
+                :severity="route.name === name ? type : 'secondary'"
+                :class="cl" />
+      </template>
+    </Toolbar>
+  </div>
 </template>
-
-<style scoped>
-
-</style>

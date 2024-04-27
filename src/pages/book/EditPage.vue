@@ -1,6 +1,6 @@
 <script setup>
 import NotFoundPage from '../../pages/error/NotFoundPage.vue'
-import { useBookStore } from '../../stores/bookStore'
+import { useBookStore } from '../../stores/book'
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useToast } from 'primevue/usetoast'
@@ -19,7 +19,7 @@ const selectedKey = ref(null)
 const expandedKeys = ref({})
 
 const bookStore = useBookStore()
-const book = bookStore.findBookById(props.bookId)
+const book = bookStore.findById(props.bookId)
 const chapters = ref(book?.chapters || [])
 
 const treePanelMenuItems = ref([
@@ -137,7 +137,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <TopMenu />
+  <TopMenu class="m-3" />
   <div v-if="book">
     <div class="flex flex-wrap align-items-center justify-content-between gap-3 px-3 py-2">
       <div class="col">

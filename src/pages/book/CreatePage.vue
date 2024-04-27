@@ -1,10 +1,12 @@
 <script setup>
-import BookListPage from '../pages/book/ListPage.vue'
+
 </script>
 
 <template>
-  <BookListPage />
+  <TopMenu class="m-3" />
+  <h1>create book</h1>
 </template>
 
 <style scoped>
+
 </style>
