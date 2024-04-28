@@ -8,21 +8,24 @@ defineProps({
 
 <template>
   <Card @click="$router.push({name: 'book-view', params: {bookId: book.id}})"
-        class="w-18rem overflow-hidden cursor-pointer">
+        class="w-18rem overflow-hidden cursor-pointer shadow-1 hover:shadow-3">
     <template #header>
-      <img alt="user header" :src="book.cover" class="h-16rem w-full" style="object-fit: cover" />
+      <img alt="user header" :src="book.cover" class="h-15rem w-full" style="object-fit: cover" />
     </template>
     <template #title>
-      <h5 class="m-0 h-5rem overflow-hidden">{{ book.title }}</h5>
+      <h5 class="m-0">{{ book.title }}</h5>
     </template>
     <template #subtitle>
-      <h5 class="m-0 h-2rem overflow-hidden">{{ book.author.name }}</h5>
+      <h5 class="m-0">{{ book.author.name }}</h5>
     </template>
     <template #content>
-      <p class="m-0 h-10rem overflow-hidden" v-html="book.desc"></p>
+      <p class="m-0" v-html="book.desc"></p>
     </template>
     <template #footer>
-      <h5 class="m-0 p-card-subtitle text-right">{{ formatDate(book.date) }}</h5>
+      <div v-if="book.tags">
+        <Divider />
+        <Chip v-for="tag in book.tags" :label="tag" class="text-sm mb-2 mr-2" />
+      </div>
     </template>
   </Card>
 </template>

@@ -1,10 +1,14 @@
 <script setup>
-import BookListPage from '../pages/book/ListPage.vue'
+import LangPage from '../pages/init/LangPage.vue'
+import LoginPage from '../pages/init/EmailPage.vue'
+import BookListPage from './book/ListPage.vue'
+import { useUserStore } from "../stores/user"
+
+const user = useUserStore()
 </script>
 
 <template>
-  <BookListPage />
+  <LangPage v-if="!user.locale" />
+  <LoginPage v-else-if="!user.name || !user.email" />
+  <BookListPage v-else />
 </template>
-
-<style scoped>
-</style>

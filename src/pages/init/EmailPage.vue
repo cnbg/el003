@@ -1,31 +1,65 @@
 <script setup>
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useUserStore } from '../../stores/user'
+import { focusElement } from '../../lib/helpers'
 
+const {t} = useI18n()
 const user = useUserStore()
+const name = ref(user.name)
+const email = ref(user.email)
+const error = ref('')
 
-const email = ref('')
-const isValid = ref(true)
-
-const setEmail = async () => {
-  isValid.value = await user.setEmail(email.value)
+const saveName = async () => {
+  if (name.value && await user.setName(name.value)) {
+    error.value = ''
+    if (email.value === '') {
+      focusElement('email-input')
+      error.value = t('validation.invalid-email')
+    }
+  } else error.value = t('validation.invalid-name')
 }
 
-watch(email, (newVal, oldVal) => isValid.value = newVal !== oldVal)
+const saveEmail = async () => {
+  if (email.value && await user.setEmail(email.value)) {
+    error.value = ''
+    if (name.value === '') {
+      focusElement('name-input')
+      error.value = t('validation.invalid-name')
+    }
+  } else error.value = t('validation.invalid-email')
+}
+
+const save = async () => {
+  if (error.value === '') await saveName()
+  if (error.value === '') await saveEmail()
+}
 </script>
 
 <template>
   <div class="w-full h-full flex flex-column align-items-center justify-content-center gap-3">
 
     <InputGroup class="w-24rem">
-      <InputGroupAddon>@</InputGroupAddon>
-      <InputText v-model.trim="email" @keyup.enter.native="setEmail" :placeholder="$t('general.enter-your-email')" />
-      <Button @click="setEmail" icon="pi pi-check" severity="contrast" />
+      <InputGroupAddon><i class="pi pi-user"></i></InputGroupAddon>
+      <InputText v-model.trim="name"
+                 id="name-input"
+                 autofocus
+                 @input="error = ''"
+                 :placeholder="$t('general.enter-your-name')"
+                 @keyup.enter.native="saveName" />
     </InputGroup>
 
-    <span :class="{invisible: isValid}" class="lowercase text-red-700">
-      {{ $t('validation.invalid-email') }}
-    </span>
+    <InputGroup class=" w-24rem">
+      <InputGroupAddon>@</InputGroupAddon>
+      <InputText v-model.trim="email"
+                 id="email-input"
+                 @input="error = ''"
+                 :placeholder="$t('general.enter-your-email')"
+                 @keyup.enter.native="saveEmail" />
+      <Button @click="save" icon="pi pi-check" severity="contrast" />
+    </InputGroup>
+
+    <div v-if="error" class="lowercase text-red-700">{{ error }}</div>
 
   </div>
 </template>

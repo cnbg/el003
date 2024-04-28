@@ -3,16 +3,27 @@ import { isValidEmail } from '../lib/validation'
 
 export const useUserStore = defineStore('user', {
     state: () => ({
+        name: localStorage.getItem('name') ?? '',
         email: localStorage.getItem('email') ?? '',
         locale: localStorage.getItem('locale') ?? '',
         darkMode: localStorage.getItem('darkMode') === 'true',
     }),
     getters: {},
     actions: {
+        async setName(name) {
+            if(name) {
+                this.name = name
+                await localStorage.setItem('name', name)
+
+                return true
+            }
+
+            return false
+        },
         async setEmail(email) {
             const isValid = isValidEmail(email)
 
-            if (isValid) {
+            if(isValid) {
                 this.email = email
                 await localStorage.setItem('email', email)
             }
@@ -20,18 +31,27 @@ export const useUserStore = defineStore('user', {
             return isValid
         },
         async setLocale(locale) {
-            this.locale = locale
-            await localStorage.setItem('locale', locale)
+            if(['kg', 'ru'].includes(locale)) {
+                this.locale = locale
+                await localStorage.setItem('locale', locale)
+
+                return true
+            }
+
+            return false
         },
         async setDarkMode(darkMode) {
             this.darkMode = darkMode
             localStorage.setItem('darkMode', darkMode)
 
-            if (darkMode) {
-                await document.querySelector('html').classList.add('p-dark')
-            } else {
-                await document.querySelector('html').classList.remove('p-dark')
-            }
+            const html = await document.querySelector('html')
+            darkMode ? html.classList.add('p-dark') : html.classList.remove('p-dark')
+        },
+        syncLocalStorage() {
+            this.name = localStorage.getItem('name') ?? ''
+            this.email = localStorage.getItem('email') ?? ''
+            this.locale = localStorage.getItem('locale') ?? ''
+            this.darkMode = localStorage.getItem('darkMode') === 'true'
         },
     },
 })

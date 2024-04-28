@@ -122,6 +122,9 @@ import VirtualScroller from 'primevue/virtualscroller'
 import TopMenu from './components/common/TopMenu.vue'
 import BookCard from './components/book/Card.vue'
 import BookChapter from './components/book/Chapter.vue'
+import BookGallery from './components/book/ImgGallery.vue'
+import ModelViewer from './components/book/ModelViewer.vue'
+import NotFoundPage from './components/error/NotFoundPage.vue'
 
 const app = createApp(App)
 const pinia = createPinia()
@@ -254,6 +257,9 @@ app.component('VirtualScroller', VirtualScroller)
 app.component('TopMenu', TopMenu)
 app.component('BookCard', BookCard)
 app.component('BookChapter', BookChapter)
+app.component('BookGallery', BookGallery)
+app.component('ModelViewer', ModelViewer)
+app.component('NotFoundPage', NotFoundPage)
 
 if (localStorage.getItem('darkMode') === 'true') {
     document.querySelector('html').classList.add('p-dark')
