@@ -1,13 +1,11 @@
 <script setup>
-import { formatDate } from '../../lib/date'
-
 defineProps({
-  book: Object,
+  book: {type: Object, required: true},
 })
 </script>
 
 <template>
-  <Card @click="$router.push({name: 'book-view', params: {bookId: book.id}})"
+  <Card @click="$router.push({name: 'book-edit', params: {bookId: book.id}})"
         class="w-18rem overflow-hidden cursor-pointer shadow-1 hover:shadow-3">
     <template #header>
       <img alt="user header" :src="book.cover" class="h-15rem w-full" style="object-fit: cover" />

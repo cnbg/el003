@@ -33,7 +33,7 @@ const save = async () => {
 
     <label for="book-title" class="mb-1">{{ $t('general.enter-title').concat('...') }}</label>
     <div class="flex justify-content-between gap-3 mb-1">
-      <InputText id="book-title" v-model="book.title" @input="error.title = false" class="text-2xl w-full" />
+      <InputText id="book-title" v-model="book.title" class="text-2xl w-full" />
       <Button @click="save" icon="pi pi-save" :label="$t('general.save')" severity="contrast" />
     </div>
     <span v-if="!book.title" class="lowercase text-red-700">

@@ -7,13 +7,13 @@ import books from '../data/books'
 export const useBookStore = defineStore('book', {
     state: () => ({
         books: books,
-        chapter: {},
+        chapter: null,
         editing: false,
     }),
     getters: {},
     actions: {
         findById(bookId) {
-            return this.books.find((book) => book.id === bookId)
+            return this.books.find(book => book.id === bookId)
         },
         async saveBook(book) {
             book.id = uuid()

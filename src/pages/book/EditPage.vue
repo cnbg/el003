@@ -1,30 +1,16 @@
 <script setup>
-import EditHeader from './parts/EditHeader.vue'
-import SidebarChapter from './parts/SidebarChapter.vue'
-import EditContent from './parts/EditContent.vue'
+import EditHeader from './edit/EditHeader.vue'
+import SidebarChapter from './edit/SidebarChapter.vue'
+import EditContent from './edit/EditContent.vue'
 
 import { useBookStore } from '../../stores/book'
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { useToast } from 'primevue/usetoast'
-import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
   bookId: {type: String, required: true},
 })
-const router = useRouter()
-const {t} = useI18n()
-const treeMenu = ref(null)
-const contentMenu = ref(null)
-const toast = useToast()
-const chapter = ref({})
-const editing = ref(false)
-const selectedKey = ref(null)
-const expandedKeys = ref({})
 
 const bookSt = useBookStore()
 const book = bookSt.findById(props.bookId)
-const chapters = ref(book?.chapters || [])
 </script>
 
 <template>

@@ -7,15 +7,13 @@ defineProps({
 <template>
   <div>
     <h2 class="mt-0 mb-3">{{ chapter.title }}</h2>
-    <div v-for="item in chapter.items" :key="item.id">
 
-      <div v-if="item.type === 'html'" v-html="item.content" class="ql-editor mb-5"></div>
+    <div v-if="chapter.type === 'html'" v-html="chapter.content" class="ql-editor mb-5"></div>
 
-      <BookGallery v-else-if="item.type === 'img'" :images="item.content" />
+    <BookGallery v-else-if="chapter.type === 'img'" :images="chapter.images" />
 
-      <ModelViewer v-else-if="item.type === '3d'" :src="item.content" />
+    <ModelViewer v-else-if="chapter.type === '3d'" :src="chapter.content" />
 
-    </div>
     <BookChapter class="ml-4 mt-5" v-for="subchapter in chapter.chapters" :key="subchapter.id" :chapter="subchapter" />
   </div>
 </template>

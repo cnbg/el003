@@ -61,8 +61,6 @@ const confirmDialog = () => {
 }
 
 const items = ref([
-  {label: t('general.save'), icon: 'pi pi-save', command: () => {}},
-  {separator: true},
   {label: t('general.view-book'), icon: 'pi pi-eye', command: () => {viewBook()}},
   {separator: true},
   {label: t('general.delete') , icon: 'pi pi-times', command: () => {confirmDialog()}},

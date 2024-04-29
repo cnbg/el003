@@ -122,7 +122,7 @@ import VirtualScroller from 'primevue/virtualscroller'
 import TopMenu from './components/common/TopMenu.vue'
 import BookCard from './components/book/Card.vue'
 import BookChapter from './components/book/Chapter.vue'
-import BookGallery from './components/book/ImgGallery.vue'
+import BookGallery from './components/book/BookGallery.vue'
 import ModelViewer from './components/book/ModelViewer.vue'
 import NotFoundPage from './components/error/NotFoundPage.vue'
 
