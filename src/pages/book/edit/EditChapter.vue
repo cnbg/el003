@@ -11,27 +11,25 @@ const toast = useToast()
 const {t} = useI18n()
 const bookSt = useBookStore()
 
-const selectChapter = (e) => {
-  if (bookSt.editing) {
-    toast.add({severity: 'info', summary: t('general.dont-forget-to-save'), life: 4000})
-    return
-  }
-  const el = e.target
-  if (el.classList.contains('selected')) {
-    el.classList.remove('selected')
-    bookSt.chapter = null
+const select = (chapterId) => {
+  if(bookSt.editing) {
+    toast.add({severity: 'error', summary: t('general.dont-forget-to-save'), life: 4000})
   } else {
-    document.querySelector('.selected')?.classList.remove('selected')
-    e.target.classList.add('selected')
-    bookSt.chapter = props.chapter
+    bookSt.chapter = chapterId === bookSt.chapter?.id ? null : props.chapter
   }
 }
 </script>
 
 <template>
-  <div class="cursor-pointer">
-    <Button class="m-0 w-full" plain text @click="selectChapter">{{ chapter.type }} {{ chapter.title }}</Button>
-    <EditChapter class="ml-2" v-for="subchapter in chapter.chapters" :key="subchapter.id" :chapter="subchapter" />
+  <div>
+    <Button :label="`${chapter.type} ${chapter.title}`"
+            @click="select(chapter.id)"
+            class="m-0 w-full text-left justify-content-start"
+            :severity="bookSt.chapter?.id === chapter.id ? 'success' : ''"
+            :plain="bookSt.chapter?.id !== chapter.id"
+            :text="bookSt.chapter?.id !== chapter.id"
+            :outlined="bookSt.chapter?.id === chapter.id" />
+    <EditChapter class="ml-3" v-for="subchapter in chapter.chapters" :key="subchapter.id" :chapter="subchapter" />
   </div>
 </template>
 

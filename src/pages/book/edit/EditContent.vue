@@ -2,14 +2,10 @@
 import { useBookStore } from '../../../stores/book'
 
 const bookSt = useBookStore()
-
-const props = defineProps({
-  book: {type: Object, required: true},
-})
 </script>
 
 <template>
-  <Panel>
+  <Panel v-if="bookSt.chapter">
     <template #header>
       <InputText v-if="bookSt.editing" v-model="bookSt.chapter.title" class="w-full" />
       <h3 v-else class="mt-1 mb-2">{{ bookSt.chapter.title }}</h3>

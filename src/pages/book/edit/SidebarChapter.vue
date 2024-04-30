@@ -1,53 +1,53 @@
 <script setup>
-import { ref } from 'vue'
-import { useToast } from 'primevue/usetoast'
-import { useConfirm } from 'primevue/useconfirm'
-import { useI18n } from 'vue-i18n'
-import { v4 as uuid } from 'uuid'
-import { useBookStore } from '../../../stores/book'
-import SearchInput from '../../../components/common/SearchInput.vue'
 import EditChapter from './EditChapter.vue'
+import EditChapterDialog from './EditChapterDialog.vue'
+
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+import { useBookStore } from '../../../stores/book'
 
 const props = defineProps({
   book: {type: Object, required: true},
 })
 
 const {t} = useI18n()
-const toast = useToast()
-const confirm = useConfirm()
-
 const bookSt = useBookStore()
 const chapters = ref(props.book.chapters || [])
+const showCreateChapterDialog = ref(false)
 
-const addChapter = () => {
-  const newChapter = {
-    id: uuid(),
-    title: '',
-    desc: '',
-    tags: [],
-    date: new Date(),
-    cover: '',
-    pages: 0,
-    items: [],
-    chapters: [],
+const search = (s) => {
+  chapters.value = props.book.chapters?.filter(c => c.title.match(new RegExp(s, 'i'))) || []
+}
+
+const addChapter = async (chapter) => {
+  console.log(chapter)
+  if(chapter) {
+    await bookSt.addChapter(props.book.id, chapter)
   }
 
-  //bookSt.addChapter(bookId, newChapter)
+  showCreateChapterDialog.value = false
 }
 </script>
 
 <template>
-  <Panel>
-    <template #header>
-      <h3 class="m-0">{{ $t('general.chapters') }}</h3>
-    </template>
-    <div class="p-panel-body flex flex-column">
-      <SearchInput class="mt-2 mb-3" cl="w-full" />
-      <ScrollPanel style="width: 100%; height: calc(100vh - 300px)">
-        <EditChapter v-for="chapter in book.chapters" :key="chapter.id" :chapter="chapter" />
-      </ScrollPanel>
-    </div>
-  </Panel>
+  <div>
+    <Panel>
+      <template #header>
+        <div class="w-full flex align-items-center justify-content-between gap-3">
+          <h3 class="m-0">{{ $t('general.chapters') }}</h3>
+          <Button @click="showCreateChapterDialog = true" v-tooltip="$t('general.add-chapter')" icon="pi pi-plus" text plain />
+        </div>
+      </template>
+      <div class="flex flex-column">
+        <SearchInput @search="search" class="mt-2 mb-3" cl="w-full" />
+        <ScrollPanel v-if="chapters" style="width: 100%; height: calc(100vh - 300px)">
+          <EditChapter v-for="chapter in chapters" :key="chapter.id" :chapter="chapter" />
+        </ScrollPanel>
+      </div>
+    </Panel>
+    <EditChapterDialog @onSave="addChapter" :visible="showCreateChapterDialog" @onCancel="showCreateChapterDialog = false" />
+  </div>
 </template>
 
 <style scoped>

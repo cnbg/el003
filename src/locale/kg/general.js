@@ -46,4 +46,7 @@ export default {
     'enter-title': 'Аталышын жазыңыз',
     'enter-description': 'Кыскача маалымат жазыңыз',
     'tags': 'Тэгдер',
+    'text': 'Текст',
+    'images': 'Сүрөттөр',
+    'select-chapter-type': 'Бөлүмдүн түрүн тандаңыз',
 }

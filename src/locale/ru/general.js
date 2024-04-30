@@ -46,4 +46,7 @@ export default {
     'enter-title': 'Введите название',
     'enter-description': 'Введите описание',
     'tags': 'Теги',
+    'text': 'Текст',
+    'images': 'Изображения',
+    'select-chapter-type':'Выберите тип главы',
 }

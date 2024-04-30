@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { v4 as uuid } from 'uuid'
 import { faker } from '@faker-js/faker'
+import { chapterObj } from './models/bookObj'
 
 import books from '../data/books'
 
@@ -10,7 +11,9 @@ export const useBookStore = defineStore('book', {
         chapter: null,
         editing: false,
     }),
-    getters: {},
+    getters: {
+        chapterObj: state => chapterObj,
+    },
     actions: {
         findById(bookId) {
             return this.books.find(book => book.id === bookId)
@@ -32,6 +35,16 @@ export const useBookStore = defineStore('book', {
         },
         async deleteBook(bookId) {
             this.books = await this.books.filter(book => book.id !== bookId)
-        }
+        },
+        async addChapter(bookId, chapter) {
+            chapter.id = uuid()
+            this.books.map((book) => {
+                if(book.id === bookId) {
+                    book.chapters.push(chapter)
+                }
+            })
+
+            return chapter
+        },
     },
 })

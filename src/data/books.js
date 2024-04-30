@@ -46,7 +46,7 @@ const img = () => {
 }
 
 const fillBooks = () => {
-    for (let i = 1; i <= 5; i++) {
+    for (let i = 1; i <= 4; i++) {
         const book = {
             id: faker.string.uuid(),
             title: faker.lorem.sentence(),
@@ -65,12 +65,12 @@ const fillBooks = () => {
             chapters: [],
         }
 
-        const rand = Math.random() * 5 + 5
+        const rand = Math.random() * 5 + 2
 
         for (let j = 0; j < rand; j++) {
             const chapter = html()
 
-            const rand2 = Math.random() * 2 + 1
+            const rand2 = Math.random() * 2 + 2
 
             for (let c = 0; c < rand2; c++) {
                 chapter.chapters.push(html())

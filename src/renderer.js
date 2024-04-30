@@ -120,10 +120,11 @@ import TreeTable from 'primevue/treetable'
 import VirtualScroller from 'primevue/virtualscroller'
 
 import TopMenu from './components/common/TopMenu.vue'
-import BookCard from './components/book/Card.vue'
+import BookCard from './components/book/BookCard.vue'
 import BookChapter from './components/book/Chapter.vue'
 import BookGallery from './components/book/BookGallery.vue'
 import ModelViewer from './components/book/ModelViewer.vue'
+import SearchInput from './components/common/SearchInput.vue'
 import NotFoundPage from './components/error/NotFoundPage.vue'
 
 const app = createApp(App)
@@ -259,6 +260,7 @@ app.component('BookCard', BookCard)
 app.component('BookChapter', BookChapter)
 app.component('BookGallery', BookGallery)
 app.component('ModelViewer', ModelViewer)
+app.component('SearchInput', SearchInput)
 app.component('NotFoundPage', NotFoundPage)
 
 if (localStorage.getItem('darkMode') === 'true') {

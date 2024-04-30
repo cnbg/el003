@@ -7,8 +7,6 @@ const props = defineProps({
   searchable: {type: Boolean, default: false},
 })
 
-const emit = defineEmits(['search'])
-
 const route = useRoute()
 const router = useRouter()
 const {t} = useI18n()
@@ -22,10 +20,6 @@ const startRoutes = [
 const endRoutes = [
   {name: 'user-settings', icon: 'pi pi-user', label: '', type: 'primary'},
 ]
-
-const onSearch = () => {
-  emit('search', search.value)
-}
 </script>
 
 <template>
@@ -45,7 +39,7 @@ const onSearch = () => {
             <i class="pi pi-search" />
           </InputIcon>
           <InputText v-model.trim="search"
-                     @input="onSearch"
+                     @input="$emit('search', search)"
                      :placeholder="$t('general.search').concat('...')"
                      class="md:w-18rem lg:w-25rem" />
         </IconField>

@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useToast } from 'primevue/usetoast'
 import { useUserStore } from '../stores/user'
+import { useBookStore } from '../stores/book'
 
 import HomePage from '../pages/HomePage.vue'
 import BookListPage from '../pages/book/ListPage.vue'
@@ -32,6 +34,11 @@ const router = createRouter({
             name: 'book-edit',
             component: BookEditPage,
             props: true,
+            beforeEnter: (to, from) => {
+                const bookSt = useBookStore()
+                bookSt.editing = false
+                bookSt.chapter = null
+            },
         },
         {
             path: '/book/view/:bookId',

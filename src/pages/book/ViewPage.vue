@@ -1,10 +1,9 @@
 <script setup>
 import { ref } from 'vue'
-import { jsPDF as JsPDF } from 'jspdf'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { useToast } from 'primevue/usetoast'
 import { useBookStore } from '../../stores/book'
+import { exportPdf } from '../../lib/exportpdf'
 
 const props = defineProps({
   bookId: {type: String, required: true},
@@ -12,7 +11,6 @@ const props = defineProps({
 
 const router = useRouter()
 const {t} = useI18n()
-const toast = useToast()
 const menu = ref(null)
 
 const bookSt = useBookStore()
@@ -21,12 +19,6 @@ const book = bookSt.findById(props.bookId)
 const toggleMenu = (event) => {
   menu.value.toggle(event)
 }
-
-const doc = new JsPDF({
-  orientation: "landscape",
-  unit: "in",
-  format: [4, 2]
-})
 
 const panelMenuItems = ref([
   {
@@ -39,9 +31,8 @@ const panelMenuItems = ref([
   },
   {
     label: t('general.export'), icon: 'pi pi-globe', command: () => {
-      doc.text("Hello world!", 1, 1);
-      doc.save(`${book.title}.pdf`)
-      toast.add({severity: 'info', summary: t('general.under-development'), life: 4000})
+      const html = document.querySelector('#html-content').innerHTML
+      exportPdf(html)
     },
   },
 ])

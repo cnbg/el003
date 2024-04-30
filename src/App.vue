@@ -1,5 +1,6 @@
 <template>
   <RouterView />
-  <ConfirmDialog />
   <Toast />
+  <ConfirmDialog />
+  <DynamicDialog />
 </template>
