@@ -14,10 +14,13 @@ export const useBookStore = defineStore('book', {
     }),
     getters: {},
     actions: {
-        async findById(bookId) {
-            this.book = await this.books.find(book => book.id === bookId)
+        findById(bookId) {
+            this.book = this.books.find(book => book.id === bookId)
         },
-        async saveBook(book) {
+        getChapters(parentId = null) {
+            return this.book?.chapters?.filter(chapter => chapter.parent === parentId) ?? []
+        },
+        saveBook(book) {
             book.id = uuid()
             book.date = new Date()
             book.author = {
@@ -30,31 +33,39 @@ export const useBookStore = defineStore('book', {
             book.pages = faker.string.numeric({length: {min: 2, max: 3}})
             book.chapters = []
 
-            await this.books.push(book)
+            this.books.push(book)
         },
-        async deleteBook(bookId) {
-            this.books = await this.books.filter(book => book.id !== bookId)
+        deleteBook(bookId) {
+            this.books = this.books.filter(book => book.id !== bookId)
         },
-        async addChapter(bookId, chapter) {
-            chapter.id = uuid()
-            this.books.map(book => {
-                if (book.id === bookId) {
-                    book.chapters.push(chapter)
-                }
-            })
-
-            return chapter
+        addChapter(chapter) {
+            if(this.book) {
+                chapter.id = uuid()
+                chapter.parent = this.chapter?.id ?? null
+                chapter.date = new Date()
+                this.book.chapters?.push(chapter)
+                this.calcChapterItems(chapter)
+            }
+        },
+        calcChapterItems(chapter) {
+            if(chapter.parent) {
+                const parent = this.book.chapters?.find(ch => ch.id === chapter.parent)
+                parent.items++
+            }
         },
         chapterObj() {
             return {
                 id: '',
+                parent: null,
                 title: '',
                 desc: '',
                 tags: [],
-                date: '',
+                date: null,
                 pages: 0,
-                chapters: [],
+                expanded: false,
+                order: 0,
+                items: 0,
             }
-        }
+        },
     },
 })

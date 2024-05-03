@@ -5,19 +5,17 @@ const bookSt = useBookStore()
 </script>
 
 <template>
-  <Panel v-if="bookSt.chapter">
+  <Panel>
     <template #header>
-      <InputText v-if="bookSt.editing" v-model="bookSt.chapter.title" class="w-full" />
-      <h3 v-else class="mt-1 mb-2">{{ bookSt.chapter.title }}</h3>
+      <div class="w-full flex flex-column just-content-start">
+        <h2 class="m-0">{{ bookSt.chapter.title }}</h2>
+        <h5 v-if="bookSt.chapter.desc" class="text-300 my-3">{{ bookSt.chapter.desc }}</h5>
+        <div v-if="bookSt.chapter.tags?.length > 0">
+          <Chip v-for="tag in bookSt.chapter.tags" :label="tag" class="text-xs mt-2 mr-2 px-3 pt-1 pb-2" />
+        </div>
+      </div>
     </template>
-    <template #icons>
-      <Button v-if="bookSt.editing" @click="bookSt.editing = false"
-              icon="pi pi-save" :label="$t('general.save')"
-              class="lowercase ml-3 text-sm py-1" severity="primary" />
-      <Button v-else @click="bookSt.editing = true"
-              icon="pi pi-pencil" :label="$t('general.edit')"
-              class="lowercase text-sm" severity="secondary" />
-    </template>
+    <Divider />
     <div v-if="bookSt.chapter.type === 'html'">
       <Editor v-if="bookSt.editing" v-model="bookSt.chapter.content" editorStyle="min-height: 250px"></Editor>
       <p v-else v-html="bookSt.chapter.content" class="ql-editor my-1"></p>

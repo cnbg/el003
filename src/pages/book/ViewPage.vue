@@ -14,7 +14,7 @@ const {t} = useI18n()
 const menu = ref(null)
 
 const bookSt = useBookStore()
-const book = bookSt.findById(props.bookId)
+bookSt.findById(props.bookId)
 
 const toggleMenu = (event) => {
   menu.value.toggle(event)
@@ -39,19 +39,18 @@ const panelMenuItems = ref([
 </script>
 
 <template>
-  <TopMenu class="p-2" />
-
-  <div v-if="book" id="html-content" class="py-2 px-4 mx-auto sm:w-full md:w-10 lg:w-9 xl:w-8">
-    <div class="pt-2 flex align-items-start justify-content-between gap-3">
-      <h1 class="m-0">{{ book.title }}</h1>
-      <Button @click="toggleMenu" icon="pi pi-cog" text plain class="mt-1" />
-      <Menu ref="menu" :model="panelMenuItems" popup />
+  <div>
+    <div v-if="bookSt.book" id="html-content" class="py-2 px-4 mx-auto sm:w-full md:w-10 lg:w-9 xl:w-8">
+      <div class="pt-2 flex align-items-start justify-content-between gap-3">
+        <h1 class="m-0">{{ bookSt.book.title }}</h1>
+        <Button @click="toggleMenu" icon="pi pi-cog" text plain class="mt-1" />
+        <Menu ref="menu" :model="panelMenuItems" popup />
+      </div>
+      <Divider class="my-5" />
+      <BookChapter v-for="chapter in bookSt.book.chapters" :key="chapter.id" :chapter="chapter" />
     </div>
-    <Divider class="my-5" />
-    <BookChapter v-for="chapter in book.chapters" :key="chapter.id" :chapter="chapter" />
+    <NotFoundPage v-else />
   </div>
-  <NotFoundPage v-else />
-
 </template>
 
 <style scoped>

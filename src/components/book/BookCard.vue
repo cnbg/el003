@@ -22,7 +22,7 @@ defineProps({
     <template #footer>
       <div v-if="book.tags" class="m-0">
         <Divider />
-        <Chip v-for="tag in book.tags" :label="tag" class="text-sm mb-2 mr-2" />
+        <Chip v-for="tag in book.tags" :label="tag" class="text-xs mt-2 mr-2 px-3 pt-1 pb-2" />
       </div>
     </template>
   </Card>

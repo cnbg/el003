@@ -3,21 +3,16 @@ import { ref } from 'vue'
 import { useBookStore } from '../../../stores/book'
 
 const emit = defineEmits(['save', 'close'])
-const newChapter = ref({
-
+const props = defineProps({
+  chapter: {type: Object, required: true},
 })
+const newChapter = ref(props.chapter)
 
 const save = () => {
-  if (newChapter.value.title) {
-    emit('save', newChapter)
-    // newChapter.value = bookSt.chapterObj()
+  if(newChapter.value.title) {
+    emit('save', newChapter.value)
   }
 }
-const close = () => {
-  // newChapter.value = bookSt.chapterObj()
-  emit('close', null)
-}
-const visibl = ref(props.vis)
 </script>
 
 <template>
@@ -40,11 +35,11 @@ const visibl = ref(props.vis)
     <div class="mt-3">
       <label>
         {{ $t('general.select-chapter-type') }}
-        <Textarea v-model="newChapter.desc" :options="types" dataKey="type" optionLabel="name" class="w-full" />
+        <Textarea v-model="newChapter.desc" class="w-full h-7rem" />
       </label>
     </div>
     <div class="flex justify-content-end mt-6 gap-4">
-      <Button @click="close" :label="$t('general.cancel')" type="button" plain text />
+      <Button @click="emit('close', null)" :label="$t('general.cancel')" type="button" plain text />
       <Button @click="save" :label="$t('general.save')" type="button" />
     </div>
   </div>

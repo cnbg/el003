@@ -19,6 +19,7 @@ export default {
     'yes': 'Да',
     'open': 'Открыть',
     'edit': 'Редактировать',
+    'edit-chapter': 'Редактировать главу',
     'delete': 'Удалить',
     'create-book': 'Создать книгу',
     'close': 'Закрыть',

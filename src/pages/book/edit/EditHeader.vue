@@ -18,11 +18,11 @@ const toggle = (event) => {
   menu.value.toggle(event)
 }
 
-const viewBook = () => {
-  if (bookSt.editing) {
+const goto = (route, params = {}) => {
+  if(bookSt.editing) {
     toast.add({severity: 'error', summary: t('general.dont-forget-to-save'), life: 4000})
   } else {
-    router.push({name: 'book-view', params: {bookId: props.book.id}})
+    router.push({name: route, params: params})
   }
 }
 
@@ -40,11 +40,11 @@ const confirmDialog = () => {
       label: t('general.no').toLowerCase(),
       severity: 'secondary',
       outlined: true,
-      class: 'mr-3'
+      class: 'mr-3',
     },
     acceptProps: {
       label: t('general.yes').toLowerCase(),
-      severity: 'danger'
+      severity: 'danger',
     },
     accept: async () => {
       await bookSt.deleteBook(bookSt.book.id)
@@ -56,7 +56,13 @@ const confirmDialog = () => {
 }
 
 const items = ref([
-  {label: t('general.view-book'), icon: 'pi pi-eye', command: () => {viewBook()}},
+  {label: t('general.book-list'), icon: 'pi pi-list', command: () => {goto('book-list')}},
+  {separator: true},
+  {
+    label: t('general.view-book'), icon: 'pi pi-eye', command: () => {
+      goto('book-view', {bookId: bookSt.book.id})
+    },
+  },
   {separator: true},
   {label: t('general.delete'), icon: 'pi pi-times', command: () => {confirmDialog()}},
 ])
@@ -65,7 +71,7 @@ const items = ref([
 <template>
   <Panel toggleable :collapsed="true">
     <template #header>
-      <div class="text-2xl mb-2 font-bold">{{ bookSt.book.title }}</div>
+      <h2 class="m-0">{{ bookSt.book.title }}</h2>
     </template>
     <template #footer>
       <div class="flex flex-wrap align-items-center justify-content-between gap-3">
@@ -82,10 +88,12 @@ const items = ref([
       </button>
       <Menu ref="menu" id="config_menu" :model="items" popup />
     </template>
-    <p class="m-0">{{ bookSt.book.desc }}</p>
+    <h5 class="my-3 text-300">{{ bookSt.book.desc }}</h5>
+    <div v-if="bookSt.book.tags?.length > 0">
+      <Chip v-for="tag in bookSt.book.tags" :label="tag" class="text-xs mt-2 mr-2 px-3 pt-1 pb-2" />
+    </div>
   </Panel>
 </template>
 
 <style scoped>
-
 </style>

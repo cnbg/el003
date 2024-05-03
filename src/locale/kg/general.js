@@ -19,6 +19,7 @@ export default {
     'yes': 'Ооба',
     'open': 'Ачуу',
     'edit': 'Редакциалоо',
+    'edit-chapter': 'Бөлүм редакциалоо',
     'delete': 'Өчүрүү',
     'create-book': 'Китеп жаратуу',
     'close': 'Жабуу',

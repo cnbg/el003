@@ -6,9 +6,11 @@ export const useUserStore = defineStore('user', {
         name: localStorage.getItem('name') ?? '',
         email: localStorage.getItem('email') ?? '',
         locale: localStorage.getItem('locale') ?? '',
+        locales: ['kg', 'ru'],
         darkMode: localStorage.getItem('darkMode') === 'true',
     }),
-    getters: {},
+    getters: {
+    },
     actions: {
         async setName(name) {
             if(name) {
@@ -31,7 +33,8 @@ export const useUserStore = defineStore('user', {
             return isValid
         },
         async setLocale(locale) {
-            if(['kg', 'ru'].includes(locale)) {
+            this.locale = locale
+            if(this.locales.includes(locale)) {
                 this.locale = locale
                 await localStorage.setItem('locale', locale)
 

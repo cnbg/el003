@@ -2,11 +2,11 @@
 import { ref } from 'vue'
 import { useBookStore } from '../../stores/book'
 
-const book = useBookStore()
-const books = ref(book.books || [])
+const bookSt = useBookStore()
+const books = ref(bookSt.books || [])
 
 const search = (s) => {
-  books.value = s.length === 0 ? book.books : filter(book.books, s)
+  books.value = s.length === 0 ? bookSt.books : filter(bookSt.books, s)
 }
 const filter = (items, s) => {
   return items.filter(i => {
