@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker'
 import bookData from './books.json'
 
-const html = () => {
+const chapter = () => {
     return {
         id: faker.string.uuid(),
         title: faker.lorem.sentence(),
@@ -9,44 +9,12 @@ const html = () => {
         tags: faker.lorem.words({min: 1, max: 3}).split(' '),
         date: faker.date.recent(),
         pages: faker.string.numeric({length: {min: 2, max: 3}}),
-        type: 'html',
-        content: faker.lorem.paragraph({min: 3, max: 10}),
         chapters: [],
     }
-}
-
-const img = () => {
-    const chapter = {
-        id: faker.string.uuid(),
-        title: faker.lorem.sentence(),
-        desc: faker.lorem.sentences({min: 2, max: 5}),
-        tags: faker.lorem.words({min: 1, max: 3}).split(' '),
-        date: faker.date.recent(),
-        pages: faker.string.numeric({length: {min: 2, max: 3}}),
-        type: 'img',
-        content: '',
-        images: [],
-        chapters: [],
-    }
-
-    for (let i = 0; i < 5; i++) {
-        const imgSrc = faker.image.urlLoremFlickr()
-
-        const img = {
-            src: imgSrc,
-            thumb: imgSrc,
-            alt: faker.lorem.sentence(),
-            title: faker.lorem.sentence(),
-        }
-
-        chapter.images.push(img)
-    }
-
-    return chapter
 }
 
 const fillBooks = () => {
-    for (let i = 1; i <= 4; i++) {
+    for (let i = 1; i < 7; i++) {
         const book = {
             id: faker.string.uuid(),
             title: faker.lorem.sentence(),
@@ -60,25 +28,19 @@ const fillBooks = () => {
             },
             tags: faker.lorem.words({min: 1, max: 3}).split(' '),
             date: faker.date.recent(),
-            cover: faker.image.urlLoremFlickr(),
+            cover: faker.image.urlLoremFlickr({
+                category: 'history'
+            }),
             pages: faker.string.numeric({length: {min: 2, max: 3}}),
             chapters: [],
         }
 
-        const rand = Math.random() * 5 + 2
+        const rand = Math.random() * 6 + 2
 
         for (let j = 0; j < rand; j++) {
-            const chapter = html()
+            const ch = chapter()
 
-            const rand2 = Math.random() * 2 + 2
-
-            for (let c = 0; c < rand2; c++) {
-                chapter.chapters.push(html())
-                chapter.chapters.push(img())
-            }
-
-            book.chapters.push(chapter)
-            book.chapters.push(img())
+            book.chapters.push(ch)
         }
 
         books.push(book)

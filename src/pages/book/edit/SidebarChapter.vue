@@ -3,30 +3,22 @@ import EditChapter from './EditChapter.vue'
 import EditChapterDialog from './EditChapterDialog.vue'
 
 import { ref } from 'vue'
-import { useI18n } from 'vue-i18n'
-
 import { useBookStore } from '../../../stores/book'
 
-const props = defineProps({
-  book: {type: Object, required: true},
-})
-
-const {t} = useI18n()
 const bookSt = useBookStore()
-const chapters = ref(props.book.chapters || [])
+const chapters = ref(bookSt.book.chapters || [])
 const showCreateChapterDialog = ref(false)
 
 const search = (s) => {
-  chapters.value = props.book.chapters?.filter(c => c.title.match(new RegExp(s, 'i'))) || []
+  chapters.value = bookSt.book.chapters?.filter(c => c.title.match(new RegExp(s, 'i'))) || []
 }
 
-const addChapter = async (chapter) => {
-  console.log(chapter)
-  if(chapter) {
-    await bookSt.addChapter(props.book.id, chapter)
+const addChapter = (chapter) => {
+  if (bookSt.book) {
+    bookSt.addChapter(bookSt.book.id, chapter)
+    chapters.value = bookSt.book.chapters
+    showCreateChapterDialog.value = false
   }
-
-  showCreateChapterDialog.value = false
 }
 </script>
 
@@ -46,7 +38,10 @@ const addChapter = async (chapter) => {
         </ScrollPanel>
       </div>
     </Panel>
-    <EditChapterDialog @onSave="addChapter" :visible="showCreateChapterDialog" @onCancel="showCreateChapterDialog = false" />
+    <Dialog v-model:visible="showCreateChapterDialog"
+            modal :header="$t('general.add-chapter')" class="w-30rem">
+      <EditChapterDialog @save="addChapter" @close="showCreateChapterDialog = false" />
+    </Dialog>
   </div>
 </template>
 

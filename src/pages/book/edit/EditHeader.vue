@@ -7,11 +7,6 @@ import { useConfirm } from 'primevue/useconfirm'
 import { formatDate } from '../../../lib/date'
 import { useBookStore } from '../../../stores/book'
 
-const props = defineProps({
-  book: {type: Object, required: true},
-  edit: {type: Boolean, default: false},
-})
-
 const bookSt = useBookStore()
 const {t} = useI18n()
 const toast = useToast()
@@ -24,7 +19,7 @@ const toggle = (event) => {
 }
 
 const viewBook = () => {
-  if(props.edit) {
+  if (bookSt.editing) {
     toast.add({severity: 'error', summary: t('general.dont-forget-to-save'), life: 4000})
   } else {
     router.push({name: 'book-view', params: {bookId: props.book.id}})
@@ -52,7 +47,7 @@ const confirmDialog = () => {
       severity: 'danger'
     },
     accept: async () => {
-      await bookSt.deleteBook(props.book.id)
+      await bookSt.deleteBook(bookSt.book.id)
       toast.add({severity: 'info', summary: t('general.book-deleted'), life: 4000})
       router.push({name: 'book-list'})
     },
@@ -63,14 +58,14 @@ const confirmDialog = () => {
 const items = ref([
   {label: t('general.view-book'), icon: 'pi pi-eye', command: () => {viewBook()}},
   {separator: true},
-  {label: t('general.delete') , icon: 'pi pi-times', command: () => {confirmDialog()}},
+  {label: t('general.delete'), icon: 'pi pi-times', command: () => {confirmDialog()}},
 ])
 </script>
 
 <template>
   <Panel toggleable :collapsed="true">
     <template #header>
-      <div class="text-2xl mb-2 font-bold">{{ book.title }}</div>
+      <div class="text-2xl mb-2 font-bold">{{ bookSt.book.title }}</div>
     </template>
     <template #footer>
       <div class="flex flex-wrap align-items-center justify-content-between gap-3">
@@ -78,7 +73,7 @@ const items = ref([
           <Button @click="dev" icon="pi pi-user" severity="secondary" rounded text></Button>
           <Button @click="dev" icon="pi pi-bookmark" severity="secondary" rounded text></Button>
         </div>
-        <span class="p-text-secondary">{{ formatDate(book.date) }}</span>
+        <span class="p-text-secondary">{{ formatDate(bookSt.book.date) }}</span>
       </div>
     </template>
     <template #icons>
@@ -87,7 +82,7 @@ const items = ref([
       </button>
       <Menu ref="menu" id="config_menu" :model="items" popup />
     </template>
-    <p class="m-0">{{ book.desc }}</p>
+    <p class="m-0">{{ bookSt.book.desc }}</p>
   </Panel>
 </template>
 

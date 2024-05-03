@@ -1,31 +1,27 @@
 <script setup>
-import { reactive, ref } from 'vue'
-import { useI18n } from 'vue-i18n'
-import { chapterObj } from '../../../stores/models/bookObj'
+import { ref } from 'vue'
+import { useBookStore } from '../../../stores/book'
 
-const emit = defineEmits()
-const {t} = useI18n()
+const emit = defineEmits(['save', 'close'])
+const newChapter = ref({
 
-let newChapter = reactive(chapterObj)
-
-const types = [
-  {type: 'html', name: t('general.text')},
-  {type: 'img', name: t('general.images')},
-]
-const selectedType = ref(types[0])
+})
 
 const save = () => {
-  if(newChapter.title) {
-    emit('onSave', )
+  if (newChapter.value.title) {
+    emit('save', newChapter)
+    // newChapter.value = bookSt.chapterObj()
   }
 }
-const cancel = () => {
-  emit('onCancel', null)
+const close = () => {
+  // newChapter.value = bookSt.chapterObj()
+  emit('close', null)
 }
+const visibl = ref(props.vis)
 </script>
 
 <template>
-  <Dialog modal :header="$t('general.add-chapter')" class="w-30rem">
+  <div>
     <div class="flex flex-column gap-3">
       <div>
         <label>
@@ -44,14 +40,14 @@ const cancel = () => {
     <div class="mt-3">
       <label>
         {{ $t('general.select-chapter-type') }}
-        <Dropdown v-model="selectedType" :options="types" dataKey="type" optionLabel="name" class="w-full" />
+        <Textarea v-model="newChapter.desc" :options="types" dataKey="type" optionLabel="name" class="w-full" />
       </label>
     </div>
     <div class="flex justify-content-end mt-6 gap-4">
-      <Button @click="cancel" :label="$t('general.cancel')" type="button" plain text />
+      <Button @click="close" :label="$t('general.cancel')" type="button" plain text />
       <Button @click="save" :label="$t('general.save')" type="button" />
     </div>
-  </Dialog>
+  </div>
 </template>
 
 <style scoped>

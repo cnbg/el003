@@ -22,7 +22,7 @@ const select = (chapterId) => {
 
 <template>
   <div>
-    <Button :label="`${chapter.type} ${chapter.title}`"
+    <Button :label="`${chapter.title}`"
             @click="select(chapter.id)"
             class="m-0 w-full text-left justify-content-start"
             :severity="bookSt.chapter?.id === chapter.id ? 'success' : ''"
