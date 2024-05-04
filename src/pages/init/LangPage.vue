@@ -1,20 +1,15 @@
 <script setup>
 import { useUserStore } from '../../stores/user'
-const user = useUserStore()
+
+const userSt = useUserStore()
 </script>
 
 <template>
-  <div class="w-full h-full flex flex-column align-items-center justify-content-center gap-3">
-
-    <Button @click="$i18n.locale = 'kg'; user.setLocale('kg')"
-            label="кыргызча"
-            severity="contrast"
-            class="w-15rem p-3 text-xl" />
-
-    <Button @click="$i18n.locale = 'ru'; user.setLocale('ru')"
-            label="русский"
-            severity="contrast"
-            class="w-15rem p-3 text-xl" />
-
+  <div class="w-full h-full flex flex-col items-center justify-center gap-6">
+    <Button v-for="locale in userSt.locales" :key="locale.key"
+            @click="$i18n.locale = locale.key; userSt.setLocale(locale.key)"
+            :label="locale.name"
+            severity="secondary"
+            class="w-40 p-3 text-xl" />
   </div>
 </template>

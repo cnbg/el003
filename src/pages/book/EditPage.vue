@@ -16,19 +16,10 @@ bookSt.findById(props.bookId)
 <template>
   <div>
     <div v-if="bookSt.book">
-
-      <div class="px-2 py-1">
-        <EditHeader class="m-0" />
-      </div>
-
-      <div class="grid grid-nogutter p-2 gap-2">
-        <div class="col-12 md:col-5 lg:col-4 xl:col-3">
-          <SidebarChapter class="max-height m-0" />
-        </div>
-        <div class="col">
-          <EditContent v-if="bookSt.chapter" class="max-height" />
-          <Panel v-else class="m-0 max-height" />
-        </div>
+      <EditHeader class="p-2" />
+      <div class="flex px-2 pb-2 gap-2">
+        <SidebarChapter class="flex-none w-96" />
+        <EditContent class="grow" />
       </div>
     </div>
     <NotFoundPage v-else />
@@ -36,7 +27,4 @@ bookSt.findById(props.bookId)
 </template>
 
 <style scoped>
-.p-panel.max-height {
-  min-height: calc(100vh - 85px);
-}
 </style>

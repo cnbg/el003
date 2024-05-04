@@ -6,23 +6,22 @@ defineProps({
 
 <template>
   <Card @click="$router.push({name: 'book-edit', params: {bookId: book.id}})"
-        class="w-18rem cursor-pointer overflow-hidden shadow-1 hover:shadow-3">
+        class="w-80 cursor-pointer overflow-hidden hover:shadow-xl">
     <template #header>
-      <img alt="user header" :src="book.cover" class="h-15rem w-full" style="object-fit: cover" />
+      <img alt="" :src="book.cover" class="h-72 w-full" style="object-fit: cover" />
     </template>
     <template #title>
-      <h5 class="m-0">{{ book.title }}</h5>
+      <div>{{ book.title }}</div>
     </template>
     <template #subtitle>
-      <h5 class="m-0">{{ book.author.name }}</h5>
+      <div>{{ book.author.name }}</div>
     </template>
     <template #content>
-      <p class="m-0" v-html="book.desc"></p>
+      <div v-html="book.desc"></div>
     </template>
     <template #footer>
-      <div v-if="book.tags" class="m-0">
-        <Divider />
-        <Chip v-for="tag in book.tags" :label="tag" class="text-xs mt-2 mr-2 px-3 pt-1 pb-2" />
+      <div v-if="book.tags.length > 0" class="flex flex-wrap gap-x-2 gap-y-3">
+        <Chip v-for="tag in book.tags" :label="tag" class="text-sm" />
       </div>
     </template>
   </Card>

@@ -6,6 +6,7 @@ export default {
     'category': 'Категория',
     'confirm': 'Тастыктоо',
     'create-new-book': 'Жаңы китеп кошуу',
+    'add-book': 'Китеп кошуу',
     'email': 'Э-куржун',
     'name': 'Аты',
     'enter-your-name': 'Атыңызды жазыңыз',

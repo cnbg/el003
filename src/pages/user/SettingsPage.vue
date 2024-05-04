@@ -11,34 +11,35 @@ const setDarkMode = async () => {
 </script>
 
 <template>
-  <TopMenu class="m-3" />
-  <div class="m-4">
-    <div class="flex align-items-center">
-      <span class="w-10rem">{{ $t('general.language') }}</span>
-      <Button @click="$i18n.locale = 'kg'; userSt.setLocale('kg')"
-              label="кыргызча"
-              :severity="userSt.locale === 'kg' ? 'success' : 'contrast'"
-              :outlined="userSt.locale !== 'kg'"
-              :icon="userSt.locale === 'kg' ? 'pi pi-check' : ''"
-              class="w-8rem mr-2 text-sm" />
-      <Button @click="$i18n.locale = 'ru'; userSt.setLocale('ru')"
-              label="русский"
-              :severity="userSt.locale === 'ru' ? 'success' : 'contrast'"
-              :outlined="userSt.locale !== 'ru'"
-              :icon="userSt.locale === 'ru' ? 'pi pi-check' : ''"
-              class="w-8rem text-sm" />
-    </div>
-    <div class="mt-5 flex align-items-center">
-      <span class="w-10rem">{{ $t('general.night-mode') }}</span>
-      <InputSwitch v-model="darkMode" @change="setDarkMode" />
-    </div>
-    <div class="mt-5 flex align-items-center">
-      <span class="w-10rem">{{ $t('general.name') }}</span>
-      <span>{{ userSt.name }}</span>
-    </div>
-    <div class="mt-5 flex align-items-center">
-      <span class="w-10rem">{{ $t('general.email') }}</span>
-      <span>{{ userSt.email }}</span>
-    </div>
+  <div>
+    <TopMenu class="p-2" />
+    <Card class="mx-2" style="height: calc(100vh - 80px)">
+      <template #content>
+        <div class="flex flex-col align-center gap-7 pl-10">
+          <div class="flex items-center">
+            <span class="w-40">{{ $t('general.language') }}</span>
+            <Button v-for="locale in userSt.locales" :key="locale.key"
+                    @click="$i18n.locale = locale.key; userSt.setLocale(locale.key)"
+                    :label="locale.name"
+                    :severity="userSt.locale === locale.key ? 'success' : 'secondary'"
+                    outlined
+                    :icon="userSt.locale === locale.key ? 'pi pi-check' : ''"
+                    class="w-32 mr-3" size="small" />
+          </div>
+          <div class="flex items-center">
+            <span class="w-40">{{ $t('general.night-mode') }}</span>
+            <InputSwitch v-model="darkMode" @change="setDarkMode" />
+          </div>
+          <div class="flex items-center">
+            <span class="w-40">{{ $t('general.name') }}</span>
+            <span>{{ userSt.name }}</span>
+          </div>
+          <div class="flex items-center">
+            <span class="w-40">{{ $t('general.email') }}</span>
+            <span>{{ userSt.email }}</span>
+          </div>
+        </div>
+      </template>
+    </Card>
   </div>
 </template>

@@ -19,32 +19,35 @@ const book = reactive({
   },
 })
 
-const save = async () => {
+const save = () => {
   if(book.title) {
-    await bookSt.saveBook(book)
-    await router.push({name: 'book-edit', params: {bookId: book.id}})
+    bookSt.saveBook(book)
+    router.push({name: 'book-edit', params: {bookId: book.id}})
   }
 }
 </script>
 
 <template>
-  <TopMenu class="p-2" />
-  <div class="px-2 py-4 flex flex-column">
-
-    <label for="book-title" class="mb-1">{{ $t('general.enter-title').concat('...') }}</label>
-    <div class="flex justify-content-between gap-3 mb-1">
-      <InputText id="book-title" v-model="book.title" class="text-2xl w-full" />
-      <Button @click="save" icon="pi pi-save" :label="$t('general.save')" severity="contrast" />
+  <div>
+    <TopMenu class="p-2" />
+    <div class="p-8 flex flex-col gap-6">
+      <div>
+        <label for="book-title">{{ $t('general.enter-title').concat('...') }}</label>
+        <InputText id="book-title" v-model="book.title" class="text-2xl w-full" />
+        <span v-show="!book.title" class="lowercase text-red-700">{{ $t('general.enter-book-title') }}</span>
+      </div>
+      <div>
+        <label for="book-desc">{{ $t('general.enter-description') }}</label>
+        <Textarea v-model="book.desc" id="book-desc" class="w-full h-32" placeholder="..." />
+      </div>
+      <div>
+        <label for="book-tags" class="mt-3 mb-1">{{ $t('general.tags') }}</label>
+        <Chips v-model="book.tags" id="book-tags" />
+      </div>
+      <Button @click="save" icon="pi pi-save"
+              class="sm:w-72 ml-auto mt-4" size="large"
+              :label="$t('general.save')" severity="success" outlined />
     </div>
-    <span v-if="!book.title" class="lowercase text-red-700">
-      {{ $t('general.enter-book-title') }}
-    </span>
-
-    <label for="book-desc" class="mt-3 mb-1">{{ $t('general.enter-description') }}</label>
-    <Textarea v-model="book.desc" id="book-desc" class="h-6rem" placeholder="..." />
-
-    <label for="book-tags" class="mt-3 mb-1">{{ $t('general.tags') }}</label>
-    <Chips v-model="book.tags" id="book-tags" />
   </div>
 </template>
 

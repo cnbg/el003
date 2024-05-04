@@ -11,9 +11,9 @@ const email = ref(user.email)
 const error = ref('')
 
 const saveName = async () => {
-  if (name.value && await user.setName(name.value)) {
+  if(name.value && await user.setName(name.value)) {
     error.value = ''
-    if (email.value === '') {
+    if(email.value === '') {
       focusElement('email-input')
       error.value = t('validation.invalid-email')
     }
@@ -21,9 +21,9 @@ const saveName = async () => {
 }
 
 const saveEmail = async () => {
-  if (email.value && await user.setEmail(email.value)) {
+  if(email.value && await user.setEmail(email.value)) {
     error.value = ''
-    if (name.value === '') {
+    if(name.value === '') {
       focusElement('name-input')
       error.value = t('validation.invalid-name')
     }
@@ -31,15 +31,14 @@ const saveEmail = async () => {
 }
 
 const save = async () => {
-  if (error.value === '') await saveName()
-  if (error.value === '') await saveEmail()
+  if(error.value === '') await saveName()
+  if(error.value === '') await saveEmail()
 }
 </script>
 
 <template>
-  <div class="w-full h-full flex flex-column align-items-center justify-content-center gap-3">
-
-    <InputGroup class="w-24rem">
+  <div class="w-full h-full flex flex-col items-center justify-center gap-3">
+    <InputGroup class="w-72">
       <InputGroupAddon><i class="pi pi-user"></i></InputGroupAddon>
       <InputText v-model.trim="name"
                  id="name-input"
@@ -48,18 +47,15 @@ const save = async () => {
                  :placeholder="$t('general.enter-your-name')"
                  @keyup.enter.native="saveName" />
     </InputGroup>
-
-    <InputGroup class=" w-24rem">
+    <InputGroup class="w-72">
       <InputGroupAddon>@</InputGroupAddon>
       <InputText v-model.trim="email"
                  id="email-input"
                  @input="error = ''"
                  :placeholder="$t('general.enter-your-email')"
                  @keyup.enter.native="saveEmail" />
-      <Button @click="save" icon="pi pi-check" severity="contrast" />
+      <Button @click="save" icon="pi pi-check" severity="secondary" />
     </InputGroup>
-
     <div v-if="error" class="lowercase text-red-700">{{ error }}</div>
-
   </div>
 </template>

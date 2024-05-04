@@ -1,14 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 
-defineProps(['cl'])
-const emit = defineEmits(['search'])
-
 const search = ref('')
-
-const onSearch = () => {
-  emit('search', search.value)
-}
 </script>
 
 <template>
@@ -17,9 +10,9 @@ const onSearch = () => {
       <i class="pi pi-search" />
     </InputIcon>
     <InputText v-model.trim="search"
-               @input="onSearch"
+               @input="$emit('search', search.value)"
                :placeholder="$t('general.search').concat('...')"
-               :class="cl" />
+               class="w-full" />
   </IconField>
 </template>
 

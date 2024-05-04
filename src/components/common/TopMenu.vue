@@ -3,7 +3,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { ref } from 'vue'
 
-const props = defineProps({
+defineProps({
   searchable: {type: Boolean, default: false},
 })
 
@@ -13,45 +13,51 @@ const {t} = useI18n()
 const search = ref('')
 
 const startRoutes = [
-  {name: 'book-list', icon: 'pi pi-book', label: t('general.book-list'), type: 'primary'},
-  {name: 'book-create', icon: 'pi pi-plus', label: t('general.create-new-book'), type: 'primary', cl: 'ml-2'},
-  {name: '', icon: 'pi pi-file-import', label: t('general.import'), type: 'primary'},
+  {name: 'book-list', icon: 'pi pi-book', label: t('general.book-list')},
+  {name: 'book-create', icon: 'pi pi-plus', label: t('general.add-book')},
+  {name: '', icon: 'pi pi-file-import', label: t('general.import'), disabled: true},
 ]
 const endRoutes = [
-  {name: 'user-settings', icon: 'pi pi-user', label: '', type: 'primary'},
+  {name: 'user-settings', icon: 'pi pi-user', label: ''},
 ]
 </script>
 
 <template>
   <div>
-    <Toolbar>
+    <Toolbar id="app-toolbar" class="bg-white shadow dark:bg-gray-900">
       <template #start>
-        <Button v-for="{name, icon, label, type, cl} in startRoutes" :key="name"
-                @click="route.name === name ? void(0) : router.push({name: name})"
-                :icon="icon" :label="label" text
-                :severity="route.name === name ? type : 'secondary'"
-                :class="cl" />
+        <Button v-for="{name, icon, label, disabled} in startRoutes" :key="name"
+                @click="router.push({name: name})" :disabled="disabled"
+                text :severity="route.name === name ? 'success' : 'secondary'">
+          <i :class="icon" class="mr-2"></i>{{ label }}
+        </Button>
       </template>
 
       <template #center v-if="searchable">
-        <IconField iconPosition="left">
+        <IconField iconPosition="left" class="md:w-64 lg:w-96">
           <InputIcon>
             <i class="pi pi-search" />
           </InputIcon>
           <InputText v-model.trim="search"
                      @input="$emit('search', search)"
                      :placeholder="$t('general.search').concat('...')"
-                     class="md:w-18rem lg:w-25rem" />
+                     class="w-full" />
         </IconField>
       </template>
 
       <template #end>
-        <Button v-for="{name, icon, label, type, cl} in endRoutes" :key="name"
-                @click="route.name === name ? void(0) : router.push({name: name})"
-                :icon="icon" :label="label" text
-                :severity="route.name === name ? type : 'secondary'"
-                :class="cl" />
+        <Button v-for="{name, icon, label} in endRoutes" :key="name"
+                @click="router.push({name: name})"
+                text :severity="route.name === name ? 'success' : 'secondary'">
+          <i :class="icon"></i>{{ label }}
+        </Button>
       </template>
     </Toolbar>
   </div>
 </template>
+
+<style scoped>
+#app-toolbar {
+  padding: 0.6rem
+}
+</style>

@@ -19,13 +19,13 @@ const filter = (items, s) => {
 </script>
 
 <template>
-  <TopMenu class="p-2" searchable @search="search" />
+  <div>
+    <TopMenu class="p-2" searchable @search="search" />
 
-  <div class="px-3 py-4 m-0 grid flex-wrap justify-content-center column-gap-3 row-gap-5">
-    <BookCard v-for="book in books" :key="book.id" :book="book" />
+    <ScrollPanel style="width: 100%; height: calc(100vh - 80px)">
+      <div class="px-2 py-5 flex flex-wrap justify-center gap-x-6 gap-y-10">
+        <BookCard v-for="book in books" :key="book.id" :book="book" />
+      </div>
+    </ScrollPanel>
   </div>
-
 </template>
-
-<style scoped>
-</style>

@@ -69,30 +69,31 @@ const items = ref([
 </script>
 
 <template>
-  <Panel toggleable :collapsed="true">
-    <template #header>
-      <h2 class="m-0">{{ bookSt.book.title }}</h2>
-    </template>
-    <template #footer>
-      <div class="flex flex-wrap align-items-center justify-content-between gap-3">
-        <div class="flex align-items-center gap-2">
-          <Button @click="dev" icon="pi pi-user" severity="secondary" rounded text></Button>
-          <Button @click="dev" icon="pi pi-bookmark" severity="secondary" rounded text></Button>
+  <div>
+    <Panel toggleable :collapsed="true">
+      <template #header>
+        <div class="text-2xl m-0 p-2">{{ bookSt.book.title }}</div>
+      </template>
+      <template #footer>
+        <div class="flex items-center gap-3">
+          <Button @click="dev" icon="pi pi-user" severity="secondary" rounded text />
+          <Button @click="dev" icon="pi pi-bookmark" severity="secondary" rounded text />
+          <span class="grow"></span>
+          <span>{{ formatDate(bookSt.book.date) }}</span>
         </div>
-        <span class="p-text-secondary">{{ formatDate(bookSt.book.date) }}</span>
+      </template>
+      <template #icons>
+        <button class="p-panel-header-icon p-link mr-4" @click="toggle">
+          <span class="pi pi-cog"></span>
+        </button>
+        <Menu ref="menu" id="config_menu" :model="items" popup />
+      </template>
+      <div class="py-3">{{ bookSt.book.desc }}</div>
+      <div v-if="bookSt.book.tags?.length > 0" class="flex flex-wrap gap-x-2 gap-y-4 py-3">
+        <Chip v-for="tag in bookSt.book.tags" :label="tag" class="text-sm" />
       </div>
-    </template>
-    <template #icons>
-      <button class="p-panel-header-icon p-link mr-2" @click="toggle">
-        <span class="pi pi-cog"></span>
-      </button>
-      <Menu ref="menu" id="config_menu" :model="items" popup />
-    </template>
-    <h5 class="my-3 text-300">{{ bookSt.book.desc }}</h5>
-    <div v-if="bookSt.book.tags?.length > 0">
-      <Chip v-for="tag in bookSt.book.tags" :label="tag" class="text-xs mt-2 mr-2 px-3 pt-1 pb-2" />
-    </div>
-  </Panel>
+    </Panel>
+  </div>
 </template>
 
 <style scoped>

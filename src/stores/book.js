@@ -65,6 +65,7 @@ export const useBookStore = defineStore('book', {
                 expanded: false,
                 order: 0,
                 items: 0,
+                blocks: []
             }
         },
     },

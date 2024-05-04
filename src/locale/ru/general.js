@@ -6,6 +6,7 @@ export default {
     'category': 'Категория',
     'confirm': 'Подтвердить',
     'create-new-book': 'Добавить новую книгу',
+    'add-book': 'Добавить книгу',
     'email': 'Э-почта',
     'name': 'Имя',
     'enter-your-name': 'Напишите ваше имя',
