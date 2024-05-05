@@ -11,14 +11,24 @@ export const useBookStore = defineStore('book', {
         chapters: [],
         chapter: null,
         editing: false,
+        block: null,
     }),
     getters: {},
     actions: {
         findById(bookId) {
             this.book = this.books.find(book => book.id === bookId)
         },
-        getChapters(parentId = null) {
-            return this.book?.chapters?.filter(chapter => chapter.parent === parentId) ?? []
+        getChapters(parentId = null, s = '') {
+            return this.book?.chapters?.filter(chapter => {
+                if(s.length > 0) {
+                    return chapter.parent === parentId && (
+                        chapter.title.match(new RegExp(s, 'i'))
+                        // || chapter.desc.match(new RegExp(s, 'i'))
+                        // || chapter.tags.includes(s)
+                    )
+                }
+                return chapter.parent === parentId
+            }) ?? []
         },
         saveBook(book) {
             book.id = uuid()

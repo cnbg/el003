@@ -5,6 +5,7 @@ import { useBookStore } from '../../../stores/book'
 
 const props = defineProps({
   chapters: {type: Array, default: []},
+  search: {type: String, default: ''},
 })
 
 const toast = useToast()

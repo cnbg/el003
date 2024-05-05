@@ -51,4 +51,10 @@ export default {
     'text': 'Текст',
     'images': 'Изображения',
     'select-chapter-type':'Выберите тип главы',
+    'add-text': 'Добавить текст',
+    'add-image': 'Добавить изображение',
+    'add-video': 'Добавить видео',
+    'enter-text': 'Написать текст',
+    'file-uploaded-successfully': 'Файл успешно загружен',
+    'drag-drop-files-info': 'Перетащите сюда файлы для загрузки',
 }

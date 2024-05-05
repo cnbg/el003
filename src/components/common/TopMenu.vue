@@ -24,7 +24,7 @@ const endRoutes = [
 
 <template>
   <div>
-    <Toolbar id="app-toolbar" class="bg-white shadow dark:bg-gray-900">
+    <Toolbar id="app-toolbar" class="bg-white dark:bg-surface-900">
       <template #start>
         <Button v-for="{name, icon, label, disabled} in startRoutes" :key="name"
                 @click="router.push({name: name})" :disabled="disabled"
@@ -58,6 +58,6 @@ const endRoutes = [
 
 <style scoped>
 #app-toolbar {
-  padding: 0.6rem
+  padding: 0.6rem;
 }
 </style>

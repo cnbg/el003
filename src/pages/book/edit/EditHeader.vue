@@ -32,10 +32,13 @@ const dev = () => {
 
 const confirmDialog = () => {
   confirm.require({
-    message: t('general.are-you-sure-to-delete'),
     header: t('general.confirm'),
-    icon: 'pi pi-exclamation-triangle',
-    class: 'justify-content-between',
+    message: t('general.are-you-sure-to-delete'),
+    icon: 'pi pi-exclamation-triangle mr-4',
+    acceptIcon: 'pi pi-check',
+    rejectIcon: 'pi pi-times',
+    rejectClass: 'p-button-sm',
+    acceptClass: 'p-button-outlined p-button-sm',
     rejectProps: {
       label: t('general.no').toLowerCase(),
       severity: 'secondary',

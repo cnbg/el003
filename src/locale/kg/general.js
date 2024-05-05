@@ -51,4 +51,10 @@ export default {
     'text': 'Текст',
     'images': 'Сүрөттөр',
     'select-chapter-type': 'Бөлүмдүн түрүн тандаңыз',
+    'add-text': 'Текст кошуу',
+    'add-image': 'Сүрөт кошуу',
+    'add-video': 'Видео кошуу',
+    'enter-text': 'Текст жазуу',
+    'file-uploaded-successfully': 'Файл ийгиликтүү жүктөлдү',
+    'drag-drop-files-info': 'Файлдарды жүктөө үчүн бул жерге таштаңыз',
 }

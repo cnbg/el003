@@ -10,7 +10,7 @@ const search = ref('')
       <i class="pi pi-search" />
     </InputIcon>
     <InputText v-model.trim="search"
-               @input="$emit('search', search.value)"
+               @input="$emit('search', search)"
                :placeholder="$t('general.search').concat('...')"
                class="w-full" />
   </IconField>

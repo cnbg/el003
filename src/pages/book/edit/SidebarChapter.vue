@@ -39,19 +39,25 @@ const showChapterDialog = (s = 'new') => {
   <div>
     <Panel>
       <template #header>
-        <div class="w-full flex items-center gap-2">
-          <div class="flex-auto text-lg">{{ $t('general.chapters') }}</div>
-          <Button @click="showChapterDialog"
-                  v-tooltip="$t('general.add-chapter')" icon="pi pi-plus" text plain />
-          <Button v-if="bookSt.chapter"
-                  @click="showChapterDialog('edit')"
-                  v-tooltip="$t('general.edit-chapter')" icon="pi pi-pencil" text plain />
-        </div>
+        <div>{{ $t('general.chapters') }}</div>
+      </template>
+      <template #icons>
+        <button @click="showChapterDialog"
+                class="p-panel-header-icon p-link mr-5"
+                v-tooltip="$t('general.add-chapter')">
+          <i class="pi pi-plus"></i>
+        </button>
+        <button v-if="bookSt.chapter"
+                class="p-panel-header-icon p-link"
+                @click="showChapterDialog('edit')"
+                v-tooltip="$t('general.edit-chapter')">
+          <i class="pi pi-pencil"></i>
+        </button>
       </template>
       <div class="flex flex-col">
         <SearchInput @search="onSearch" />
-        <ScrollPanel class="w-full mt-5" style="height: calc(100vh - 260px)">
-          <EditChapter :chapters="bookSt.getChapters(null)" />
+        <ScrollPanel class="w-full mt-5" style="height: calc(100vh - 245px)">
+          <EditChapter :chapters="bookSt.getChapters(null, search)" :search="search" />
         </ScrollPanel>
       </div>
       <Dialog v-model:visible="chapterDialog" modal :header="$t('general.add-chapter')" class="w-30rem">
