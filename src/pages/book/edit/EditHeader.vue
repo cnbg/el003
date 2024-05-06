@@ -67,6 +67,8 @@ const items = ref([
     },
   },
   {separator: true},
+  {label: t('general.sync-with-server'), icon: 'pi pi-sync', command: () => {}},
+  {separator: true},
   {label: t('general.delete'), icon: 'pi pi-times', command: () => {confirmDialog()}},
 ])
 </script>

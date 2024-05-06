@@ -43,12 +43,12 @@ const showChapterDialog = (s = 'new') => {
       </template>
       <template #icons>
         <button @click="showChapterDialog"
-                class="p-panel-header-icon p-link mr-5"
+                class="p-panel-header-icon p-link"
                 v-tooltip="$t('general.add-chapter')">
           <i class="pi pi-plus"></i>
         </button>
         <button v-if="bookSt.chapter"
-                class="p-panel-header-icon p-link"
+                class="p-panel-header-icon p-link ml-6"
                 @click="showChapterDialog('edit')"
                 v-tooltip="$t('general.edit-chapter')">
           <i class="pi pi-pencil"></i>

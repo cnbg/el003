@@ -54,7 +54,13 @@ export default {
     'add-text': 'Текст кошуу',
     'add-image': 'Сүрөт кошуу',
     'add-video': 'Видео кошуу',
+    'add-model': '3D моделин кошуу',
+    'add-test': 'Тест кошуу',
+    'add-interactive-board': 'Интерактивдүү такта кошуу',
     'enter-text': 'Текст жазуу',
     'file-uploaded-successfully': 'Файл ийгиликтүү жүктөлдү',
     'drag-drop-files-info': 'Файлдарды жүктөө үчүн бул жерге таштаңыз',
+    'send': 'Жиберүү',
+    'download-as-pdf': 'PDF форматында алуу',
+    'sync-with-server': 'Сервер менен синхрондоштуруу'
 }

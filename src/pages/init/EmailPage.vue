@@ -37,25 +37,27 @@ const save = async () => {
 </script>
 
 <template>
-  <div class="w-full h-full flex flex-col items-center justify-center gap-3">
-    <InputGroup class="w-72">
-      <InputGroupAddon><i class="pi pi-user"></i></InputGroupAddon>
-      <InputText v-model.trim="name"
-                 id="name-input"
-                 autofocus
-                 @input="error = ''"
-                 :placeholder="$t('general.enter-your-name')"
-                 @keyup.enter.native="saveName" />
-    </InputGroup>
-    <InputGroup class="w-72">
-      <InputGroupAddon>@</InputGroupAddon>
-      <InputText v-model.trim="email"
-                 id="email-input"
-                 @input="error = ''"
-                 :placeholder="$t('general.enter-your-email')"
-                 @keyup.enter.native="saveEmail" />
-      <Button @click="save" icon="pi pi-check" severity="secondary" />
-    </InputGroup>
-    <div v-if="error" class="lowercase text-red-700">{{ error }}</div>
+  <div class="w-full h-full flex items-center justify-center">
+    <div class="w-96 flex flex-col items-center justify-center gap-3">
+      <InputGroup>
+        <InputGroupAddon><i class="pi pi-user"></i></InputGroupAddon>
+        <InputText v-model.trim="name"
+                   id="name-input"
+                   autofocus
+                   @input="error = ''"
+                   :placeholder="$t('general.enter-your-name')"
+                   @keyup.enter.native="saveName" />
+      </InputGroup>
+      <InputGroup>
+        <InputGroupAddon>@</InputGroupAddon>
+        <InputText v-model.trim="email"
+                   id="email-input"
+                   @input="error = ''"
+                   :placeholder="$t('general.enter-your-email')"
+                   @keyup.enter.native="saveEmail" />
+        <Button @click="save" icon="pi pi-check" severity="secondary" />
+      </InputGroup>
+      <div v-if="error" class="lowercase text-red-700">{{ error }}</div>
+    </div>
   </div>
 </template>

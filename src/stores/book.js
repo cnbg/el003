@@ -39,7 +39,7 @@ export const useBookStore = defineStore('book', {
                 bio: faker.person.bio(),
                 avatar: faker.image.avatar(),
             }
-            book.cover = faker.image.urlLoremFlickr()
+            book.cover = faker.image.urlLoremFlickr({category: 'history'})
             book.pages = faker.string.numeric({length: {min: 2, max: 3}})
             book.chapters = []
 

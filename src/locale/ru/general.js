@@ -54,7 +54,13 @@ export default {
     'add-text': 'Добавить текст',
     'add-image': 'Добавить изображение',
     'add-video': 'Добавить видео',
+    'add-model': 'Добавить 3D модель',
+    'add-test': 'Добавить тест',
+    'add-interactive-board': 'Добавить интерактивную доску',
     'enter-text': 'Написать текст',
     'file-uploaded-successfully': 'Файл успешно загружен',
     'drag-drop-files-info': 'Перетащите сюда файлы для загрузки',
+    'download-as-pdf': 'Скачать в формате PDF',
+    'send': 'Отправить',
+    'sync-with-server': 'Синхронизировать с сервером',
 }

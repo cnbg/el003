@@ -1,5 +1,7 @@
 <script setup>
-import { ref, onMounted } from "vue"
+import 'katex/dist/katex.min.css'
+
+import { onMounted } from "vue"
 
 import { useBookStore } from '../../stores/book'
 

@@ -11,9 +11,12 @@ const {t} = useI18n()
 const toast = useToast()
 const confirm = useConfirm()
 const menu = ref(null)
-const textEditing = ref(false)
+const htmlEditing = ref(false)
 const imageEditing = ref(false)
 const videoEditing = ref(false)
+const modelEditing = ref(false)
+const testEditing = ref(false)
+const boardEditing = ref(false)
 
 const toggle = (event) => {
   menu.value.toggle(event)
@@ -41,15 +44,20 @@ const confirmDialog = () => {
       severity: 'danger',
     },
     accept: async () => {
-      toast.add({severity: 'info', summary: t('general.chapter-deleted'), life: 4000})
+      toast.add({severity: 'info', summary: t('general.successfully-deleted'), life: 4000})
     },
     reject: () => { },
   })
 }
 
-const editText = () => {
+const editHtml = () => {
   bookSt.editing = true
-  textEditing.value = true
+  htmlEditing.value = true
+  imageEditing.value = false
+  videoEditing.value = false
+  modelEditing.value = false
+  testEditing.value = false
+  boardEditing.value = false
   bookSt.block = {
     type: 'html',
     content: '',
@@ -57,7 +65,12 @@ const editText = () => {
 }
 const editImage = () => {
   bookSt.editing = true
+  htmlEditing.value = false
   imageEditing.value = true
+  videoEditing.value = false
+  modelEditing.value = false
+  testEditing.value = false
+  boardEditing.value = false
   bookSt.block = {
     type: 'image',
     content: '',
@@ -65,26 +78,78 @@ const editImage = () => {
 }
 const editVideo = () => {
   bookSt.editing = true
+  htmlEditing.value = false
+  imageEditing.value = false
   videoEditing.value = true
+  modelEditing.value = false
+  testEditing.value = false
+  boardEditing.value = false
   bookSt.block = {
     type: 'video',
     content: '',
   }
 }
-const saveContent = () => {
-  bookSt.editing = false
-  textEditing.value = false
+const editModel = () => {
+  bookSt.editing = true
+  htmlEditing.value = false
   imageEditing.value = false
   videoEditing.value = false
-  bookSt.chapter.blocks.push(bookSt.block)
+  modelEditing.value = true
+  testEditing.value = false
+  boardEditing.value = false
+  bookSt.block = {
+    type: 'model',
+    content: '',
+  }
+}
+const editTest = () => {
+  bookSt.editing = true
+  htmlEditing.value = false
+  imageEditing.value = false
+  videoEditing.value = false
+  modelEditing.value = false
+  testEditing.value = true
+  boardEditing.value = false
+  bookSt.block = {
+    type: 'test',
+    content: '',
+  }
+}
+const editBoard = () => {
+  bookSt.editing = true
+  htmlEditing.value = false
+  imageEditing.value = false
+  videoEditing.value = false
+  modelEditing.value = false
+  testEditing.value = false
+  boardEditing.value = true
+  bookSt.block = {
+    type: 'test',
+    content: '',
+  }
+}
+const saveContent = () => {
+  bookSt.editing = false
+  htmlEditing.value = false
+  imageEditing.value = false
+  videoEditing.value = false
+  modelEditing.value = false
+  testEditing.value = false
+  boardEditing.value = false
+  if(bookSt.block.content.length > 0) {
+    bookSt.chapter.blocks.push(bookSt.block)
+  }
   bookSt.block = null
 }
 
 const items = ref([
-  {label: t('general.add-text'), icon: 'pi pi-file-word', command: () => {editText()}},
+  {label: t('general.add-text'), icon: 'pi pi-file-word', command: () => {editHtml()}},
   {separator: true},
   {label: t('general.add-image'), icon: 'pi pi-image', command: () => {editImage()}},
   {label: t('general.add-video'), icon: 'pi pi-video', command: () => {editVideo()}},
+  {label: t('general.add-model'), icon: 'pi pi-box', command: () => {editModel()}},
+  {label: t('general.add-test'), icon: 'pi pi-list', command: () => {editTest()}},
+  {label: t('general.add-interactive-board'), icon: 'pi pi-window-maximize', command: () => {editBoard()}},
   {separator: true},
   {label: t('general.delete'), icon: 'pi pi-times', command: () => {confirmDialog()}},
 ])
@@ -98,8 +163,9 @@ const items = ref([
       </template>
       <template #icons>
         <div v-if="bookSt.editing">
-          <button class="p-panel-header-icon p-link" @click="saveContent">
+          <button class="p-panel-header-icon p-link flex items-center gap-2" @click="saveContent">
             <span class="pi pi-save"></span>
+            <span class="lowercase">{{ $t('general.save') }}</span>
           </button>
         </div>
         <div v-else>
@@ -110,18 +176,15 @@ const items = ref([
         </div>
       </template>
       <div v-if="bookSt.editing">
-        <HtmlEditor v-if="textEditing === true" />
-        <ImageEditor v-else-if="imageEditing === true" :images="bookSt.chapter" />
+        <HtmlEditor v-if="htmlEditing === true" />
+        <ImageEditor v-else-if="imageEditing === true" :chapter="bookSt.chapter" />
         <VideoEditor v-else-if="videoEditing === true" :chapter="bookSt.chapter" />
+        <ModelEditor v-else-if="modelEditing === true" :chapter="bookSt.chapter" />
+        <TestEditor v-else-if="testEditing === true" :chapter="bookSt.chapter" />
+        <BoardEditor v-else-if="boardEditing === true" :chapter="bookSt.chapter" />
       </div>
       <ScrollPanel v-else class="w-full" style="height: calc(100vh - 186px)">
-        <div class="flex flex-col gap-8">
-          <div v-for="(block, index) in bookSt.chapter.blocks" :key="index">
-            <div v-if="block.type === 'html'" v-html="block.content" class="ql-editor"></div>
-            <ImageViewer v-else-if="block.type === 'image'" :images="block.content" />
-            <VideoViewer v-else-if="block.type === 'video'" :vidoe="block.content" />
-          </div>
-        </div>
+        <ContentViewer :chapter="bookSt.chapter" />
       </ScrollPanel>
     </Panel>
     <Card v-else style="height: calc(100vh - 95px)" />

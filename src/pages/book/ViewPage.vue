@@ -26,11 +26,11 @@ const panelMenuItems = ref([
       router.push({name: 'book-edit', params: {bookId: props.bookId}})
     },
   },
+  {separator: true},
+  {label: t('general.send'), icon: 'pi pi-send', command: () => {},},
+  {separator: true},
   {
-    separator: true,
-  },
-  {
-    label: t('general.export'), icon: 'pi pi-globe', command: () => {
+    label: t('general.download-as-pdf'), icon: 'pi pi-download', command: () => {
       const html = document.querySelector('#html-content').innerHTML
       exportPdf(html)
     },
@@ -39,15 +39,16 @@ const panelMenuItems = ref([
 </script>
 
 <template>
-  <div>
-    <div v-if="bookSt.book" id="html-content" class="py-2 px-4 mx-auto sm:w-full md:w-10 lg:w-9 xl:w-8">
-      <div class="pt-2 flex align-items-start justify-content-between gap-3">
-        <h1 class="m-0">{{ bookSt.book.title }}</h1>
-        <Button @click="toggleMenu" icon="pi pi-cog" text plain class="mt-1" />
+  <div class="md:py-6 md:px-2 ">
+    <div v-if="bookSt.book" id="html-content"
+         class="bg-white p-8 mx-auto sm:w-full md:w-4/5 lg:w-3/4 xl:w-3/5">
+      <div class="flex items-center gap-3">
+        <div class="text-2xl m-0 flex-auto">{{ bookSt.book.title }}</div>
+        <Button @click="toggleMenu" icon="pi pi-cog" text plain />
         <Menu ref="menu" :model="panelMenuItems" popup />
       </div>
       <Divider class="my-5" />
-      <BookChapter v-for="chapter in bookSt.book.chapters" :key="chapter.id" :chapter="chapter" />
+      <ContentViewer v-for="chapter in bookSt.book.chapters" :key="chapter.id" :chapter="chapter" />
     </div>
     <NotFoundPage v-else />
   </div>

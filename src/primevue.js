@@ -41,6 +41,7 @@ import DynamicDialog from 'primevue/dynamicdialog'
 import Editor from 'primevue/editor'
 import Fieldset from 'primevue/fieldset'
 import FileUpload from 'primevue/fileupload'
+import FloatLabel from 'primevue/floatlabel'
 import FocusTrap from 'primevue/focustrap'
 import Galleria from 'primevue/galleria'
 import IconField from 'primevue/iconfield'
@@ -147,6 +148,7 @@ app.component('DynamicDialog', DynamicDialog)
 app.component('Editor', Editor)
 app.component('Fieldset', Fieldset)
 app.component('FileUpload', FileUpload)
+app.component('FloatLabel', FloatLabel)
 app.component('Galleria', Galleria)
 app.component('IconField', IconField)
 app.component('Image', Image)
