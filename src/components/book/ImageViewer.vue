@@ -40,7 +40,7 @@ const imageClick = (index) => {
               containerStyle="width 100%">
       <template #item="slotProps">
         <img :src="slotProps.item.src" alt=""
-             style="height:350px; width:100%; object-fit: contain; display: block" />
+             style="width:100%; min-height: 70vh; object-fit: contain" />
       </template>
       <template #thumbnail="slotProps">
         <div class="grid grid-nogutter justify-content-center">
