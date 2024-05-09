@@ -9,12 +9,13 @@ if (require('electron-squirrel-startup')) {
 const createWindow = () => {
     // Create the browser window.
     const mainWindow = new BrowserWindow({
-        width: 1200,
+        width: 1300,
         height: 800,
         titleBarStyle: 'hidden-inset', // macOS only
         // frame: process.platform === 'darwin',
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
+            //devTools: true,
             devTools: !app.isPackaged,
         },
     })

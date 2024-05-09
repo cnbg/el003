@@ -3,9 +3,9 @@ import bookData from './books.json'
 
 const images = () => {
     const images = []
-    for(let i = 0; i < 5; i++) {
-        const img = faker.image.urlLoremFlickr({category: 'history'})
-        images.push({title: faker.lorem.sentence(), alt: '', src: img, thumb: img})
+        for(let i = 1; i < 10; i++) {
+        const img = '/src/data/images/' + i + '.jpg'
+            images.push({title: faker.lorem.sentence(), alt: '', src: img, thumb: img})
     }
 
     return images

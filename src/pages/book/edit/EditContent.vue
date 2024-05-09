@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { useToast } from 'primevue/usetoast'
 import { useConfirm } from 'primevue/useconfirm'
 import { useBookStore } from '../../../stores/book'
-import HtmlEditor from '../../../components/book/HtmlEditor.vue'
+import ContentEditor from '../../../components/book/ContentEditor.vue'
 
 const bookSt = useBookStore()
 const {t} = useI18n()
@@ -176,12 +176,7 @@ const items = ref([
         </div>
       </template>
       <div v-if="bookSt.editing">
-        <HtmlEditor v-if="htmlEditing === true" />
-        <ImageEditor v-else-if="imageEditing === true" :chapter="bookSt.chapter" />
-        <VideoEditor v-else-if="videoEditing === true" :chapter="bookSt.chapter" />
-        <ModelEditor v-else-if="modelEditing === true" :chapter="bookSt.chapter" />
-        <TestEditor v-else-if="testEditing === true" :chapter="bookSt.chapter" />
-        <BoardEditor v-else-if="boardEditing === true" :chapter="bookSt.chapter" />
+        <ContentEditor />
       </div>
       <ScrollPanel v-else class="w-full" style="height: calc(100vh - 186px)">
         <ContentViewer :chapter="bookSt.chapter" />

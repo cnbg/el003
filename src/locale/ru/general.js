@@ -63,4 +63,5 @@ export default {
     'download-as-pdf': 'Скачать в формате PDF',
     'send': 'Отправить',
     'sync-with-server': 'Синхронизировать с сервером',
+    'change-view-format': 'Изменить формат просмотра',
 }

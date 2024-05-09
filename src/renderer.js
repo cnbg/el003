@@ -4,6 +4,7 @@ import 'primeicons/primeicons.css'
 import app from './primevue'
 
 import BookCard from './components/book/BookCard.vue'
+import ContentEditor from './components/book/ContentEditor.vue'
 import ContentViewer from './components/book/ContentViewer.vue'
 import HtmlEditor from './components/book/HtmlEditor.vue'
 import ImageViewer from './components/book/ImageViewer.vue'
@@ -23,6 +24,7 @@ import ConfirmationDialog from './components/common/ConfirmationDialog.vue'
 import NotFoundPage from './components/error/NotFoundPage.vue'
 
 app.component('BookCard', BookCard)
+app.component('ContentEditor', ContentEditor)
 app.component('ContentViewer', ContentViewer)
 app.component('HtmlEditor', HtmlEditor)
 app.component('ImageViewer', ImageViewer)

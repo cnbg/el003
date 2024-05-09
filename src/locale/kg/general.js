@@ -62,5 +62,6 @@ export default {
     'drag-drop-files-info': 'Файлдарды жүктөө үчүн бул жерге таштаңыз',
     'send': 'Жиберүү',
     'download-as-pdf': 'PDF форматында алуу',
-    'sync-with-server': 'Сервер менен синхрондоштуруу'
+    'sync-with-server': 'Сервер менен синхрондоштуруу',
+    'change-view-format': 'Көрүнүш форматын өзгөртүү',
 }
