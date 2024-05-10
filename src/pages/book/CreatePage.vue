@@ -22,7 +22,7 @@ const book = reactive({
 const save = () => {
   if(book.title) {
     bookSt.saveBook(book)
-    router.push({name: 'book-edit', params: {bookId: book.id}})
+    router.push({name: 'book-list'})
   }
 }
 </script>

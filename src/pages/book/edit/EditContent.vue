@@ -1,15 +1,18 @@
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useToast } from 'primevue/usetoast'
 import { useConfirm } from 'primevue/useconfirm'
 import { useBookStore } from '../../../stores/book'
-import ContentEditor from '../../../components/book/ContentEditor.vue'
+
+const emit = defineEmits(['deleteChapter'])
 
 const bookSt = useBookStore()
 const {t} = useI18n()
 const toast = useToast()
 const confirm = useConfirm()
+const router = useRouter()
 const menu = ref(null)
 const htmlEditing = ref(false)
 const imageEditing = ref(false)
@@ -22,28 +25,19 @@ const toggle = (event) => {
   menu.value.toggle(event)
 }
 
-const dev = () => {
-  toast.add({severity: 'info', summary: t('general.under-development'), life: 4000})
+const goto = (route, params = {}) => {
+  if(bookSt.editing) {
+    toast.add({severity: 'error', summary: t('general.dont-forget-to-save'), life: 4000})
+  } else {
+    router.push({name: route, params: params})
+  }
 }
 
-const confirmDialog = () => {
+const confirmDeleteDialog = () => {
   confirm.require({
-    header: t('general.confirm'),
-    message: t('general.are-you-sure-to-delete'),
-    icon: 'pi pi-exclamation-triangle mr-4',
-    rejectClass: 'p-button-sm',
-    acceptClass: 'p-button-outlined p-button-sm',
-    rejectProps: {
-      label: t('general.no').toLowerCase(),
-      severity: 'secondary',
-      outlined: true,
-      class: 'mr-3',
-    },
-    acceptProps: {
-      label: t('general.yes').toLowerCase(),
-      severity: 'danger',
-    },
-    accept: async () => {
+    group: 'headless',
+    accept: () => {
+      emit('deleteChapter', bookSt.chapter)
       toast.add({severity: 'info', summary: t('general.successfully-deleted'), life: 4000})
     },
     reject: () => { },
@@ -143,15 +137,20 @@ const saveContent = () => {
 }
 
 const items = ref([
-  {label: t('general.add-text'), icon: 'pi pi-file-word', command: () => {editHtml()}},
+  {
+    label: t('general.view-chapter'), icon: 'pi pi-eye', command: () => {
+      goto('book-view', {bookId: bookSt.book.id, chapterId: bookSt.chapter?.id})
+    },
+  },
   {separator: true},
+  {label: t('general.add-text'), icon: 'pi pi-file-word', command: () => {editHtml()}},
   {label: t('general.add-image'), icon: 'pi pi-image', command: () => {editImage()}},
   {label: t('general.add-video'), icon: 'pi pi-video', command: () => {editVideo()}},
   {label: t('general.add-model'), icon: 'pi pi-box', command: () => {editModel()}},
   {label: t('general.add-test'), icon: 'pi pi-list', command: () => {editTest()}},
   {label: t('general.add-interactive-board'), icon: 'pi pi-window-maximize', command: () => {editBoard()}},
   {separator: true},
-  {label: t('general.delete'), icon: 'pi pi-times', command: () => {confirmDialog()}},
+  {label: t('general.delete'), icon: 'pi pi-times', command: () => {confirmDeleteDialog()}},
 ])
 </script>
 
@@ -176,13 +175,19 @@ const items = ref([
         </div>
       </template>
       <div v-if="bookSt.editing">
-        <ContentEditor />
+        <ContentEditor :chapter="bookSt.chapter" />
       </div>
-      <ScrollPanel v-else class="w-full" style="height: calc(100vh - 186px)">
+      <ScrollPanel v-else class="" style="height: calc(100vh - 209px)">
         <ContentViewer :chapter="bookSt.chapter" />
+        <ScrollTop target="parent" :threshold="100" icon="pi pi-arrow-up" />
       </ScrollPanel>
     </Panel>
-    <Card v-else style="height: calc(100vh - 95px)" />
+    <Panel v-else>
+      <template #header>
+        <div>{{ $t('general.select-chapter') }}</div>
+      </template>
+      <div style="height: calc(100vh - 209px)"></div>
+    </Panel>
   </div>
 </template>
 

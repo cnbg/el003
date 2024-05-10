@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { useToast } from 'primevue/usetoast'
 import { useUserStore } from '../stores/user'
 import { useBookStore } from '../stores/book'
 
@@ -30,21 +29,24 @@ const router = createRouter({
             component: BookCreatePage,
         },
         {
-            path: '/book/edit/:bookId',
+            path: '/book/edit/:bookId/:chapterId?',
             name: 'book-edit',
             component: BookEditPage,
             props: true,
             beforeEnter: (to, from) => {
                 const bookSt = useBookStore()
-                bookSt.editing = false
-                bookSt.chapter = null
+                bookSt.clearStore()
             },
         },
         {
-            path: '/book/view/:bookId',
+            path: '/book/view/:bookId/:chapterId?',
             name: 'book-view',
             component: BookViewPage,
             props: true,
+            beforeEnter: (to, from) => {
+                const bookSt = useBookStore()
+                bookSt.clearStore()
+            },
         },
         {
             path: '/user/settings',
@@ -63,7 +65,7 @@ router.beforeEach((to, from) => {
     const userSt = useUserStore()
     userSt.syncLocalStorage()
 
-    if (to.name !== 'home' && (!userSt.name || !userSt.email || !userSt.locale)) return {name: 'home'}
+    if(to.name !== 'home' && (!userSt.name || !userSt.email || !userSt.locale)) return {name: 'home'}
 })
 
 export default router

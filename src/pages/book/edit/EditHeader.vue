@@ -32,25 +32,9 @@ const dev = () => {
 
 const confirmDialog = () => {
   confirm.require({
-    header: t('general.confirm'),
-    message: t('general.are-you-sure-to-delete'),
-    icon: 'pi pi-exclamation-triangle mr-4',
-    acceptIcon: 'pi pi-check',
-    rejectIcon: 'pi pi-times',
-    rejectClass: 'p-button-sm',
-    acceptClass: 'p-button-outlined p-button-sm',
-    rejectProps: {
-      label: t('general.no').toLowerCase(),
-      severity: 'secondary',
-      outlined: true,
-      class: 'mr-3',
-    },
-    acceptProps: {
-      label: t('general.yes').toLowerCase(),
-      severity: 'danger',
-    },
-    accept: async () => {
-      await bookSt.deleteBook(bookSt.book.id)
+    group: 'headless',
+    accept: () => {
+      bookSt.deleteBook(bookSt.book.id)
       toast.add({severity: 'info', summary: t('general.book-deleted'), life: 4000})
       router.push({name: 'book-list'})
     },
@@ -67,7 +51,7 @@ const items = ref([
     },
   },
   {separator: true},
-  {label: t('general.sync-with-server'), icon: 'pi pi-sync', command: () => {}},
+  {label: t('general.sync-with-server'), icon: 'pi pi-sync', command: () => {dev()}},
   {separator: true},
   {label: t('general.delete'), icon: 'pi pi-times', command: () => {confirmDialog()}},
 ])

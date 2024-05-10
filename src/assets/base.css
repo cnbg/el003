@@ -35,20 +35,20 @@
 }
 
 :root {
-    --body-bg: rgb(var(--surface-100));
+    --body-bg: rgb(var(--surface-200));
     --body-text-color: rgb(var(--surface-900));
-    --card-border: 1px solid var(--border-color);
     --card-bg: rgb(var(--surface-0));
-    --border-color: rgb(var(--surface-200));
+    --border-color: rgb(var(--surface-300));
+    --card-border: 1px solid var(--border-color);
 }
 
 :root[class='dark'] {
     --body-bg: rgb(var(--surface-800));
     --body-text-color: rgb(var(--surface-50));
     --toolbar-bg: rgb(var(--surface-900));
-    --card-border: 1px solid transparent;
+    --border-color: rgb(var(--surface-900));
     --card-bg: rgb(var(--surface-800));
-    --border-color: rgba(255, 255, 255, 0.1);
+    --card-border: 1px solid var(--border-color);
 }
 
 html {

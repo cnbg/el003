@@ -1,4 +1,5 @@
 <script setup>
+import { useRouter } from 'vue-router'
 import { useToast } from 'primevue/usetoast'
 import { useI18n } from 'vue-i18n'
 import { useBookStore } from '../../../stores/book'
@@ -8,6 +9,7 @@ const props = defineProps({
   search: {type: String, default: ''},
 })
 
+const router = useRouter()
 const toast = useToast()
 const {t} = useI18n()
 const bookSt = useBookStore()
@@ -17,6 +19,7 @@ const select = (chapter) => {
     toast.add({severity: 'error', summary: t('general.dont-forget-to-save'), life: 4000})
   } else {
     bookSt.chapter = chapter.id === bookSt.chapter?.id ? null : chapter
+    router.push({name: 'book-edit', params: {bookId: bookSt.book.id, chapterId: bookSt.chapter?.id}})
   }
 }
 </script>

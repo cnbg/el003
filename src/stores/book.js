@@ -15,8 +15,12 @@ export const useBookStore = defineStore('book', {
     }),
     getters: {},
     actions: {
-        findById(bookId) {
+        getBook(bookId, chapterId = null) {
             this.book = this.books.find(book => book.id === bookId)
+
+            if(chapterId) {
+                this.chapter = this.book?.chapters?.find(chapter => chapter.id === chapterId)
+            }
         },
         getChapters(parentId = null, s = '') {
             return this.book?.chapters?.filter(chapter => {
@@ -63,6 +67,32 @@ export const useBookStore = defineStore('book', {
                 parent.items++
             }
         },
+        deleteChapter(chapter) {
+            if(chapter) {
+                this.books.map(book => {
+                    book.chapters = book.chapters.filter(ch => ch.id !== chapter.id)
+                    if(book.id === chapter.book_id) {
+                        this.book = book
+                        this.chapters = book.chapters
+                    }
+                })
+
+                this.chapter = null
+                this.editing = false
+                this.block = null
+
+                return true
+            }
+
+            return false
+        },
+        clearStore() {
+            this.book = null
+            this.chapters = []
+            this.chapter = null
+            this.editing = false
+            this.block = null
+        },
         chapterObj() {
             return {
                 id: '',
@@ -75,7 +105,7 @@ export const useBookStore = defineStore('book', {
                 expanded: false,
                 order: 0,
                 items: 0,
-                blocks: []
+                blocks: [],
             }
         },
     },

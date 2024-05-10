@@ -6,7 +6,7 @@ import { ref } from 'vue'
 import { useBookStore } from '../../../stores/book'
 
 const bookSt = useBookStore()
-const chapter = ref(bookSt.chapterObj())
+const chapterObj = ref(bookSt.chapterObj())
 const status = ref('new')
 const search = ref('')
 const chapterDialog = ref(false)
@@ -25,10 +25,10 @@ const addChapter = (chapter) => {
 const showChapterDialog = (s = 'new') => {
   if(s === 'edit' && bookSt.chapter) {
     status.value = 'edit'
-    chapter.value = bookSt.chapter
+    chapterObj.value = bookSt.chapter
   } else {
     status.value = 'new'
-    chapter.value = bookSt.chapterObj()
+    chapterObj.value = bookSt.chapterObj()
   }
 
   chapterDialog.value = true
@@ -56,12 +56,13 @@ const showChapterDialog = (s = 'new') => {
       </template>
       <div class="flex flex-col">
         <SearchInput @search="onSearch" />
-        <ScrollPanel class="w-full mt-5" style="height: calc(100vh - 245px)">
+        <ScrollPanel class="w-full mt-5" style="height: calc(100vh - 275px)">
           <EditChapter :chapters="bookSt.getChapters(null, search)" :search="search" />
+          <ScrollTop target="parent" :threshold="100" icon="pi pi-arrow-up" />
         </ScrollPanel>
       </div>
       <Dialog v-model:visible="chapterDialog" modal :header="$t('general.add-chapter')" class="w-30rem">
-        <EditChapterDialog @save="addChapter" :chapter="chapter" @close="chapterDialog = false" />
+        <EditChapterDialog @save="addChapter" :chapter="chapterObj" @close="chapterDialog = false" />
       </Dialog>
     </Panel>
   </div>

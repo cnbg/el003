@@ -7,6 +7,7 @@ import BookCard from './components/book/BookCard.vue'
 import ContentEditor from './components/book/ContentEditor.vue'
 import ContentViewer from './components/book/ContentViewer.vue'
 import HtmlEditor from './components/book/HtmlEditor.vue'
+import HtmlViewer from './components/book/HtmlViewer.vue'
 import ImageViewer from './components/book/ImageViewer.vue'
 import ImageEditor from './components/book/ImageEditor.vue'
 import ModelViewer from './components/book/ModelViewer.vue'
@@ -27,6 +28,7 @@ app.component('BookCard', BookCard)
 app.component('ContentEditor', ContentEditor)
 app.component('ContentViewer', ContentViewer)
 app.component('HtmlEditor', HtmlEditor)
+app.component('HtmlViewer', HtmlViewer)
 app.component('ImageViewer', ImageViewer)
 app.component('ImageEditor', ImageEditor)
 app.component('ModelViewer', ModelViewer)

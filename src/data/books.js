@@ -1,11 +1,12 @@
 import { faker } from '@faker-js/faker'
 import bookData from './books.json'
+import algoData from './books/algo.json'
 
 const images = () => {
     const images = []
-        for(let i = 1; i < 10; i++) {
+    for(let i = 1; i < 10; i++) {
         const img = '/src/data/images/' + i + '.jpg'
-            images.push({title: faker.lorem.sentence(), alt: '', src: img, thumb: img})
+        images.push({title: faker.lorem.sentence(), alt: '', src: img, thumb: img})
     }
 
     return images
@@ -58,12 +59,14 @@ const fillBooks = () => {
 
         for(let j = 0; j < 5; j++) {
             const ch1 = chapter()
+            ch1.book_id = book.id
             ch1.order = j
             ch1.items = 4
             book.chapters.push(ch1)
 
             for(let k = 0; k < ch1.items; k++) {
                 const ch2 = chapter()
+                ch2.book_id = book.id
                 ch2.parent = ch1.id
                 ch2.order = k
 
@@ -79,6 +82,9 @@ const fillBooks = () => {
 // fillBooks()
 // console.log(books)
 
-const books = bookData
+const books = [
+    algoData,
+    ...bookData,
+]
 
 export default books

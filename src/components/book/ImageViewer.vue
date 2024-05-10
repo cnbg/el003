@@ -6,47 +6,36 @@ defineProps({
 })
 
 const activeIndex = ref(0)
-const displayCustom = ref(false)
-const responsiveOptions = ref([
-  {breakpoint: '1366px', numVisible: 5},
-  {breakpoint: '1024px', numVisible: 4},
-  {breakpoint: '768px', numVisible: 3},
-  {breakpoint: '560px', numVisible: 2},
-  {breakpoint: '320px', numVisible: 1},
-])
+const displayGallery = ref(false)
 const imageClick = (index) => {
   activeIndex.value = index
-  displayCustom.value = true
+  displayGallery.value = true
 }
 </script>
 
 <template>
   <div>
-    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4">
       <img v-for="(image, index) in images" :key="index"
            :src="image.src"
            @click="imageClick(index)"
-           alt="" class="object-cover" />
+           alt="" class="object-cover aspect-video" />
     </div>
     <Galleria :value="images"
               v-model:activeIndex="activeIndex"
-              v-model:visible="displayCustom"
+              v-model:visible="displayGallery"
               :fullScreen="true"
-              :responsiveOptions="responsiveOptions"
               :showItemNavigators="images.length > 1"
               :showItemNavigatorsOnHover="images.length > 1"
               :showThumbnails="images.length > 1"
               :numVisible="4" :circular="images.length > 1"
               containerStyle="width 100%">
       <template #item="slotProps">
-        <img :src="slotProps.item.src" alt=""
-             style="width:100%; min-height: 70vh; max-height: 90vh; object-fit: contain" />
+        <img :src="slotProps.item.src" alt="" class="object-contain aspect-video"
+             style="width: calc(85vw); height: calc(70vh)" />
       </template>
       <template #thumbnail="slotProps">
-        <div class="grid grid-nogutter justify-content-center">
-          <img :src="slotProps.item.thumb" alt=""
-               style="height: 90px; width: 100%; object-fit: cover; display: block" />
-        </div>
+          <img :src="slotProps.item.thumb" alt="" class="object-cover px-2 aspect-video" />
       </template>
       <template #caption="slotProps">
         <div v-if="slotProps.item.title">
