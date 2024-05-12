@@ -24,9 +24,10 @@ const router = createRouter({
             component: BookListPage,
         },
         {
-            path: '/book/create',
+            path: '/book/create/:bookId?',
             name: 'book-create',
             component: BookCreatePage,
+            props: true,
         },
         {
             path: '/book/edit/:bookId/:chapterId?',

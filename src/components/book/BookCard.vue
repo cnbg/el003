@@ -7,31 +7,29 @@ const props = defineProps({
 
 const router = useRouter()
 
-const chapterId = props.book.chapters[0]?.id
 const openBookEdit = () => {
   router.push({
     name: 'book-edit', params: {
       bookId: props.book.id,
-      chapterId: chapterId,
     },
   })
 }
 </script>
 
 <template>
-  <Card @click="openBookEdit"
-        class="w-80 cursor-pointer overflow-hidden hover:shadow-lg hover:shadow-surface-300 dark:hover:shadow-surface-700">
+  <Card class="w-80 overflow-hidden hover:shadow-lg hover:shadow-surface-300 dark:hover:shadow-surface-700">
     <template #header>
-      <img alt="" :src="book.cover" class="h-72 w-full" style="object-fit: cover" />
+      <img @click="openBookEdit" alt="" :src="book.cover" class="h-96 cursor-pointer w-full object-cover" />
     </template>
     <template #title>
-      <div>{{ book.title }}</div>
+      <div @click="openBookEdit" class="cursor-pointer">{{ book.title }}</div>
     </template>
     <template #subtitle>
-      <div>{{ book.author.name }}</div>
-    </template>
-    <template #content>
-      <div v-html="book.desc"></div>
+      <div class="flex justify-between items-start gap-3">
+        <span>{{ book.author.name }}</span>
+        <i @click="router.push({name: 'book-create', params: {bookId: book.id}})"
+           class="flex-none pi pi-pencil cursor-pointer mt-1" v-tooltip.top="$t('general.edit')" />
+      </div>
     </template>
     <template #footer>
       <div v-if="book.tags.length > 0" class="flex flex-wrap gap-x-2 gap-y-3">

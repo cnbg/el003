@@ -6,32 +6,24 @@ import { ref } from 'vue'
 import { useBookStore } from '../../../stores/book'
 
 const bookSt = useBookStore()
-const chapterObj = ref(bookSt.chapterObj())
-const status = ref('new')
-const search = ref('')
-const chapterDialog = ref(false)
+const chapter = ref({})
+const showEditDialog = ref(false)
 
-const onSearch = (s) => {
-  search.value = s
+const addChapterDialog = () => {
+  chapter.value = bookSt.chapterObj({
+    parent: bookSt.chapter?.id ?? null
+  })
+  showEditDialog.value = true
 }
-
-const addChapter = (chapter) => {
-  if(status.value === 'new') {
-    bookSt.addChapter(chapter)
-  }
-  chapterDialog.value = false
+const editChapterDialog = () => {
+  chapter.value = bookSt.chapter
+  showEditDialog.value = true
 }
+const onCloseDialog = (ch = null) => {
+  ch.id ? bookSt.updateChapter(ch) : bookSt.saveChapter(ch)
 
-const showChapterDialog = (s = 'new') => {
-  if(s === 'edit' && bookSt.chapter) {
-    status.value = 'edit'
-    chapterObj.value = bookSt.chapter
-  } else {
-    status.value = 'new'
-    chapterObj.value = bookSt.chapterObj()
-  }
-
-  chapterDialog.value = true
+  chapter.value = {}
+  showEditDialog.value = false
 }
 </script>
 
@@ -42,27 +34,26 @@ const showChapterDialog = (s = 'new') => {
         <div>{{ $t('general.chapters') }}</div>
       </template>
       <template #icons>
-        <button @click="showChapterDialog"
+        <button @click="addChapterDialog"
                 class="p-panel-header-icon p-link"
                 v-tooltip="$t('general.add-chapter')">
           <i class="pi pi-plus"></i>
         </button>
         <button v-if="bookSt.chapter"
+                @click="editChapterDialog"
                 class="p-panel-header-icon p-link ml-6"
-                @click="showChapterDialog('edit')"
                 v-tooltip="$t('general.edit-chapter')">
           <i class="pi pi-pencil"></i>
         </button>
       </template>
       <div class="flex flex-col">
-        <SearchInput @search="onSearch" />
-        <ScrollPanel class="w-full mt-5" style="height: calc(100vh - 275px)">
-          <EditChapter :chapters="bookSt.getChapters(null, search)" :search="search" />
+        <ScrollPanel class="w-full" style="height: calc(100vh - 210px)">
+          <EditChapter :chapters="bookSt.getChapters(null)" />
           <ScrollTop target="parent" :threshold="100" icon="pi pi-arrow-up" />
         </ScrollPanel>
       </div>
-      <Dialog v-model:visible="chapterDialog" modal :header="$t('general.add-chapter')" class="w-30rem">
-        <EditChapterDialog @save="addChapter" :chapter="chapterObj" @close="chapterDialog = false" />
+      <Dialog v-model:visible="showEditDialog" modal :header="$t('general.add-chapter')" class="w-30rem">
+        <EditChapterDialog :chapter="chapter" @close="onCloseDialog" />
       </Dialog>
     </Panel>
   </div>

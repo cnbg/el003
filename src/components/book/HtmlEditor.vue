@@ -26,7 +26,6 @@ Quill.register("modules/imageResize", ImageResize)
 Quill.register('modules/videoResize', VideoResize)
 
 const props = defineProps(['content'])
-const emit = defineEmits(['updated'])
 
 onMounted(() => {
   const quill = new Quill('#quill-editor', {
@@ -43,7 +42,7 @@ onMounted(() => {
   quill.setHTML(props.content)
 
   quill.on('text-change', (delta, oldDelta, source) => {
-    emit('updated', quill.getSemanticHTML())
+    //quill.getSemanticHTML()
   })
 })
 </script>

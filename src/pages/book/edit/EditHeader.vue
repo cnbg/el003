@@ -42,6 +42,11 @@ const confirmDialog = () => {
   })
 }
 
+const syncToServe = () => {
+  console.log(bookSt.book)
+  toast.add({severity: 'info', summary: t('general.under-development'), life: 4000})
+}
+
 const items = ref([
   {label: t('general.book-list'), icon: 'pi pi-list', command: () => {goto('book-list')}},
   {separator: true},
@@ -51,7 +56,7 @@ const items = ref([
     },
   },
   {separator: true},
-  {label: t('general.sync-with-server'), icon: 'pi pi-sync', command: () => {dev()}},
+  {label: t('general.sync-with-server'), icon: 'pi pi-sync', command: () => {syncToServe()}},
   {separator: true},
   {label: t('general.delete'), icon: 'pi pi-times', command: () => {confirmDialog()}},
 ])

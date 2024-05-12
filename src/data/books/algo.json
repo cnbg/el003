@@ -19,25 +19,6 @@
   "pages": "686",
   "chapters": [
     {
-      "id": "28afe551-7d9c-40fd-bb7d-a6d023432de8b7",
-      "parent": null,
-      "book_id": "8ccf930b-90a4-430a-bf64-49f61690456546",
-      "title": "Мукаба",
-      "desc": "",
-      "tags": [],
-      "date": "2024-05-05T18:45:51.977Z",
-      "pages": "1",
-      "expanded": false,
-      "order": 0,
-      "items": 0,
-      "blocks": [
-        {
-          "type": "html",
-          "content": "<img src='/src/data/images/mukaba-informatika-6klass.jpg' class='w-full'/>"
-        }
-      ]
-    },
-    {
       "id": "28afe551-7d9c-40fd-bb7d-a6d0b58de8b7",
       "parent": null,
       "book_id": "8ccf930b-90a4-430a-bf64-49f61690456546",

@@ -1,16 +1,14 @@
 import { defineStore } from 'pinia'
 import { v4 as uuid } from 'uuid'
-import { faker } from '@faker-js/faker'
 
 import books from '../data/books'
 
 export const useBookStore = defineStore('book', {
     state: () => ({
+        editing: false,
         books: books,
         book: null,
-        chapters: [],
         chapter: null,
-        editing: false,
         block: null,
     }),
     getters: {},
@@ -38,43 +36,51 @@ export const useBookStore = defineStore('book', {
             book.id = uuid()
             book.date = new Date()
             book.author = {
+                phone: '',
+                bio: '',
+                avatar: '',
                 ...book.author,
-                phone: faker.phone.number(),
-                bio: faker.person.bio(),
-                avatar: faker.image.avatar(),
             }
-            book.cover = faker.image.urlLoremFlickr({category: 'history'})
-            book.pages = faker.string.numeric({length: {min: 2, max: 3}})
+            book.pages = 0
             book.chapters = []
 
             this.books.push(book)
         },
+        updateBook(book) {
+            this.books.map(b => {
+                return b.id === book.id ? book : b
+            })
+        },
         deleteBook(bookId) {
             this.books = this.books.filter(book => book.id !== bookId)
         },
-        addChapter(chapter) {
-            if(this.book) {
-                chapter.id = uuid()
-                chapter.parent = this.chapter?.id ?? null
-                chapter.date = new Date()
-                this.book.chapters?.push(chapter)
-                this.calcChapterItems(chapter)
-            }
-        },
-        calcChapterItems(chapter) {
+        saveChapter(chapter) {
+            this.book?.chapters?.push({
+                ...chapter,
+                ...{
+                    id: uuid(),
+                    date: new Date(),
+                },
+            })
+
             if(chapter.parent) {
-                const parent = this.book.chapters?.find(ch => ch.id === chapter.parent)
-                parent.items++
+                this.book?.chapters?.map(ch => {
+                    if(ch.id === chapter.parent) ch.items++
+                    return ch
+                })
             }
         },
-        deleteChapter(chapter) {
-            if(chapter) {
+        updateChapter(chapter) {
+            this.book?.chapters?.map(ch => {
+                return ch.id === chapter.id ? chapter : ch
+            })
+        },
+        deleteChapter() {
+            if(this.book && this.chapter) {
+                this.book.chapters = this.book.chapters.filter(ch => ch.id !== this.chapter.id)
+                this.chapter = null
                 this.books.map(book => {
-                    book.chapters = book.chapters.filter(ch => ch.id !== chapter.id)
-                    if(book.id === chapter.book_id) {
-                        this.book = book
-                        this.chapters = book.chapters
-                    }
+                    return book.id === this.book.id ? this.book : book
                 })
 
                 this.chapter = null
@@ -88,24 +94,26 @@ export const useBookStore = defineStore('book', {
         },
         clearStore() {
             this.book = null
-            this.chapters = []
             this.chapter = null
             this.editing = false
             this.block = null
         },
-        chapterObj() {
+        chapterObj(obj) {
             return {
-                id: '',
-                parent: null,
-                title: '',
-                desc: '',
-                tags: [],
-                date: null,
-                pages: 0,
-                expanded: false,
-                order: 0,
-                items: 0,
-                blocks: [],
+                ...{
+                    id: '',
+                    parent: null,
+                    title: '',
+                    desc: '',
+                    tags: [],
+                    date: null,
+                    pages: 0,
+                    expanded: false,
+                    order: 0,
+                    items: 0,
+                    blocks: [],
+                },
+                ...obj,
             }
         },
     },

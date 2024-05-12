@@ -18,7 +18,13 @@ const select = (chapter) => {
   if(bookSt.editing) {
     toast.add({severity: 'error', summary: t('general.dont-forget-to-save'), life: 4000})
   } else {
-    bookSt.chapter = chapter.id === bookSt.chapter?.id ? null : chapter
+    if(chapter.id === bookSt.chapter?.id) {
+      bookSt.chapter = null
+    } else {
+      bookSt.chapter = chapter
+      bookSt.chapter.expanded = true
+    }
+
     router.push({name: 'book-edit', params: {bookId: bookSt.book.id, chapterId: bookSt.chapter?.id}})
   }
 }

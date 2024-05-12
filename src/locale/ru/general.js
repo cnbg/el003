@@ -70,4 +70,5 @@ export default {
     'add-table': 'Добавить таблицу',
     'paged-reading': 'Постраничное чтение',
     'continuous-reading': 'Непрерывное чтение',
+    'select-cover': 'Выберите обложку',
 }

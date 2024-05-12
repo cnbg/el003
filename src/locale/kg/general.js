@@ -70,4 +70,5 @@ export default {
     'add-table': 'Таблица кошуу',
     'paged-reading': 'Барак форматында окуу',
     'continuous-reading': 'Үзгүлтүксүз окуу',
+    'select-cover': 'Мукаба тандоо',
 }

@@ -1,14 +1,15 @@
-const {app, BrowserWindow} = require('electron')
+const {app, BrowserWindow, nativeTheme} = require('electron/main')
 const path = require('node:path')
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
-if (require('electron-squirrel-startup')) {
+if(require('electron-squirrel-startup')) {
     app.quit()
 }
 
 const createWindow = () => {
     // Create the browser window.
     const mainWindow = new BrowserWindow({
+        backgroundColor: nativeTheme.shouldUseDarkColors ? '#333' : '#fff',
         width: 1300,
         height: 800,
         titleBarStyle: 'hidden-inset', // macOS only
@@ -21,7 +22,7 @@ const createWindow = () => {
     })
 
     // and load the index.html of the app.
-    if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
+    if(MAIN_WINDOW_VITE_DEV_SERVER_URL) {
         mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL)
     } else {
         mainWindow.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`))
@@ -40,7 +41,7 @@ app.whenReady().then(() => {
     // On OS X it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     app.on('activate', () => {
-        if (BrowserWindow.getAllWindows().length === 0) {
+        if(BrowserWindow.getAllWindows().length === 0) {
             createWindow()
         }
     })
