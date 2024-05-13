@@ -27,12 +27,12 @@ const chapter = () => {
         order: 0,
         items: 0,
         blocks: [
-            {type: 'html', content: faker.lorem.paragraphs({min: 2, max: 5})},
-            {type: 'image', content: images()},
-            {type: 'html', content: faker.lorem.paragraphs({min: 2, max: 5})},
-            {type: 'html', content: faker.lorem.paragraphs({min: 2, max: 5})},
-            {type: 'html', content: faker.lorem.paragraphs({min: 2, max: 5})},
-            {type: 'image', content: images()},
+            {id: faker.string.uuid(), type: 'html', content: faker.lorem.paragraphs({min: 2, max: 5})},
+            {id: faker.string.uuid(), type: 'image', content: images()},
+            {id: faker.string.uuid(), type: 'html', content: faker.lorem.paragraphs({min: 2, max: 5})},
+            {id: faker.string.uuid(), type: 'html', content: faker.lorem.paragraphs({min: 2, max: 5})},
+            {id: faker.string.uuid(), type: 'html', content: faker.lorem.paragraphs({min: 2, max: 5})},
+            {id: faker.string.uuid(), type: 'image', content: images()},
         ],
     }
 }

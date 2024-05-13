@@ -5,20 +5,34 @@ import books from '../data/books'
 
 export const useBookStore = defineStore('book', {
     state: () => ({
-        editing: false,
         books: books,
         book: null,
         chapter: null,
         block: null,
+        editing: false,
     }),
     getters: {},
     actions: {
         getBook(bookId, chapterId = null) {
-            this.book = this.books.find(book => book.id === bookId)
+            this.book = this.books?.find(book => book.id === bookId)
 
             if(chapterId) {
                 this.chapter = this.book?.chapters?.find(chapter => chapter.id === chapterId)
+                this.expandChapter(this.chapter)
             }
+        },
+        expandChapter(chapter) {
+            this.book?.chapters?.find(ch => {
+                if(ch.id === chapter?.parent) {
+                    ch.expanded = true
+                    if(ch.parent)
+                        this.expandChapter(ch)
+                    else
+                        return true
+                }
+
+                return false
+            })
         },
         getChapters(parentId = null, s = '') {
             return this.book?.chapters?.filter(chapter => {
@@ -44,12 +58,10 @@ export const useBookStore = defineStore('book', {
             book.pages = 0
             book.chapters = []
 
-            this.books.push(book)
+            this.books?.push(book)
         },
         updateBook(book) {
-            this.books.map(b => {
-                return b.id === book.id ? book : b
-            })
+            this.books?.map(b => b.id === book.id ? book : b)
         },
         deleteBook(bookId) {
             this.books = this.books.filter(book => book.id !== bookId)
@@ -63,7 +75,7 @@ export const useBookStore = defineStore('book', {
                 },
             })
 
-            if(chapter.parent) {
+            if(chapter?.parent) {
                 this.book?.chapters?.map(ch => {
                     if(ch.id === chapter.parent) ch.items++
                     return ch
@@ -71,17 +83,14 @@ export const useBookStore = defineStore('book', {
             }
         },
         updateChapter(chapter) {
-            this.book?.chapters?.map(ch => {
-                return ch.id === chapter.id ? chapter : ch
-            })
+            this.chapter = chapter
+            this.book.chapters = this.book.chapters?.map(ch => ch.id === chapter.id ? chapter : ch)
+            this.updateBook(this.book)
         },
         deleteChapter() {
             if(this.book && this.chapter) {
                 this.book.chapters = this.book.chapters.filter(ch => ch.id !== this.chapter.id)
-                this.chapter = null
-                this.books.map(book => {
-                    return book.id === this.book.id ? this.book : book
-                })
+                this.updateBook(this.book)
 
                 this.chapter = null
                 this.editing = false
@@ -95,6 +104,50 @@ export const useBookStore = defineStore('book', {
         clearStore() {
             this.book = null
             this.chapter = null
+            this.block = null
+            this.editing = false
+        },
+        saveBlock(content = '') {
+            if(content.length > 0 || content.path.length > 0) {
+                this.chapter?.blocks?.push({
+                    ...this.block,
+                    ...{
+                        id: uuid(),
+                        content: content,
+                    },
+                })
+
+                this.updateChapter(this.chapter)
+            }
+            this.block = null
+            this.editing = false
+        },
+        updateBlock(content = '') {
+            // this.chapter?.blocks?.push({
+            //     ...this.block,
+            //     ...{
+            //         id: uuid(),
+            //         content: content,
+            //     },
+            // })
+            //
+            // this.updateChapter(this.chapter)
+
+            this.block = null
+            this.editing = false
+        },
+        setEditor(type = 'html') {
+            this.editing = true
+            this.block = {
+                ...{
+                    id: '',
+                    type: type,
+                    content: '',
+                },
+                ...this.block,
+            }
+        },
+        closeEditor() {
             this.editing = false
             this.block = null
         },

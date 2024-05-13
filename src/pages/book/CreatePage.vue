@@ -65,7 +65,7 @@ const customBase64Uploader = async (event) => {
 
     <div class="flex flex-wrap justify-between gap-5">
       <FileUpload mode="basic" name="cover" accept="image/*" :maxFileSize="90000000"
-                  :auto="true" customUpload @uploader="customBase64Uploader"
+                  auto customUpload @uploader="customBase64Uploader"
                   :chooseLabel="$t('general.select-cover')" />
 
       <Button @click="save" icon="pi pi-save"

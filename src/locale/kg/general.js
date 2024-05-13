@@ -71,4 +71,6 @@ export default {
     'paged-reading': 'Барак форматында окуу',
     'continuous-reading': 'Үзгүлтүксүз окуу',
     'select-cover': 'Мукаба тандоо',
+    'select-file': 'Файл тандоо',
+    'have-you-saved-your-work-before-closing': 'Жабуу алдында жумушуңузду сактап койдуңуз беле?',
 }

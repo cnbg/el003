@@ -9,17 +9,17 @@ const bookSt = useBookStore()
 const chapter = ref({})
 const showEditDialog = ref(false)
 
-const addChapterDialog = () => {
+const addChapterBtn = () => {
   chapter.value = bookSt.chapterObj({
-    parent: bookSt.chapter?.id ?? null
+    parent: bookSt.chapter?.id ?? null,
   })
   showEditDialog.value = true
 }
-const editChapterDialog = () => {
-  chapter.value = bookSt.chapter
+const editChapterBtn = () => {
+  chapter.value = {...bookSt.chapter}
   showEditDialog.value = true
 }
-const onCloseDialog = (ch = null) => {
+const onCloseDialog = (ch = {}) => {
   ch.id ? bookSt.updateChapter(ch) : bookSt.saveChapter(ch)
 
   chapter.value = {}
@@ -34,13 +34,13 @@ const onCloseDialog = (ch = null) => {
         <div>{{ $t('general.chapters') }}</div>
       </template>
       <template #icons>
-        <button @click="addChapterDialog"
+        <button @click="addChapterBtn"
                 class="p-panel-header-icon p-link"
                 v-tooltip="$t('general.add-chapter')">
           <i class="pi pi-plus"></i>
         </button>
         <button v-if="bookSt.chapter"
-                @click="editChapterDialog"
+                @click="editChapterBtn"
                 class="p-panel-header-icon p-link ml-6"
                 v-tooltip="$t('general.edit-chapter')">
           <i class="pi pi-pencil"></i>

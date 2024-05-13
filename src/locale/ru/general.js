@@ -71,4 +71,6 @@ export default {
     'paged-reading': 'Постраничное чтение',
     'continuous-reading': 'Непрерывное чтение',
     'select-cover': 'Выберите обложку',
+    'select-file': 'Выберите file',
+    'have-you-saved-your-work-before-closing': 'Вы сохранили свою работу перед закрытием?',
 }

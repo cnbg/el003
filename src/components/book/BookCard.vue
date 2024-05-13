@@ -19,7 +19,7 @@ const openBookEdit = () => {
 <template>
   <Card class="w-80 overflow-hidden hover:shadow-lg hover:shadow-surface-300 dark:hover:shadow-surface-700">
     <template #header>
-      <img @click="openBookEdit" alt="" :src="book.cover" class="h-96 cursor-pointer w-full object-cover" />
+      <img v-if="book.cover" @click="openBookEdit" alt="" :src="book.cover" class="h-96 cursor-pointer w-full object-cover" />
     </template>
     <template #title>
       <div @click="openBookEdit" class="cursor-pointer">{{ book.title }}</div>

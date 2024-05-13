@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, ref } from 'vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useToast } from 'primevue/usetoast'
@@ -11,10 +11,10 @@ const {t} = useI18n()
 const toast = useToast()
 const confirm = useConfirm()
 const router = useRouter()
-const menu = ref(null)
+const editMenu = ref(null)
 
-const toggle = (event) => {
-  menu.value.toggle(event)
+const toggleEditMenu = (event) => {
+  editMenu.value.toggle(event)
 }
 
 const goto = (route, params = {}) => {
@@ -29,26 +29,27 @@ const confirmDeleteDialog = () => {
   confirm.require({
     group: 'headless',
     accept: () => {
-      toast.add({severity: 'info', summary: t('general.successfully-deleted'), life: 4000})
+      if(bookSt.deleteChapter()) {
+        toast.add({severity: 'info', summary: t('general.successfully-deleted'), life: 4000})
+      }
     },
     reject: () => { },
   })
 }
 
-const editor = reactive({
-  html: false,
-  image: false,
-  video: false,
-  model: false,
-  test: false,
-})
+const confirmCloseDialog = () => {
+  confirm.require({
+    group: 'headless',
+    message: t('general.have-you-saved-your-work-before-closing'),
+    accept: () => {
+      bookSt.closeEditor()
+    },
+    reject: () => { },
+  })
+}
 
-const saveContent = () => {
-  bookSt.editing = false
-  if(bookSt.block.content.length > 0) {
-    bookSt.chapter.blocks.push(bookSt.block)
-  }
-  bookSt.block = null
+const dev = () => {
+  toast.add({severity: 'info', summary: t('general.under-development'), life: 4000})
 }
 
 const items = ref([
@@ -58,11 +59,11 @@ const items = ref([
     },
   },
   {separator: true},
-  {label: t('general.add-text'), icon: 'pi pi-file-word', command: () => {}},
-  {label: t('general.add-image'), icon: 'pi pi-image', command: () => {}},
-  {label: t('general.add-video'), icon: 'pi pi-video', command: () => {}},
-  {label: t('general.add-model'), icon: 'pi pi-box', command: () => {}},
-  {label: t('general.add-test'), icon: 'pi pi-list', command: () => {}},
+  {label: t('general.add-text'), icon: 'pi pi-file-word', command: () => {bookSt.setEditor('html')}},
+  {label: t('general.add-image'), icon: 'pi pi-image', command: () => {bookSt.setEditor('image')}},
+  {label: t('general.add-video'), icon: 'pi pi-video', command: () => {bookSt.setEditor('video')}},
+  {label: t('general.add-model'), icon: 'pi pi-box', command: () => {dev()}},
+  {label: t('general.add-test'), icon: 'pi pi-list', command: () => {dev()}},
   {separator: true},
   {label: t('general.delete'), icon: 'pi pi-times', command: () => {confirmDeleteDialog()}},
 ])
@@ -75,32 +76,31 @@ const items = ref([
         <div class="m-0">{{ bookSt.chapter.title }}</div>
       </template>
       <template #icons>
-        <div v-if="bookSt.editing">
-          <button class="p-panel-header-icon p-link flex items-center gap-2" @click="saveContent">
-            <span class="pi pi-save"></span>
-            <span class="lowercase">{{ $t('general.save') }}</span>
+        <div v-show="bookSt.editing">
+          <button @click="confirmCloseDialog" class="p-panel-header-icon p-link">
+            <span class="pi pi-times"></span>
           </button>
         </div>
-        <div v-else>
-          <button class="p-panel-header-icon p-link" @click="toggle">
+        <div v-show="!bookSt.editing">
+          <button class="p-panel-header-icon p-link" @click="toggleEditMenu">
             <span class="pi pi-cog"></span>
           </button>
-          <Menu ref="menu" id="config_menu" :model="items" popup />
+          <Menu ref="editMenu" :model="items" popup />
         </div>
       </template>
       <div v-if="bookSt.editing">
-        <ContentEditor :chapter="bookSt.chapter" />
+        <ContentEditor />
       </div>
       <ScrollPanel v-else class="" style="height: calc(100vh - 210px)">
-        <ContentViewer :chapter="bookSt.chapter" />
+        <ContentViewer />
         <ScrollTop target="parent" :threshold="100" icon="pi pi-arrow-up" />
       </ScrollPanel>
     </Panel>
     <Panel v-else>
       <template #header>
-        <div> &nbsp; </div>
+        <div> &nbsp;</div>
       </template>
-      <div style="height: calc(100vh - 210px)" class="p-8">
+      <div v-if="bookSt.book.cover" style="height: calc(100vh - 210px)" class="p-8">
         <img :src="bookSt.book.cover" class="w-full h-full object-contain" />
       </div>
     </Panel>

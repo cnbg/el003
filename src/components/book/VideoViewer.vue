@@ -1,8 +1,8 @@
 <template>
   <video-player
       class="video-player vjs-big-play-centered"
-      :src="video.src"
-      poster="/images/poster/oceans.png"
+      :src="video.path"
+      poster=""
       crossorigin="anonymous"
       playsinline
       controls
