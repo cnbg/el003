@@ -1,11 +1,8 @@
 <script setup>
-import { reactive, ref } from 'vue'
-import { useToast } from 'primevue/usetoast'
-import { useI18n } from 'vue-i18n'
+import { reactive } from 'vue'
+
 import { useBookStore } from '../../stores/book'
 
-const toast = useToast()
-const {t} = useI18n()
 const bookSt = useBookStore()
 const imgObj = {
   title: '',
@@ -13,7 +10,7 @@ const imgObj = {
   src: '',
   thumb: '',
 }
-const image = ref(imgObj)
+
 const images = reactive([{...imgObj}])
 
 const fileUploader = async (event, image) => {
@@ -31,7 +28,6 @@ const fileUploader = async (event, image) => {
 
 const save = () => {
   bookSt.block?.id ? bookSt.updateBlock(images || '') : bookSt.saveBlock(images || '')
-  toast.add({severity: 'info', summary: t('general.file-uploaded-successfully'), life: 4000})
 }
 const addNewBlock = () => {
   images.push({...imgObj})
@@ -40,7 +36,7 @@ const addNewBlock = () => {
 
 <template>
   <div>
-    <ScrollPanel style="height: calc(100vh - 220px)">
+    <ScrollPanel style="height: calc(100vh - 260px)">
       <div class="flex flex-wrap justify-between gap-5">
         <Button @click="addNewBlock" icon="pi pi-plus" text severity="success" />
 
@@ -50,11 +46,11 @@ const addNewBlock = () => {
 
       <div v-for="(image, index) in images" :key="index" class="mt-10 flex flex-col gap-5">
         <div>
-          <label for="title">{{ t('general.enter-title') }}</label>
+          <label for="title">{{ $t('general.enter-title') }}</label>
           <InputText v-model.trim="image.title" id="title" class="w-full" />
         </div>
         <div>
-          <label for="description">{{ t('general.enter-description') }}</label>
+          <label for="description">{{ $t('general.enter-description') }}</label>
           <Textarea v-model.trim="image.alt" id="description" class="w-full h-15" />
         </div>
         <FileUpload mode="basic" name="cover" accept="image/*" :maxFileSize="5000000"

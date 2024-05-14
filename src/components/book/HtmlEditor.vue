@@ -2,19 +2,17 @@
 import 'quill/dist/quill.snow.css'
 import 'katex/dist/katex.min.css'
 
+const props = defineProps(['html'])
+
 import { onMounted, onUnmounted, ref } from 'vue'
 import Quill from 'quill'
 import katex from 'katex'
 import ImageResize from 'quill-image-resize-vue'
 import VideoResize from 'quill-video-resize-module'
-import { useToast } from 'primevue/usetoast'
-import { useI18n } from 'vue-i18n'
 import { useBookStore } from '../../stores/book'
 
-const toast = useToast()
-const {t} = useI18n()
 const bookSt = useBookStore()
-const content = ref(bookSt.block.content || '')
+const content = ref(props.html || bookSt.block?.content || '')
 
 window.katex = katex
 
@@ -38,7 +36,6 @@ Quill.register('modules/videoResize', VideoResize)
 
 const save = () => {
   bookSt.block?.id ? bookSt.updateBlock(content.value) : bookSt.saveBlock(content.value)
-  toast.add({severity: 'info', summary: t('general.successfully-saved'), life: 4000})
 }
 
 onMounted(() => {
@@ -114,7 +111,7 @@ onMounted(() => {
         <button class="ql-clean" v-tooltip.top="$t('general.clean-format')"></button>
       </span>
     </div>
-    <div id="quill-editor" style="height: calc(100vh - 345px)"></div>
+    <div id="quill-editor" style="height: calc(100vh - 390px)"></div>
   </div>
 </template>
 

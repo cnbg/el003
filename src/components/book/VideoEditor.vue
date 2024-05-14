@@ -1,11 +1,7 @@
 <script setup>
 import { ref } from 'vue'
-import { useToast } from 'primevue/usetoast'
-import { useI18n } from 'vue-i18n'
 import { useBookStore } from '../../stores/book'
 
-const toast = useToast()
-const {t} = useI18n()
 const bookSt = useBookStore()
 const file = ref({})
 
@@ -16,7 +12,6 @@ const fileUploader = async (event) => {
 
 const save = () => {
   bookSt.block?.id ? bookSt.updateBlock(file.value || '') : bookSt.saveBlock(file.value || '')
-  toast.add({severity: 'info', summary: t('general.file-uploaded-successfully'), life: 4000})
 }
 </script>
 

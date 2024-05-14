@@ -110,7 +110,7 @@ export const useBookStore = defineStore('book', {
         saveBlock(content = '') {
             if(content.length > 0 ||
                 content.path?.length > 0 ||
-                content.src.length > 0
+                content.src?.length > 0
             ) {
                 this.chapter?.blocks?.push({
                     ...this.block,
@@ -148,6 +148,11 @@ export const useBookStore = defineStore('book', {
                     content: '',
                 },
                 ...this.block,
+            }
+            if(type === 'html') {
+                this.block = {
+                    ...this.chapter.blocks.find(b => b.type === 'html')
+                }
             }
         },
         closeEditor() {

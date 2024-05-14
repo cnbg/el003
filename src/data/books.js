@@ -1,6 +1,11 @@
 import { faker } from '@faker-js/faker'
 import bookData from './books.json'
 import algoData from './books/algo.json'
+import kgData from './books/kg.json'
+import bioData from './books/bio.json'
+import mathData from './books/math.json'
+import histData from './books/hist.json'
+import enData from './books/en.json'
 
 const images = () => {
     const images = []
@@ -84,6 +89,11 @@ const fillBooks = () => {
 
 const books = [
     algoData,
+    kgData,
+    bioData,
+    mathData,
+    histData,
+    enData,
     ...bookData,
 ]
 

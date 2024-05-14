@@ -16,8 +16,8 @@ const createWindow = () => {
         // frame: process.platform === 'darwin',
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
-            //devTools: true,
-            devTools: !app.isPackaged,
+            devTools: true,
+            // devTools: !app.isPackaged,
         },
     })
 
@@ -29,7 +29,9 @@ const createWindow = () => {
     }
 
     // Open the DevTools.
-    mainWindow.webContents.openDevTools()
+    if(!app.isPackaged) {
+        mainWindow.webContents.openDevTools()
+    }
 }
 
 // This method will be called when Electron has finished

@@ -17,7 +17,7 @@ const setDarkMode = async () => {
   <DynamicDialog />
   <div class="flex items-center gap-3 bottom-8 left-7 fixed z-50">
     <InputSwitch v-model="darkMode" @change="setDarkMode" />
-    <div class="flex items-center gap-1">
+    <div class="flex items-center gap-1 hidden">
       <Button @click="$i18n.locale = 'kg'" label="kg" outlined size="small"
               :severity="$i18n.locale === 'kg' ? 'success' : 'secondary'" />
       <Button @click="$i18n.locale = 'ru'" label="ru" outlined size="small"
