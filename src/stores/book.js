@@ -108,7 +108,10 @@ export const useBookStore = defineStore('book', {
             this.editing = false
         },
         saveBlock(content = '') {
-            if(content.length > 0 || content.path.length > 0) {
+            if(content.length > 0 ||
+                content.path?.length > 0 ||
+                content.src.length > 0
+            ) {
                 this.chapter?.blocks?.push({
                     ...this.block,
                     ...{

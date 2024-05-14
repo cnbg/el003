@@ -43,7 +43,7 @@ const confirmDialog = () => {
 }
 
 const syncToServe = () => {
-  console.log(bookSt.book)
+  console.log(JSON.stringify(bookSt.book))
   toast.add({severity: 'info', summary: t('general.under-development'), life: 4000})
 }
 

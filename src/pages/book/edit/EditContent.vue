@@ -92,7 +92,7 @@ const items = ref([
         <ContentEditor />
       </div>
       <ScrollPanel v-else class="" style="height: calc(100vh - 210px)">
-        <ContentViewer />
+        <ContentViewer :chapter="bookSt.chapter" />
         <ScrollTop target="parent" :threshold="100" icon="pi pi-arrow-up" />
       </ScrollPanel>
     </Panel>

@@ -32,10 +32,10 @@ const imageClick = (index) => {
               containerStyle="width 100%">
       <template #item="slotProps">
         <img :src="slotProps.item.src" alt="" class="object-contain aspect-video"
-             style="width: calc(85vw); height: calc(70vh)" />
+             style="width: calc(80vw); height: calc(65vh)" />
       </template>
       <template #thumbnail="slotProps">
-          <img :src="slotProps.item.thumb" alt="" class="object-cover px-2 aspect-video" />
+          <img :src="slotProps.item.thumb" alt="" class="max-h-14 md:max-h-24 object-cover px-2 aspect-video" />
       </template>
       <template #caption="slotProps">
         <div v-if="slotProps.item.title">

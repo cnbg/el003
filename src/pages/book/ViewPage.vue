@@ -52,7 +52,7 @@ const panelMenuItems = ref([
     },
   },
 ])
-
+console.log(bookSt.book.chapters[0])
 let totalChapters = (bookSt.book?.chapters?.length || 1) - 1
 </script>
 

@@ -117,8 +117,8 @@
           "type": "image",
           "content": [
             {
-              "title": "Составление алгоритма заключается в логическом описании процесса решения задачи и требует знания элементов математической логики.",
-              "alt": "",
+              "title": "Составление алгоритма.",
+              "alt": "Составление алгоритма заключается в логическом описании процесса решения задачи и требует знания элементов математической логики.",
               "src": "/src/data/images/alg1.png",
               "thumb": "/src/data/images/alg1.png"
             }
@@ -129,8 +129,8 @@
           "type": "image",
           "content": [
             {
-              "title": "Линейным называется алгоритм, в котором команды выполняются последовательно друг за другом\n//Источник: https://infouch.ru/lineynye-algoritmy-na-yazyke-programmirovaniya-paskal.",
-              "alt": "",
+              "title": "Линейным называется алгоритм, в котором команды выполняются последовательно друг за другом",
+              "alt": "Источник: https://infouch.ru/lineynye-algoritmy-na-yazyke-programmirovaniya-paskal.",
               "src": "/src/data/images/alg2.png",
               "thumb": "/src/data/images/alg2.png"
             },
@@ -243,6 +243,16 @@
           "id": "0fad8982-85c5-459a-b900-5787899e6cb9-11",
           "type": "html",
           "content": "<p>Сынакты баштоо үчүн шилтемени басыңыз</p><p><br></p><p><strong><i><a href=\"https://test.ulut.kg/survey/3/survey\" rel=\"noopener noreferrer\" target=\"_blank\">сынак шилтемеси</a></i></strong></p>"
+        },
+        {
+          "id": "0fad8982-85c5-459a-b900-5787899e6cb9-422",
+          "type": "model",
+          "content": {
+            "name": "6.3.3 Системы программирования. Прикладное программное обеспечение",
+            "type": "",
+            "size": 0,
+            "path": "/src/data/models/NeilArmstrong.glb"
+          }
         }
       ]
     }

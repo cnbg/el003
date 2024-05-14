@@ -9,7 +9,7 @@ const {t} = useI18n()
 const bookSt = useBookStore()
 const file = ref({})
 
-const fileUploader = (event) => {
+const fileUploader = async (event) => {
   file.value = event.files[0]
   console.log(file.value)
 }

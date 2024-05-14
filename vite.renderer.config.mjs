@@ -18,7 +18,13 @@ export default defineConfig((env) => {
         },
         plugins: [
             pluginExposeRenderer(name),
-            vue(),
+            vue({
+                template: {
+                    compilerOptions: {
+                        isCustomElement: (tag) => ['model-viewer'].includes(tag),
+                    },
+                },
+            }),
         ],
         resolve: {
             preserveSymlinks: true,

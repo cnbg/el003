@@ -10,8 +10,8 @@ import HtmlEditor from './components/book/HtmlEditor.vue'
 import HtmlViewer from './components/book/HtmlViewer.vue'
 import ImageViewer from './components/book/ImageViewer.vue'
 import ImageEditor from './components/book/ImageEditor.vue'
-import ModelViewer from './components/book/ModelViewer.vue'
-import ModelEditor from './components/book/ModelEditor.vue'
+import Model3DViewer from './components/book/Model3DViewer.vue'
+import Model3DEditor from './components/book/Model3DEditor.vue'
 import VideoViewer from './components/book/VideoViewer.vue'
 import VideoEditor from './components/book/VideoEditor.vue'
 import TestViewer from './components/book/TestViewer.vue'
@@ -31,8 +31,8 @@ app.component('HtmlEditor', HtmlEditor)
 app.component('HtmlViewer', HtmlViewer)
 app.component('ImageViewer', ImageViewer)
 app.component('ImageEditor', ImageEditor)
-app.component('ModelViewer', ModelViewer)
-app.component('ModelEditor', ModelEditor)
+app.component('Model3DViewer', Model3DViewer)
+app.component('Model3DEditor', Model3DEditor)
 app.component('VideoViewer', VideoViewer)
 app.component('VideoEditor', VideoEditor)
 app.component('TestViewer', TestViewer)
