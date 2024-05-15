@@ -73,4 +73,5 @@ export default {
     'select-cover': 'Мукаба тандоо',
     'select-file': 'Файл тандоо',
     'have-you-saved-your-work-before-closing': 'Жабуу алдында жумушуңузду сактап койдуңуз беле?',
+    'link': 'Шилтеме',
 }

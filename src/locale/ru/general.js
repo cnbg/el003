@@ -73,4 +73,5 @@ export default {
     'select-cover': 'Выберите обложку',
     'select-file': 'Выберите file',
     'have-you-saved-your-work-before-closing': 'Вы сохранили свою работу перед закрытием?',
+    'link': 'Ссылка',
 }

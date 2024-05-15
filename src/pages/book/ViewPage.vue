@@ -2,7 +2,6 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { useToast } from 'primevue/usetoast'
 import { useUserStore } from '../../stores/user'
 import { useBookStore } from '../../stores/book'
 import { exportPdf } from '../../lib/exportpdf'
@@ -14,10 +13,10 @@ const props = defineProps({
 
 const router = useRouter()
 const {t} = useI18n()
-const toast = useToast()
 const menu = ref(null)
 const page = ref(-1)
 const pager = ref(true)
+const showSendDialog = ref(false)
 
 const userSt = useUserStore()
 const bookSt = useBookStore()
@@ -41,7 +40,7 @@ const panelMenuItems = ref([
   {separator: true},
   {
     label: t('general.send'), icon: 'pi pi-send', command: () => {
-      toast.add({severity: 'info', summary: t('general.under-development'), life: 4000})
+      showSendDialog.value = true
     },
   },
   {separator: true},
@@ -52,7 +51,7 @@ const panelMenuItems = ref([
     },
   },
 ])
-console.log(bookSt.book.chapters[0])
+
 let totalChapters = (bookSt.book?.chapters?.length || 1) - 1
 </script>
 
@@ -109,6 +108,15 @@ let totalChapters = (bookSt.book?.chapters?.length || 1) - 1
       </div>
     </div>
     <NotFoundPage v-else />
+
+    <Dialog v-model:visible="showSendDialog" modal :header="$t('general.link')" :style="{ width: '25rem' }">
+      <div class="flex align-items-center gap-3 mb-5">
+        https://localhost/{{ $route.path }}
+      </div>
+      <div class="flex justify-content-end gap-2">
+        <Button type="button" :label="$t('general.close')" severity="secondary" @click="showSendDialog = false"></Button>
+      </div>
+    </Dialog>
   </div>
 </template>
 
