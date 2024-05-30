@@ -3,5 +3,5 @@ defineProps(['html'])
 </script>
 
 <template>
-  <div v-html="html" class="ql-editor"></div>
+  <div v-html="html" class="tiny-editor"></div>
 </template>
