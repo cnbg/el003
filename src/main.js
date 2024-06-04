@@ -1,22 +1,7 @@
 
 const { app, BrowserWindow, nativeTheme } = require('electron/main');
 const path = require('node:path');
-const sqlite3 = require('sqlite3').verbose();
 
-
-
-// Create a connection to the SQLite database
-const dbPath = path.join(__dirname, '../db-backend/databgdase.db');
-const db = new sqlite3.Database(dbPath, (err) => {
-    if (err) {
-        console.error('Database connection error:', err.message);
-          
-    } else {
-        console.log('Connected to the SQLite database.');
-        
-        
-    }
-});
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -76,10 +61,6 @@ app.on('window-all-closed', () => {
     //}
 });
 
-// Handle database errors
-db.on('error', (err) => {
-    console.error('Database error:', err);
-});
 
 // Close the database connection when Electron is quitting
 app.on('before-quit', () => {
