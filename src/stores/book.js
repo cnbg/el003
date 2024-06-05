@@ -82,6 +82,11 @@ export const useBookStore = defineStore('book', {
                 })
             }
         },
+        updateBlockContent(index, content) {
+            if (this.chapter && this.chapter.blocks && this.chapter.blocks[index]) {
+                this.chapter.blocks[index].content = content;
+            }
+        },
         updateChapter(chapter) {
             this.chapter = chapter
             this.book.chapters = this.book.chapters?.map(ch => ch.id === chapter.id ? chapter : ch)
