@@ -9,8 +9,8 @@
         :init="editorConfig"
       />
       <div class="flex justify-end mt-2">
-        <Button @click="saveEdit" :label="$t('general.save')" icon="pi pi-check" class="mr-2" severity="success"/>
-        <Button @click="cancelEdit" :label="$t('general.cancel')" icon="pi pi-times" severity="secondary"/>
+        <Button @click="saveEdit" :label="$t('general.save')" icon="pi pi-save" class="mr-2" severity="success"/>
+        <Button @click="cancelEdit" :label="$t('general.cancel')" icon="pi pi-times" severity="danger"/>
       </div>
     </div>
     
@@ -97,7 +97,10 @@ const saveEdit = () => {
 .edit-button {
   position: absolute;
   top: 10px;
-  right: 20px;
-  padding: 5px;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  font-size: 14px;
 }
 </style>

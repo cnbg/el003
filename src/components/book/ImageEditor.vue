@@ -1,39 +1,3 @@
-<script setup>
-import { reactive } from 'vue'
-
-import { useBookStore } from '../../stores/book'
-
-const bookSt = useBookStore()
-const imgObj = {
-  title: '',
-  alt: '',
-  src: '',
-  thumb: '',
-}
-
-const images = reactive([{...imgObj}])
-
-const fileUploader = async (event, image) => {
-  const file = event.files[0]
-  const reader = new FileReader()
-  let blob = await fetch(file.objectURL).then((r) => r.blob()) //blob:url
-
-  reader.readAsDataURL(blob)
-
-  reader.onloadend = function() {
-    image.src = reader.result
-    image.thumb = reader.result
-  }
-}
-
-const save = () => {
-  bookSt.block?.id ? bookSt.updateBlock(images || '') : bookSt.saveBlock(images || '')
-}
-const addNewBlock = () => {
-  images.push({...imgObj})
-}
-</script>
-
 <template>
   <div>
     <ScrollPanel style="height: calc(100vh - 260px)">
@@ -66,5 +30,47 @@ const addNewBlock = () => {
   </div>
 </template>
 
+<script setup>
+import { defineProps, ref, defineEmits } from 'vue'
+import { useBookStore } from '../../stores/book'
+
+const props = defineProps({
+  initialImages: { type: Array, default: () => [] }
+})
+
+const emit = defineEmits(['content-updated'])
+
+const bookStore = useBookStore()
+const images = ref([...props.initialImages])
+
+const fileUploader = async (event, image) => {
+  const file = event.files[0]
+  const reader = new FileReader()
+  let blob = await fetch(file.objectURL).then((r) => r.blob())
+
+  reader.readAsDataURL(blob)
+
+  reader.onloadend = function() {
+    image.src = reader.result
+    image.thumb = reader.result
+  }
+}
+
+const save = () => {
+  if (bookStore.block?.id) {
+    bookStore.updateBlock(images.value)
+  } else {
+    bookStore.saveBlock(images.value)
+  }
+}
+
+const addNewBlock = () => {
+  images.value.push({ title: '', alt: '', src: '', thumb: '' })
+}
+</script>
+
 <style scoped>
 </style>
+
+
+
