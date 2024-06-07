@@ -3,15 +3,15 @@
     <Button v-if="!editing" @click="startEdit" icon="pi pi-pencil" class="edit-button" />
     <div v-if="!editing" v-html="html" class="tiny-editor"></div>
     <div v-else>
+      <div class="flex justify-end mt-2 edit-controls">
+        <Button @click="saveEdit" :label="$t('general.save')" icon="pi pi-save" class="mr-2" severity="success"/>
+        <Button @click="cancelEdit" :label="$t('general.cancel')" icon="pi pi-times" severity="secondary"/>
+      </div>
       <Editor
         v-model="editedContent"
         api-key="hog2k60fzfxvtrc3efz1kjwed1ubbtzubmwnf61wk0ivspzw"
         :init="editorConfig"
       />
-      <div class="flex justify-end mt-2">
-        <Button @click="saveEdit" :label="$t('general.save')" icon="pi pi-save" class="mr-2" severity="success"/>
-        <Button @click="cancelEdit" :label="$t('general.cancel')" icon="pi pi-times" severity="danger"/>
-      </div>
     </div>
     
   </div>
@@ -102,5 +102,8 @@ const saveEdit = () => {
   height: 30px;
   padding: 0;
   font-size: 14px;
+}
+.edit-controls {
+  margin-bottom: 10px;
 }
 </style>

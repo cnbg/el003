@@ -2,10 +2,21 @@
   <div>
     <Button v-if="!editing && images.length > 0" @click="startEdit" icon="pi pi-pencil" class="edit-button" />
     <div v-if="!editing" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-      <img v-for="(image, index) in images" :key="index" :src="image.src" @click="imageClick(index)" alt="" class="object-cover aspect-video" />
+      <div v-for="(image, index) in images" :key="index" class="image-container" @mouseover="showEdit(index)" @mouseleave="hideEdit(index)">
+        <img :src="image.src" @click="imageClick(index)" alt="" class="object-cover aspect-video" />
+        <Button v-if="hoveredIndex === index" @click="startEdit" icon="pi pi-pencil" class="edit-button" />
+      </div>
     </div>
     <div v-else>
       <div v-for="(image, index) in images" :key="index">
+        <div>
+          <div class="flex justify-end gap-2">
+          <FileUpload mode="basic" name="cover" accept="image/*" :maxFileSize="5000000" customUpload @uploader="fileUploader($event, image)" auto :chooseLabel="$t('general.select-file')" />
+          <Button @click="deleteImage(index)" icon="pi pi-trash" severity="danger" />
+          <Button @click="saveEdit" icon="pi pi-save" :label="$t('general.save')" severity="success" />
+          <Button @click="cancelEdit" icon="pi pi-times" :label="$t('general.cancel')" class="p-button-danger" severity="secondary" />
+          </div>
+        </div>
         <div>
           <label for="title">{{ $t('general.enter-title') }}</label>
           <InputText v-model="image.title" id="title" class="w-full" />
@@ -14,19 +25,9 @@
           <label for="description">{{ $t('general.enter-description') }}</label>
           <Textarea v-model="image.alt" id="description" class="w-full h-15" />
         </div>
-        <div>
-          <div class="flex justify-start gap-2">
-          <FileUpload mode="basic" name="cover" accept="image/*" :maxFileSize="5000000" customUpload @uploader="fileUploader($event, image)" auto :chooseLabel="$t('general.select-file')" />
-          <Button @click="deleteImage(index)" icon="pi pi-trash" severity="danger" />
-          </div>
-        </div>
         <div v-if="image.src" class="p-5">
           <img :src="image.src" class="h-56 w-full object-contain" />
         </div>
-      </div>
-      <div class="flex justify-end gap-2 mt-4">
-        <Button @click="saveEdit" icon="pi pi-save" :label="$t('general.save')" severity="success" />
-        <Button @click="cancelEdit" icon="pi pi-times" :label="$t('general.cancel')" class="p-button-danger" severity="danger" />
       </div>
     </div>
     <Galleria v-if="!editing" :value="images" v-model:activeIndex="activeIndex" v-model:visible="displayGallery" :fullScreen="true" :showItemNavigators="images.length > 1" :showItemNavigatorsOnHover="images.length > 1" :showThumbnails="images.length > 1" :numVisible="4" :circular="images.length > 1" containerStyle="width 100%">
@@ -45,6 +46,7 @@
     </Galleria>
   </div>
 </template>
+
 <script setup>
   import {
     defineProps,
@@ -91,13 +93,37 @@
       image.thumb = reader.result
     }
   }
+  // a reactive variable to keep track of the hovered image index
+  const hoveredIndex = ref(null);
+
+  const showEdit = (index) => {
+    hoveredIndex.value = index;
+  };
+
+  const hideEdit = (index) => {
+    hoveredIndex.value = null;
+  };
 </script>
+
 <style scoped>
   .edit-button {
+    top: 5px;
+    right: 5px; 
     width: 30px;
     height: 30px;
     padding: 0;
     font-size: 14px;
     bottom: 10px;
+    position: absolute;
+    visibility: hidden;
+  }
+
+  .image-container {
+    position: relative;
+    display: inline-block;
+  }
+
+  .image-container:hover .edit-button {
+    visibility: visible;
   }
 </style>
