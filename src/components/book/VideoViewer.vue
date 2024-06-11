@@ -69,6 +69,7 @@
 <script setup>
 import { defineProps, ref, defineEmits } from 'vue'
 import { VideoPlayer } from '@videojs-player/vue'
+import { useBookStore } from '../../stores/book'
 import videojs from 'video.js'
 import 'video.js/dist/video-js.css'
 
@@ -79,8 +80,10 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['content-updated'])
+const emit = defineEmits(['content-updated', 'delete-video'])
 
+const bookSt = useBookStore()
+const file = ref({})
 const editing = ref(false)
 const player = ref(null)
 const isHovered = ref(false)
@@ -98,6 +101,9 @@ const startEdit = () => {
 }
 
 const saveEdit = () => {
+  if (file.value.path) {
+    props.video.path = file.value.path
+  }
   emit('content-updated', props.video)
   editing.value = false
 }
@@ -107,18 +113,18 @@ const cancelEdit = () => {
 }
 
 const deleteVideo = () => {
-  emit('content-updated', null)
+  emit('delete-video')
 }
 
-const fileUploader = async (event, video) => {
-  const file = event.files[0]
+const fileUploader = async (event) => {
+  file.value = event.files[0]
   const reader = new FileReader()
-  let blob = await fetch(file.objectURL).then((r) => r.blob())
+  let blob = await fetch(file.value.objectURL).then((r) => r.blob())
 
   reader.readAsDataURL(blob)
 
   reader.onloadend = function() {
-    video.path = reader.result
+    file.value.path = reader.result
   }
 }
 

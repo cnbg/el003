@@ -12,8 +12,7 @@
         api-key="hog2k60fzfxvtrc3efz1kjwed1ubbtzubmwnf61wk0ivspzw"
         :init="editorConfig"
       />
-    </div>
-    
+    </div>    
   </div>
 </template>
 
@@ -92,17 +91,27 @@ const saveEdit = () => {
 <style scoped>
 .editor-container {
   position: relative;
+  padding-top: 30px;
 }
 
 .edit-button {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 0;
+  left: 0;
   width: 30px;
   height: 30px;
   padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 14px;
+  display: none; 
 }
+
+.editor-container:hover .edit-button {
+  display: flex; 
+}
+
 .edit-controls {
   margin-bottom: 10px;
 }

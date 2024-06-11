@@ -11,6 +11,7 @@ export const useBookStore = defineStore('book', {
         block: null,
         editing: false,
     }),
+    persist: false,
     getters: {},
     actions: {
         getBook(bookId, chapterId = null) {
@@ -85,6 +86,11 @@ export const useBookStore = defineStore('book', {
         updateBlockContent(index, content) {
             if (this.chapter && this.chapter.blocks && this.chapter.blocks[index]) {
                 this.chapter.blocks[index].content = content;
+            }
+        },
+        deleteVideoBlock(index) {
+            if (this.chapter && this.chapter.blocks && this.chapter.blocks[index] && this.chapter.blocks[index].type === 'video') {
+                this.chapter.blocks.splice(index, 1);
             }
         },
         updateChapter(chapter) {
