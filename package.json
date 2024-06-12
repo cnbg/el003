@@ -39,7 +39,6 @@
     "@faker-js/faker": "^8.4.1",
     "@google/model-viewer": "^3.5.0",
     "@tinymce/tinymce-vue": "^5.1.1",
-    "@wiris/mathtype-tinymce5": "^8.9.2",
     "autoprefixer": "^10.4.19",
     "electron-squirrel-startup": "^1.0.0",
     "gsap": "^3.12.5",
