@@ -4,7 +4,7 @@
       <HtmlViewer v-if="block.type === 'html'" :html="block.content" @content-updated="updateContent(index, $event)" />
       <ImageViewer v-else-if="block.type === 'image'" :images="block.content" />
       <VideoViewer v-else-if="block.type === 'video'" :video="block.content" @delete-video="deleteVideo(index)" />
-      <Model3DViewer v-else-if="block.type === 'model'" :model="block.content" />
+      <Model3DViewer v-else-if="block.type === 'model'" :model="block.content" @delete-model="deleteModel(index)" />
       <TestViewer v-else-if="block.type === 'test'" :test="block.content" />
     </div>
   </div>
@@ -22,6 +22,10 @@ const updateContent = (index, updatedContent) => {
 
 const deleteVideo = (index) => {
   useBookStore().deleteVideoBlock(index);
+};
+
+const deleteModel = (index) => {
+  useBookStore().deleteModelBlock(index);
 };
 </script>
 

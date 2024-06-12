@@ -93,6 +93,11 @@ export const useBookStore = defineStore('book', {
                 this.chapter.blocks.splice(index, 1);
             }
         },
+        deleteModelBlock(index) {
+            if (this.chapter && this.chapter.blocks && this.chapter.blocks[index] && this.chapter.blocks[index].type === 'model') {
+                this.chapter.blocks.splice(index, 1);
+            }
+        },
         updateChapter(chapter) {
             this.chapter = chapter
             this.book.chapters = this.book.chapters?.map(ch => ch.id === chapter.id ? chapter : ch)
