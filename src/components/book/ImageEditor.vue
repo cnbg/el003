@@ -1,7 +1,7 @@
 <template>
   <div>
     <ScrollPanel style="height: calc(100vh - 260px)">
-      <div class="flex flex-wrap justify-between gap-5">
+      <div class="flex flex-wrap justify-between gap-2 flex-wrap-margin">
         <Button @click="addNewBlock" icon="pi pi-plus" text severity="success" />
 
         <Button v-if="images.length > 0" @click="save" icon="pi pi-save"
@@ -31,46 +31,51 @@
 </template>
 
 <script setup>
-import { defineProps, ref, defineEmits } from 'vue'
-import { useBookStore } from '../../stores/book'
+import { defineProps, ref, defineEmits } from 'vue';
+import { useBookStore } from '../../stores/book';
 
 const props = defineProps({
   initialImages: { type: Array, default: () => [] }
-})
+});
 
-const emit = defineEmits(['content-updated'])
+const emit = defineEmits(['content-updated']);
 
-const bookStore = useBookStore()
-const images = ref([...props.initialImages])
+const bookStore = useBookStore();
+const images = ref([...props.initialImages]);
 
 const fileUploader = async (event, image) => {
-  const file = event.files[0]
-  const reader = new FileReader()
-  let blob = await fetch(file.objectURL).then((r) => r.blob())
+  const file = event.files[0];
+  const reader = new FileReader();
+  let blob = await fetch(file.objectURL).then((r) => r.blob());
 
-  reader.readAsDataURL(blob)
+  reader.readAsDataURL(blob);
 
   reader.onloadend = function() {
-    image.src = reader.result
-    image.thumb = reader.result
-  }
-}
+    image.src = reader.result;
+    image.thumb = reader.result;
+  };
+};
 
 const save = () => {
   if (bookStore.block?.id) {
-    bookStore.updateBlock(images.value)
+    bookStore.updateBlock(images.value);
   } else {
-    bookStore.saveBlock(images.value)
+    bookStore.saveBlock(images.value);
   }
-}
+};
 
 const addNewBlock = () => {
-  images.value.push({ title: '', alt: '', src: '', thumb: '' })
+  images.value.push({ title: '', alt: '', src: '', thumb: '' });
+};
+
+if (images.value.length === 0) {
+  addNewBlock();
 }
 </script>
 
 <style scoped>
+  .flex-wrap-margin {
+      margin-top: 10px; 
+      margin-left: 10px;
+  }
 </style>
-
-
-
