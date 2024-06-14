@@ -60,6 +60,19 @@ const items = ref([
   {separator: true},
   {label: t('general.delete'), icon: 'pi pi-times', command: () => {confirmDialog()}},
 ])
+
+const goTo = (route, params = {}) => {
+  if(bookSt.editing) {
+    toast.add({severity: 'error', summary: t('general.dont-forget-to-save'), life: 4000})
+  } else {
+    if (route === 'home') {
+      router.push({ path: '/' }); // Assuming your home route is '/'
+    } else {
+      router.push({ name: route, params: params });
+    }
+  }
+}
+
 </script>
 
 <template>
@@ -77,13 +90,17 @@ const items = ref([
         </div>
       </template>
       <template #icons>
+        <button class="p-panel-header-icon p-link mr-6"  @click="goTo('home')">
+          <span class="pi pi-home"></span>
+        </button>
+        
         <button class="p-panel-header-icon p-link mr-4" @click="toggle">
           <span class="pi pi-cog"></span>
         </button>
         <Menu ref="menu" id="config_menu" :model="items" popup />
       </template>
       <div class="py-3">{{ bookSt.book.desc }}</div>
-      <div v-if="bookSt.book.tags?.length > 0" class="flex flex-wrap gap-x-2 gap-y-4 py-3">
+      <div v-if="bookSt.book.tags?.length > 0" class="flex flex-wrap gap-x-2 gap-y-4 py-3 button-icon">
         <Chip v-for="tag in bookSt.book.tags" :label="tag" class="text-sm" />
       </div>
     </Panel>
