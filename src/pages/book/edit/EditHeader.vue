@@ -66,7 +66,7 @@ const goTo = (route, params = {}) => {
     toast.add({severity: 'error', summary: t('general.dont-forget-to-save'), life: 4000})
   } else {
     if (route === 'home') {
-      router.push({ path: '/' }); // Assuming your home route is '/'
+      router.push({ path: '/' });
     } else {
       router.push({ name: route, params: params });
     }
