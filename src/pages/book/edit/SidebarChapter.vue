@@ -22,7 +22,7 @@
                   v-tooltip="$t('general.Copy-link')">
             <i class="pi pi-link"></i>
           </button>
-          <Dialog v-model:visible="linkCopied" modal style="max-width: 400px;">
+          <Dialog v-model:visible="linkCopied" modal style="max-width: 500px;">
             <div class="p-4">
               <div class="flex items-center mt-4">
                 <InputText v-model="copiedLink" class="w-[25rem] mr-2" readonly />
@@ -31,13 +31,8 @@
                   <i class="pi pi-copy"></i>
                 </Button>
               </div>
-              <p class="text-lg mt-4">{{ dialogMessage }}</p>
+              <p class="text-lg mt-10"></p>
             </div>
-            <transition name="fade">
-            <div v-if="showNotification" class="notification">
-              {{ t('general.link-copied') }}
-            </div>
-            </transition>
           </Dialog>
         </div>
       </template>
@@ -60,16 +55,17 @@ import EditChapterDialog from './EditChapterDialog.vue'
 import { ref } from 'vue'
 import { useBookStore } from '../../../stores/book'
 import { useI18n } from 'vue-i18n'
+import { useToast } from 'primevue/usetoast'
 
 const { t } = useI18n()
-
+const toast = useToast()
 const bookSt = useBookStore()
 const chapter = ref({})
 const showEditDialog = ref(false)
 const linkCopied = ref(false)
 const copiedLink = ref('')
-const dialogMessage = ref('')
-const showNotification = ref(false)
+
+
 
 const addChapterBtn = () => {
   chapter.value = bookSt.chapterObj({
@@ -98,18 +94,16 @@ const copyLink = () => {
   navigator.clipboard.writeText(currentUrl)
     .then(() => {
       copiedLink.value = currentUrl
-      dialogMessage.value = '' 
       linkCopied.value = true
     })
 }
 
 const copyToClipboard = () => {
   navigator.clipboard.writeText(copiedLink.value)
-    .then(() => {          
-      showNotification.value = true
+    .then(() => {     
+      toast.add({severity: 'success', summary: t('general.link-copied'), life: 1300})         
       setTimeout(() => {
         linkCopied.value = false
-        showNotification.value = false
       }, 1300)
     })
 }
@@ -124,20 +118,6 @@ const copyToClipboard = () => {
 .copy-link-container .copy-link-button {
   margin-right: 10px;
 }
-
-.notification {
-  position: fixed;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #4CAF50;
-  color: white;
-  padding: 10px 20px;
-  border-radius: 5px;
-  z-index: 1000;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
 .fade-enter-active, .fade-leave-active {
   transition: opacity 0.5s;
 }
