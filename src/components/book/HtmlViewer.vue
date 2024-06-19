@@ -34,13 +34,13 @@ watch(() => userSt.darkMode, (newVal) => {
 });
 
 const editing = ref(false);
-const editedContent = ref(props.html); // Correctly initialize editedContent
+const editedContent = ref(props.html); 
 const originalContent = ref(props.html);
 
 function getEditorConfig(isDarkMode) {
     return {
       height: 'calc(100vh - 330px)',
-      plugins: 'print preview importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars emoticons',
+      plugins: "preview importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons",
       automatic_uploads: false,
       promotion: false,
       file_picker_types: 'image media',
@@ -78,7 +78,6 @@ function getEditorConfig(isDarkMode) {
           });
         });
       },
-
     }
   };
 
@@ -93,15 +92,22 @@ const cancelEdit = () => {
 };
 
 const saveEdit = () => {
-
-if (editedContent.value.trim() === '') {
-  originalContent.value = '';
-  editing.value = false;
-} else {
-  editing.value = false;
-  originalContent.value = editedContent.value;
-}
-emit('content-updated', originalContent.value);
+  if (editedContent.value.trim() === '') {
+    originalContent.value = '';
+    editing.value = false;
+  } else {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(editedContent.value, 'text/html');
+    const links = doc.querySelectorAll('a');
+    links.forEach(link => {
+      link.style.color = 'blue';
+      link.style.textDecoration = 'underline';
+    });
+    editedContent.value = doc.body.innerHTML;
+    editing.value = false;
+    originalContent.value = editedContent.value;
+  }
+  emit('content-updated', originalContent.value);
 };
 
 const isContentEmpty = computed(() => {
@@ -136,4 +142,5 @@ const isContentEmpty = computed(() => {
 .edit-controls {
   margin-bottom: 10px;
 }
+
 </style>
