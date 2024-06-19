@@ -1,6 +1,6 @@
 <template>
   <div class="editor-container">
-    <Button v-if="!editing" @click="startEdit" icon="pi pi-pencil" class="edit-button" />
+    <Button v-if="!editing && !isContentEmpty" @click="startEdit" icon="pi pi-pencil" class="edit-button" />
     <div v-if="!editing" v-html="html" class="tiny-editor"></div>
     <div v-else>
       <div class="flex justify-end mt-2 edit-controls">
@@ -13,7 +13,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
 import Editor from '@tinymce/tinymce-vue';
 import { useUserStore } from '../../stores/user';
 
@@ -84,19 +84,29 @@ function getEditorConfig(isDarkMode) {
 
 const startEdit = () => {
   editing.value = true;
-  editedContent.value = props.html; // Initialize editedContent when editing starts
+  editedContent.value = props.html; 
 };
 
 const cancelEdit = () => {
   editing.value = false;
-  editedContent.value = originalContent.value; // Revert changes on cancel
+  editedContent.value = originalContent.value; 
 };
 
 const saveEdit = () => {
+
+if (editedContent.value.trim() === '') {
+  originalContent.value = '';
+  editing.value = false;
+} else {
   editing.value = false;
   originalContent.value = editedContent.value;
-  emit('content-updated', originalContent.value);
+}
+emit('content-updated', originalContent.value);
 };
+
+const isContentEmpty = computed(() => {
+  return !originalContent.value || originalContent.value.trim() === '';
+});
 </script>
 
 <style scoped>
