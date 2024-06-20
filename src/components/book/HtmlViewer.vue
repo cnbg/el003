@@ -1,7 +1,7 @@
 <template>
   <div class="editor-container">
     <Button v-if="!editing" @click="startEdit" icon="pi pi-pencil" class="edit-button" />
-    <div v-if="!editing" v-html="html" class="tiny-editor"></div>
+    <div v-if="!editing" v-html="html" class="ql-editor"></div>
     <div v-else>
       <div class="flex justify-end mt-2 edit-controls">
         <Button @click="saveEdit" :label="$t('general.save')" icon="pi pi-save" class="mr-2" severity="success" />
@@ -14,6 +14,7 @@
 
 <script setup>
 import { ref, watch } from 'vue';
+import 'quill/dist/quill.snow.css'
 import Editor from '@tinymce/tinymce-vue';
 import { useUserStore } from '../../stores/user';
 
