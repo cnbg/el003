@@ -1,6 +1,6 @@
 <script setup>
 import { reactive } from 'vue'
-
+import axios from 'axios';
 import { useBookStore } from '../../stores/book'
 
 const bookSt = useBookStore()
@@ -14,17 +14,22 @@ const imgObj = {
 const images = reactive([{...imgObj}])
 
 const fileUploader = async (event, image) => {
-  const file = event.files[0]
-  const reader = new FileReader()
-  let blob = await fetch(file.objectURL).then((r) => r.blob()) //blob:url
+  const file = event.files[0];
+  const formData = new FormData();
+  formData.append('file', file);
 
-  reader.readAsDataURL(blob)
-
-  reader.onloadend = function() {
-    image.src = reader.result
-    image.thumb = reader.result
+  try {
+    const response = await axios.post('http://localhost:3000/api/upload', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    image.src = response.data.filePath;
+    image.thumb = response.data.filePath;
+  } catch (error) {
+    console.error('Error uploading file:', error);
   }
-}
+};
 
 const save = () => {
   bookSt.block?.id ? bookSt.updateBlock(images || '') : bookSt.saveBlock(images || '')
