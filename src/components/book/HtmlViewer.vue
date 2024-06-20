@@ -1,6 +1,6 @@
 <template>
   <div class="editor-container">
-    <Button v-if="!editing && !isContentEmpty" @click="startEdit" icon="pi pi-pencil" class="edit-button" />
+    <Button v-if="!editing" @click="startEdit" icon="pi pi-pencil" class="edit-button" />
     <div v-if="!editing" v-html="html" class="tiny-editor"></div>
     <div v-else>
       <div class="flex justify-end mt-2 edit-controls">
@@ -13,7 +13,7 @@
 </template>
 
 <script setup>
-import { ref, watch, computed } from 'vue';
+import { ref, watch } from 'vue';
 import Editor from '@tinymce/tinymce-vue';
 import { useUserStore } from '../../stores/user';
 
@@ -39,6 +39,7 @@ const originalContent = ref(props.html);
 
 function getEditorConfig(isDarkMode) {
     return {
+      license_key: 'gpl',
       height: 'calc(100vh - 330px)',
       plugins: "preview importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons",
       automatic_uploads: false,
@@ -78,6 +79,7 @@ function getEditorConfig(isDarkMode) {
           });
         });
       },
+
     }
   };
 
@@ -110,9 +112,7 @@ const saveEdit = () => {
   emit('content-updated', originalContent.value);
 };
 
-const isContentEmpty = computed(() => {
-  return !originalContent.value || originalContent.value.trim() === '';
-});
+
 </script>
 
 <style scoped>
@@ -142,5 +142,4 @@ const isContentEmpty = computed(() => {
 .edit-controls {
   margin-bottom: 10px;
 }
-
 </style>
