@@ -1,11 +1,8 @@
 const { app, BrowserWindow, nativeTheme } = require('electron');
 const path = require('path');
 const { execFile } = require('child_process');
-const { fileURLToPath } = require('url');
-const { dirname } = require('path');
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+let serverProcess;
 
 // Function to start the server
 const startServer = () => {
@@ -19,7 +16,13 @@ const startServer = () => {
 
   console.log(`Starting server from path: ${serverPath}`);
 
-  const serverProcess = execFile('node', [serverPath]);
+  // Passing environment variables to server process
+  const serverProcess = execFile('node', [serverPath], {
+    env: {
+      ...process.env,
+      IMAGES_DIR: path.join(__dirname, '../src/data/images'), 
+    }
+  });
 
   serverProcess.stdout.on('data', (data) => {
     console.log(`Server stdout: ${data}`);
@@ -80,5 +83,9 @@ app.whenReady().then(() => {
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
+  }
+
+  if (serverProcess) {
+    serverProcess.kill();
   }
 });

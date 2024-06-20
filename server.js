@@ -22,7 +22,7 @@ app.use(fileUpload({
 }));
 
 // Serve static files
-const imagesDir = path.join(__dirname, 'src/data/images');
+const imagesDir = path.join(process.cwd(), 'src/data/images');
 console.log(`Serving images from ${imagesDir}`);
 app.use('/data/images', express.static(imagesDir));
 
@@ -44,7 +44,7 @@ app.post('/api/upload', async (req, res) => {
 
       res.send({
         success: true,
-        message: 'File uploaded 1231231',
+        message: 'File uploaded successfully',
         filePath: fileUrl
       });
     }
