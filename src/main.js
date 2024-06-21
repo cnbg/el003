@@ -1,68 +1,98 @@
+import { app, BrowserWindow, nativeTheme, ipcMain } from 'electron';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import fs from 'original-fs';
 
-const { app, BrowserWindow, nativeTheme } = require('electron/main');
-const path = require('node:path');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
+// Ensure single instance
+const gotTheLock = app.requestSingleInstanceLock();
 
-// Handle creating/removing shortcuts on Windows when installing/uninstalling.
-if (require('electron-squirrel-startup')) {
+if (!gotTheLock) {
     app.quit();
-}
-
-const createWindow = () => {
-    // Create the browser window
-    const mainWindow = new BrowserWindow({
-        backgroundColor: nativeTheme.shouldUseDarkColors ? '#333' : '#fff',
-        width: 1300,
-        height: 800,
-        titleBarStyle: 'hidden-inset', // macOS only
-        // frame: process.platform === 'darwin',
-        webPreferences: {
-            preload: path.join(__dirname, 'preload.js'),
-            devTools: true,
-            // devTools: !app.isPackaged,
-        },
-    });
-
-    // and load the index.html of the app
-    if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
-        mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
-    } else {
-        mainWindow.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`));
-    }
-
-    // Open the DevTools
-    if (!app.isPackaged) {
-        mainWindow.webContents.openDevTools();
-    }
-};
-
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-app.whenReady().then(() => {
-    createWindow();
-
-    // On OS X it's common to re-create a window in the app when the
-    // dock icon is clicked and there are no other windows open.
-    app.on('activate', () => {
-        if (BrowserWindow.getAllWindows().length === 0) {
-            createWindow();
+} else {
+    app.on('second-instance', () => {
+        if (mainWindow) {
+            if (mainWindow.isMinimized()) mainWindow.restore();
+            mainWindow.focus();
         }
     });
-});
 
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
-app.on('window-all-closed', () => {
-    // darwin - macOS
-    //if (process.platform !== 'darwin') {
-    app.quit();
-    //}
-});
+    let mainWindow;
 
+    const createWindow = () => {
+        mainWindow = new BrowserWindow({
+            backgroundColor: nativeTheme.shouldUseDarkColors ? '#333' : '#fff',
+            width: 1300,
+            height: 800,
+            titleBarStyle: 'hidden-inset',
+            webPreferences: {
+                preload: path.join(__dirname, 'preload.js'),
+                devTools: true,
+                webSecurity: false,
+                // nodeIntegration: true,  // nodeIntegration should be false for security
+            },
+        });
 
+        if (!app.isPackaged) {
+            mainWindow.loadURL(process.env.MAIN_WINDOW_VITE_DEV_SERVER_URL);
+        } else {
+            mainWindow.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`));
+        }
 
+        mainWindow.on('closed', () => {
+            mainWindow = null;
+        });
+    };
 
-// In this file, you can include the rest of your app's specific main process
-// code. You can also put them in separate files and import them here.
+    app.whenReady().then(() => {
+        createWindow();
+
+        app.on('activate', () => {
+            if (BrowserWindow.getAllWindows().length === 0) {
+                createWindow();
+            }
+        });
+    });
+
+    app.on('window-all-closed', () => {
+        if (process.platform !== 'darwin') {
+            app.quit();
+        }
+    });
+
+    if (require('electron-squirrel-startup')) {
+        app.quit();
+    }
+
+    ipcMain.handle('upload-file', async (event, { filePath, fileName }) => {
+        console.error('upload-file:', filePath, fileName);
+        try {
+            const resourcesPath = process.resourcesPath;
+            const userDataPath = app.getPath('userData');
+            const appPath = app.getAppPath();
+
+            if (!app.isPackaged) {
+                const uploadDir = path.join(appPath, 'src', 'data', 'images');
+                const uploadPath = path.join(uploadDir, fileName);
+
+                await fs.promises.mkdir(uploadDir, { recursive: true });
+                await fs.promises.copyFile(filePath, uploadPath);
+                return { success: true, filePath: `${appPath}/src/data/images/${fileName}` };
+            } else {
+                const uploadDir = path.join(resourcesPath, 'data', 'images');
+                const uploadPath = path.join(uploadDir, fileName);
+
+                await fs.promises.mkdir(uploadDir, { recursive: true });
+                await fs.promises.copyFile(filePath, uploadPath);
+                return { success: true, filePath: `${resourcesPath}/data/images/${fileName}` };
+            }
+
+        } catch (error) {
+            console.error('upload-file-error:', error);
+            return { success: false, message: error.message };
+        }
+    });
+}
