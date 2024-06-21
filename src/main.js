@@ -7,7 +7,6 @@ import fs from 'original-fs';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Ensure single instance
 const gotTheLock = app.requestSingleInstanceLock();
 
 if (!gotTheLock) {
@@ -32,7 +31,7 @@ if (!gotTheLock) {
                 preload: path.join(__dirname, 'preload.js'),
                 devTools: true,
                 webSecurity: false,
-                // nodeIntegration: true,  // nodeIntegration should be false for security
+                nodeIntegration: true,  // nodeIntegration should be false for security
             },
         });
 
@@ -94,5 +93,14 @@ if (!gotTheLock) {
             console.error('upload-file-error:', error);
             return { success: false, message: error.message };
         }
+    });
+
+    ipcMain.handle('get-paths', async () => {
+        return {
+            success: true,
+            resourcesPath: process.resourcesPath,
+            userDataPath: app.getPath('userData'),
+            appPath: app.getAppPath(),
+        };
     });
 }
