@@ -38,11 +38,7 @@ module.exports = {
           {
             entry: 'src/preload.js',
             config: 'vite.preload.config.mjs',
-          },
-          {
-            entry: 'server.js',
-            config: 'vite.preload.config.mjs',
-          },
+          }
         ],
         renderer: [
           {
@@ -61,30 +57,5 @@ module.exports = {
       [FuseV1Options.EnableEmbeddedAsarIntegrityValidation]: true,
       [FuseV1Options.OnlyLoadAppFromAsar]: true,
     }),
-  ],
-  hooks: {
-    generateAssets: async () => {
-      await fs.copy(path.resolve(__dirname, 'server.js'), path.resolve(__dirname, '.vite/build/server.js'));
-    },
-  },
-  build: {
-    files: [
-      'main.js',
-      'preload.js',
-      {
-        from: 'out/renderer',
-        to: 'resources/renderer',
-      },
-    ],
-    extraResources: [
-      {
-        from: 'src/data',
-        to: 'resources/data',
-      },
-      {
-        from: 'server.js',
-        to: 'resources/server.js',
-      },
-    ],
-  },
+  ]
 };

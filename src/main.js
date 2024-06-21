@@ -1,84 +1,98 @@
-const { app, BrowserWindow, nativeTheme } = require('electron');
-const path = require('path');
-const { execFile } = require('child_process');
-const { fileURLToPath } = require('url');
-const { dirname } = require('path');
+import { app, BrowserWindow, nativeTheme, ipcMain } from 'electron';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import fs from 'original-fs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Function to start the server
-const startServer = () => {
-  let serverPath;
+// Ensure single instance
+const gotTheLock = app.requestSingleInstanceLock();
 
-  if (app.isPackaged) {
-    serverPath = path.join(process.resourcesPath, 'server.js');
-  } else {
-    serverPath = path.join(__dirname, 'server.js');
-  }
-
-  console.log(`Starting server from path: ${serverPath}`);
-
-  const serverProcess = execFile('node', [serverPath]);
-
-  serverProcess.stdout.on('data', (data) => {
-    console.log(`Server stdout: ${data}`);
-  });
-
-  serverProcess.stderr.on('data', (data) => {
-    console.error(`Server stderr: ${data}`);
-  });
-
-  serverProcess.on('close', (code) => {
-    console.log(`Server process exited with code ${code}`);
-  });
-};
-
-// Handle creating/removing shortcuts on Windows when installing/uninstalling.
-if (require('electron-squirrel-startup')) {
-  app.quit();
-}
-
-const createWindow = () => {
-  // Create the browser window.
-  const mainWindow = new BrowserWindow({
-    backgroundColor: nativeTheme.shouldUseDarkColors ? '#333' : '#fff',
-    width: 1300,
-    height: 800,
-    titleBarStyle: 'hidden-inset', // macOS only
-    webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
-      devTools: true,
-    },
-  });
-
-  // and load the index.html of the app.
-  if (process.env.MAIN_WINDOW_VITE_DEV_SERVER_URL) {
-    mainWindow.loadURL(process.env.MAIN_WINDOW_VITE_DEV_SERVER_URL);
-  } else {
-    // mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
-    mainWindow.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`))
-  }
-
-  // Open the DevTools.
-  if (!app.isPackaged) {
-    mainWindow.webContents.openDevTools();
-  }
-};
-
-app.whenReady().then(() => {
-  startServer();
-  createWindow();
-
-  app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow();
-    }
-  });
-});
-
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
+if (!gotTheLock) {
     app.quit();
-  }
-});
+} else {
+    app.on('second-instance', () => {
+        if (mainWindow) {
+            if (mainWindow.isMinimized()) mainWindow.restore();
+            mainWindow.focus();
+        }
+    });
+
+    let mainWindow;
+
+    const createWindow = () => {
+        mainWindow = new BrowserWindow({
+            backgroundColor: nativeTheme.shouldUseDarkColors ? '#333' : '#fff',
+            width: 1300,
+            height: 800,
+            titleBarStyle: 'hidden-inset',
+            webPreferences: {
+                preload: path.join(__dirname, 'preload.js'),
+                devTools: true,
+                webSecurity: false,
+                // nodeIntegration: true,  // nodeIntegration should be false for security
+            },
+        });
+
+        if (!app.isPackaged) {
+            mainWindow.loadURL(process.env.MAIN_WINDOW_VITE_DEV_SERVER_URL);
+        } else {
+            mainWindow.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`));
+        }
+
+        mainWindow.on('closed', () => {
+            mainWindow = null;
+        });
+    };
+
+    app.whenReady().then(() => {
+        createWindow();
+
+        app.on('activate', () => {
+            if (BrowserWindow.getAllWindows().length === 0) {
+                createWindow();
+            }
+        });
+    });
+
+    app.on('window-all-closed', () => {
+        if (process.platform !== 'darwin') {
+            app.quit();
+        }
+    });
+
+    if (require('electron-squirrel-startup')) {
+        app.quit();
+    }
+
+    ipcMain.handle('upload-file', async (event, { filePath, fileName }) => {
+        console.error('upload-file:', filePath, fileName);
+        try {
+            const resourcesPath = process.resourcesPath;
+            const userDataPath = app.getPath('userData');
+            const appPath = app.getAppPath();
+
+            if (!app.isPackaged) {
+                const uploadDir = path.join(appPath, 'src', 'data', 'images');
+                const uploadPath = path.join(uploadDir, fileName);
+
+                await fs.promises.mkdir(uploadDir, { recursive: true });
+                await fs.promises.copyFile(filePath, uploadPath);
+                return { success: true, filePath: `${appPath}/src/data/images/${fileName}` };
+            } else {
+                const uploadDir = path.join(resourcesPath, 'data', 'images');
+                const uploadPath = path.join(uploadDir, fileName);
+
+                await fs.promises.mkdir(uploadDir, { recursive: true });
+                await fs.promises.copyFile(filePath, uploadPath);
+                return { success: true, filePath: `${resourcesPath}/data/images/${fileName}` };
+            }
+
+        } catch (error) {
+            console.error('upload-file-error:', error);
+            return { success: false, message: error.message };
+        }
+    });
+}
