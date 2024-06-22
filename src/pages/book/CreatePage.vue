@@ -26,9 +26,21 @@ const book = reactive(bookSt.book || {
   cover: '',
 })
 
-const save = () => {
+const save = async () => {
   if(book.title) {
-    book.id ? bookSt.updateBook(book) : bookSt.saveBook(book)
+    if (book.id) {
+      bookSt.updateBook(book)
+    } else {
+      
+      const newBook = {
+        title: book.title,
+        desc: book.desc,
+        tags: book.tags,
+        author: book.author,
+        cover: book.cover,
+      }
+      await bookSt.saveBook(newBook)
+    }
     router.push({name: 'book-list'})
   }
 }
@@ -81,5 +93,4 @@ const customBase64Uploader = async (event) => {
 </template>
 
 <style scoped>
-
 </style>

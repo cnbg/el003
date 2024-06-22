@@ -95,4 +95,51 @@ if (!gotTheLock) {
             return { success: false, message: error.message };
         }
     });
+
+    ipcMain.handle('save-book', async (event, book) => {
+        try {
+            const resourcesPath = process.resourcesPath;
+            const appPath = app.getAppPath();
+            let bookDir;       
+            const standardBook = {
+                id: book.id,
+                title: book.title,
+                desc: book.desc,
+                author: book.author,
+                tags: book.tags,
+                date: book.date,
+                cover: book.cover,
+                pages: book.pages,
+                chapters: book.chapters || []  
+            };
+    
+            if (!app.isPackaged) {
+                bookDir = path.join(appPath, 'src', 'data', 'books');
+            } else {
+                bookDir = path.join(resourcesPath, 'data', 'books');
+            }
+    
+            const bookPath = path.join(bookDir, `${book.id}.json`);
+    
+            await fs.promises.mkdir(bookDir, { recursive: true });
+            await fs.promises.writeFile(bookPath, JSON.stringify(standardBook, null, 2), 'utf8');
+
+            const booksJsonPath = path.join(appPath, 'src', 'data', 'books.json');
+            let booksJson = [];
+            try {
+                const booksJsonData = await fs.promises.readFile(booksJsonPath, 'utf8');
+                booksJson = JSON.parse(booksJsonData);
+            } catch (err) {
+                console.error('books.json read error:', err);
+            }
+            booksJson.push(standardBook);
+            await fs.promises.writeFile(booksJsonPath, JSON.stringify(booksJson, null, 2), 'utf8');
+
+           return { success: true, filePath: bookPath };
+        } catch (error) {
+            console.error('save-book-error:', error);
+            return { success: false, message: error.message };
+        }
+    });
+    
 }

@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
 import { v4 as uuid } from 'uuid'
-
 import books from '../data/books'
 
 export const useBookStore = defineStore('book', {
@@ -47,19 +46,28 @@ export const useBookStore = defineStore('book', {
                 return chapter.parent === parentId
             }) ?? []
         },
-        saveBook(book) {
-            book.id = uuid()
-            book.date = new Date()
-            book.author = {
-                phone: '',
-                bio: '',
-                avatar: '',
-                ...book.author,
-            }
-            book.pages = 0
-            book.chapters = []
+        async saveBook(book) {
+            try {
+                book.id = uuid()
+                book.date = new Date()
+                book.author = {
+                    phone: '',
+                    bio: '',
+                    avatar: '',
+                    ...book.author,
+                }
+                book.pages = 0
+                book.chapters = []
+   
+                const sanitizedBook = JSON.parse(JSON.stringify(book))
+                console.log('Saving sanitized book:', sanitizedBook)
+                this.books?.push(sanitizedBook)  
 
-            this.books?.push(book)
+                const result = await window.electron.saveBook(sanitizedBook)
+                console.log('Book save result:', result)
+            } catch (error) {
+                console.error('Error saving book:', error)
+            }
         },
         updateBook(book) {
             this.books?.map(b => b.id === book.id ? book : b)
