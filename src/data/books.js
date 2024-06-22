@@ -18,8 +18,6 @@ const images = () => {
 }
 
 const chapter = () => {
-
-
     return {
         id: faker.string.uuid(),
         parent: null,
@@ -87,14 +85,29 @@ const fillBooks = () => {
 // fillBooks()
 // console.log(books)
 
-const books = [
-    algoData,
-    kgData,
-    bioData,
-    mathData,
-    histData,
-    enData,
-    ...bookData,
-]
+// const books = [
+//     algoData,
+//     kgData,
+//     bioData,
+//     mathData,
+//     histData,
+//     enData,
+//     ...bookData,
+// ]
 
-export default books
+// export default books
+
+const loadBooks = async () => {
+    try {
+      const books = await window.electron.loadBooksFromDirectory();
+      return books;
+    } catch (error) {
+      console.error('Error loading books:', error);
+      return [];
+    }
+};
+
+const books = await loadBooks();
+
+export default books;
+

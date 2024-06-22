@@ -2,15 +2,28 @@
 import { ref } from 'vue'
 import { useBookStore } from '../../stores/book'
 import Model3DViewer from './Model3DViewer.vue'
-
+const { electron } = window;
 
 const bookSt = useBookStore()
 const file = ref({})
 
 const fileUploader = async (event) => {
   file.value = event.files[0]
-  console.log(file.value)
-}
+  const model = event.files[0];
+  const filePath = model.path;
+  const fileName = model.name;
+
+  try {
+    const response = await electron.uploadModel(filePath, fileName);
+    if (response.success) {
+      // file.value.path = response.filePath;
+    } else {
+      console.error('Error uploading model:', response.message);
+    }
+  } catch (error) {
+    console.error('Error uploading model:', error);
+  }
+};
 
 const save = () => {
   bookSt.block?.id ? bookSt.updateBlock(file.value || '') : bookSt.saveBlock(file.value || '')

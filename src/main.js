@@ -3,6 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import fs from 'original-fs';
+const fsOld = require('fs');
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -67,10 +68,8 @@ if (!gotTheLock) {
     }
 
     ipcMain.handle('upload-file', async (event, { filePath, fileName }) => {
-        console.error('upload-file:', filePath, fileName);
         try {
             const resourcesPath = process.resourcesPath;
-            const userDataPath = app.getPath('userData');
             const appPath = app.getAppPath();
 
             if (!app.isPackaged) {
@@ -81,12 +80,64 @@ if (!gotTheLock) {
                 await fs.promises.copyFile(filePath, uploadPath);
                 return { success: true, filePath: `${appPath}/src/data/images/${fileName}` };
             } else {
-                const uploadDir = path.join(resourcesPath, 'data', 'images');
+                const uploadDir = path.join(resourcesPath, 'src', 'data', 'images');
                 const uploadPath = path.join(uploadDir, fileName);
 
                 await fs.promises.mkdir(uploadDir, { recursive: true });
                 await fs.promises.copyFile(filePath, uploadPath);
                 return { success: true, filePath: `${resourcesPath}/data/images/${fileName}` };
+            }
+
+        } catch (error) {
+            return { success: false, message: error.message };
+        }
+    });
+
+    ipcMain.handle('upload-video', async (event, { filePath, fileName }) => {
+        try {
+            const resourcesPath = process.resourcesPath;
+            const appPath = app.getAppPath();
+            if (!app.isPackaged) {
+                const uploadDir = path.join(appPath, 'src', 'data', 'videos');
+                const uploadPath = path.join(uploadDir, fileName);
+
+                await fs.promises.mkdir(uploadDir, { recursive: true });
+                await fs.promises.copyFile(filePath, uploadPath);
+                return { success: true, filePath: `${appPath}/src/data/videos/${fileName}` };
+            } else {
+                const uploadDir = path.join(resourcesPath, 'src', 'data', 'videos');
+                const uploadPath = path.join(uploadDir, fileName);
+
+                await fs.promises.mkdir(uploadDir, { recursive: true });
+                await fs.promises.copyFile(filePath, uploadPath);
+                return { success: true, filePath: `${resourcesPath}/data/videos/${fileName}` };
+            }
+
+        } catch (error) {
+            console.error('upload-file-error:', error);
+            return { success: false, message: error.message };
+        }
+    });
+
+    ipcMain.handle('upload-model', async (event, { filePath, fileName }) => {
+        try {
+            const resourcesPath = process.resourcesPath;
+            const appPath = app.getAppPath();
+
+            if (!app.isPackaged) {
+                const uploadDir = path.join(appPath, 'src', 'data', 'models');
+                const uploadPath = path.join(uploadDir, fileName);
+
+                await fs.promises.mkdir(uploadDir, { recursive: true });
+                await fs.promises.copyFile(filePath, uploadPath);
+                return { success: true, filePath: `${appPath}/src/data/models/${fileName}` };
+            } else {
+                const uploadDir = path.join(resourcesPath, 'src', 'data', 'models');
+                const uploadPath = path.join(uploadDir, fileName);
+
+                await fs.promises.mkdir(uploadDir, { recursive: true });
+                await fs.promises.copyFile(filePath, uploadPath);
+                return { success: true, filePath: `${resourcesPath}/data/models/${fileName}` };
             }
 
         } catch (error) {
@@ -103,4 +154,48 @@ if (!gotTheLock) {
             appPath: app.getAppPath(),
         };
     });
+
+    ipcMain.handle('save-book', async (event, book, fileName) => {
+        try {
+          const appPath = app.getAppPath();
+          const booksDir = path.join(appPath, 'src/data/books');
+          const bookPath = path.join(booksDir, fileName);
+
+          await fs.promises.mkdir(booksDir, { recursive: true });
+          await fs.promises.writeFile(bookPath, JSON.stringify(book, null, 2));
+
+          return { success: true, message: 'Book saved successfully.' };
+        } catch (error) {
+          console.error('Error saving book:', error);
+          return { success: false, message: error.message };
+        }
+    });
+
+    ipcMain.handle('load-books-from-directory', async () => {
+        try {
+            const appPath = app.getAppPath();
+            const directoryPath = path.join(appPath, 'src/data/books');
+            const books = [];
+            const files = fsOld.readdirSync(directoryPath);
+
+            files.forEach((file) => {
+                if (path.extname(file) === '.json') {
+                    const filePath = path.join(directoryPath, file);
+                    const bookData = JSON.parse(fsOld.readFileSync(filePath, 'utf-8'));
+
+                    if (Array.isArray(bookData)) {
+                        books.push(...bookData);
+                    } else if (bookData && typeof bookData === 'object') {
+                        books.push(bookData);
+                    } else {
+                        console.error('Unexpected JSON data format:', bookData);
+                    }
+                }
+            });
+            return books;
+        } catch (error) {
+          console.error('Error loading books:', error);
+          return [];
+        }
+      });
 }
