@@ -1,7 +1,6 @@
 <script setup>
 import EditChapter from './EditChapter.vue'
 import EditChapterDialog from './EditChapterDialog.vue'
-
 import { ref } from 'vue'
 import { useBookStore } from '../../../stores/book'
 
@@ -19,8 +18,12 @@ const editChapterBtn = () => {
   chapter.value = {...bookSt.chapter}
   showEditDialog.value = true
 }
-const onCloseDialog = (ch = {}) => {
-  ch.id ? bookSt.updateChapter(ch) : bookSt.saveChapter(ch)
+const onCloseDialog = async (ch = {}) => {
+  if (ch.id) {
+    await bookSt.updateChapter(ch)
+  } else {
+    await bookSt.saveChapter(ch)
+  }
 
   chapter.value = {}
   showEditDialog.value = false

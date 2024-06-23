@@ -22,6 +22,7 @@ export default defineConfig((env) => {
                     assetFileNames: '[name].[ext]',
                 },
             },
+            target: 'esnext', // Ensure the build target supports top-level await if still needed
         },
         plugins: [pluginHotRestart('reload')],
     }

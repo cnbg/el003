@@ -8,20 +8,20 @@ const bookSt = useBookStore()
 const file = ref({})
 
 const fileUploader = async (event) => {
-  file.value = event.files[0]
-  const model = event.files[0];
-  const filePath = model.path;
-  const fileName = model.name;
+  const file = event.files[0];
+  const filePath = file.path;
+  const fileName = file.name;
 
   try {
     const response = await electron.uploadModel(filePath, fileName);
     if (response.success) {
-      // file.value.path = response.filePath;
+      // image.src = response.filePath;
+      // image.thumb = response.filePath;
     } else {
-      console.error('Error uploading model:', response.message);
+      console.error('Error uploading file:', response.message);
     }
   } catch (error) {
-    console.error('Error uploading model:', error);
+    console.error('Error uploading file:', error);
   }
 };
 

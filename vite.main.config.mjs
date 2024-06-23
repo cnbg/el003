@@ -17,6 +17,7 @@ export default defineConfig((env) => {
             rollupOptions: {
                 external,
             },
+            target: 'esnext', // Ensure the build target supports top-level await if still needed
         },
         plugins: [pluginHotRestart('restart')],
         define,

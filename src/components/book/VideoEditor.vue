@@ -13,7 +13,7 @@ const fileUploader = async (event) => {
   try {
     const response = await electron.uploadVideo(filePath, fileName);
     if (response.success) {
-      file.value = event.files[0]
+      file.value.path = response.filePath;
     } else {
       console.error('Error uploading video:', response.message);
     }

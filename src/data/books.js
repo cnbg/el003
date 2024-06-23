@@ -99,15 +99,19 @@ const fillBooks = () => {
 
 const loadBooks = async () => {
     try {
-      const books = await window.electron.loadBooksFromDirectory();
-      return books;
+        const response = await window.electron.loadBooks();
+        if (response.success) {
+            return response.books;
+        } else {
+            console.error('Error loading books:', response.message);
+            return [];
+        }
     } catch (error) {
-      console.error('Error loading books:', error);
-      return [];
+        console.error('Error loading books:', error);
+        return [];
     }
 };
 
 const books = await loadBooks();
 
 export default books;
-

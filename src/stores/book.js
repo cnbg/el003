@@ -1,20 +1,24 @@
 import { defineStore } from 'pinia'
 import { v4 as uuid } from 'uuid'
-
 import books from '../data/books'
 
 export const useBookStore = defineStore('book', {
     state: () => ({
         books: books,
         book: null,
+        bookFileName: null,
         chapter: null,
         block: null,
         editing: false,
     }),
     getters: {},
     actions: {
-        getBook(bookId, chapterId = null) {
+        async getBook(bookId, chapterId = null) {
             this.book = this.books?.find(book => book.id === bookId)
+
+            if (this.book) {
+                this.bookFileName = await window.electron.getBookFileName(bookId);
+            }
 
             if(chapterId) {
                 this.chapter = this.book?.chapters?.find(chapter => chapter.id === chapterId)
@@ -39,14 +43,12 @@ export const useBookStore = defineStore('book', {
                 if(s.length > 0) {
                     return chapter.parent === parentId && (
                         chapter.title.match(new RegExp(s, 'i'))
-                        // || chapter.desc.match(new RegExp(s, 'i'))
-                        // || chapter.tags.includes(s)
                     )
                 }
                 return chapter.parent === parentId
             }) ?? []
         },
-        saveBook(book) {
+        async saveBook(book) {
             book.id = uuid()
             book.date = new Date()
             book.author = {
@@ -58,34 +60,61 @@ export const useBookStore = defineStore('book', {
             book.pages = 0
             book.chapters = []
 
-            this.books?.push(book)
+            this.books.push(book)  // Ensure this.books is an array and push the new book
+            console.log('Books after push:', this.books); // Debug log to check if book is added
+            const fileName = await window.electron.getBookFileName(book.id) || `${book.id}.json`
+            await window.electron.updateBook(JSON.parse(JSON.stringify(book)), fileName)
         },
-        updateBook(book) {
-            this.books?.map(b => b.id === book.id ? book : b)
+        async updateBook(book) {
+            this.books = this.books?.map(b => b.id === book.id ? book : b)
+            await window.electron.updateBook(JSON.parse(JSON.stringify(book)), this.bookFileName)
         },
-        deleteBook(bookId) {
-            this.books = this.books.filter(book => book.id !== bookId)
+        async deleteBook(bookId) {
+            const book = this.books.find(b => b.id === bookId);
+            if (book) {
+                const fileName = await window.electron.getBookFileName(bookId);
+                if (fileName) {
+                    const response = await window.electron.deleteBook(fileName);
+                    if (response.success) {
+                        this.books = this.books.filter(book => book.id !== bookId);
+                    } else {
+                        console.error('Error deleting book:', response.message);
+                    }
+                }
+            }
         },
-        saveChapter(chapter) {
-            this.book?.chapters?.push({
-                ...chapter,
-                ...{
-                    id: uuid(),
-                    date: new Date(),
-                },
-            })
+        async saveChapter(chapter) {
+            chapter.id = uuid()
+            chapter.date = new Date()
 
-            if(chapter?.parent) {
-                this.book?.chapters?.map(ch => {
-                    if(ch.id === chapter.parent) ch.items++
+            if (!this.book.chapters) {
+                this.book.chapters = []
+            }
+
+            this.book.chapters.push(chapter)
+
+            if (chapter?.parent) {
+                this.book.chapters.map(ch => {
+                    if (ch.id === chapter.parent) ch.items++
                     return ch
                 })
             }
+            if (!this.bookFileName) {
+                this.bookFileName = await window.electron.getBookFileName(this.book.id);
+            }
+
+            await window.electron.updateBook(JSON.parse(JSON.stringify(this.book)), this.bookFileName)
         },
-        updateChapter(chapter) {
+        async updateChapter(chapter) {
             this.chapter = chapter
             this.book.chapters = this.book.chapters?.map(ch => ch.id === chapter.id ? chapter : ch)
-            this.updateBook(this.book)
+
+            // Ensure bookFileName is correctly set before updating the book
+            if (!this.bookFileName) {
+                this.bookFileName = await window.electron.getBookFileName(this.book.id);
+            }
+
+            await window.electron.updateBook(JSON.parse(JSON.stringify(this.book)), this.bookFileName)
         },
         deleteChapter() {
             if(this.book && this.chapter) {
@@ -126,16 +155,6 @@ export const useBookStore = defineStore('book', {
             this.editing = false
         },
         updateBlock(content = '') {
-            // this.chapter?.blocks?.push({
-            //     ...this.block,
-            //     ...{
-            //         id: uuid(),
-            //         content: content,
-            //     },
-            // })
-            //
-            // this.updateChapter(this.chapter)
-
             this.block = null
             this.editing = false
         },

@@ -29,7 +29,6 @@ const fileUploader = async (event, image) => {
       console.error('Error uploading file:', response.message);
     }
   } catch (error) {
-    const sdfs = await electron.uploadFile(filePath, fileName);
     console.error('Error uploading file:', error);
   }
 };

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted  } from 'vue'
+import { ref, onMounted } from 'vue';
 
 const electron = window.electron;
 if (!electron) {
@@ -9,7 +9,12 @@ if (!electron) {
 const paths = ref({});
 const fetchPaths = async () => {
   try {
-    paths.value = await electron.getPaths();
+    const response = await electron.getPaths();
+    if (response.success) {
+      paths.value = response;
+    } else {
+      console.error('Error fetching paths:', response.message);
+    }
   } catch (error) {
     console.error('Error fetching paths:', error);
   }
@@ -20,22 +25,26 @@ onMounted(() => {
 });
 
 const props = defineProps({
-  images: {type: Object, default: []},
-})
-const activeIndex = ref(0)
-const displayGallery = ref(false)
+  images: { type: Object, default: [] },
+});
+const activeIndex = ref(0);
+const displayGallery = ref(false);
 const imageClick = (index) => {
-  activeIndex.value = index
-  displayGallery.value = true
-}
-
-const getImageSrc = (imageSrc) => {
-  if (paths.value.resourcesPath) {
-    return `${paths.value.resourcesPath}${imageSrc}`;
-  }
-  return imageSrc;
+  activeIndex.value = index;
+  displayGallery.value = true;
 };
 
+const getImageSrc = (imageSrc) => {
+  if (imageSrc.startsWith('file://')) {
+    return imageSrc;
+  }
+
+  if (paths.value.resourcesPath) {
+    return `file://${paths.value.resourcesPath.replace(/\\/g, '/')}/${imageSrc.replace(/\\/g, '/')}`;
+  }
+
+  return imageSrc;
+};
 </script>
 
 <template>
@@ -73,5 +82,4 @@ const getImageSrc = (imageSrc) => {
 </template>
 
 <style scoped>
-
 </style>

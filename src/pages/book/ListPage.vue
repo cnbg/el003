@@ -1,9 +1,9 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useBookStore } from '../../stores/book'
 
 const bookSt = useBookStore()
-const books = ref(bookSt.books || [])
+const books = ref(bookSt.books)
 
 const search = (s) => {
   books.value = s.length === 0 ? bookSt.books : filter(bookSt.books, s)
@@ -16,6 +16,11 @@ const filter = (items, s) => {
         i.tags.includes(s)
   })
 }
+
+// Watch for changes in bookSt.books and update the local books ref
+watch(() => bookSt.books, (newBooks) => {
+  books.value = newBooks
+})
 </script>
 
 <template>

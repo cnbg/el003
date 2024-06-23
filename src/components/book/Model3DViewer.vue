@@ -11,18 +11,33 @@ if (!electron) {
 const paths = ref({});
 const fetchPaths = async () => {
   try {
-    paths.value = await electron.getPaths();
+    const response = await electron.getPaths();
+    if (response.success) {
+      paths.value = response;
+    } else {
+      console.error('Error fetching paths:', response.message);
+    }
   } catch (error) {
     console.error('Error fetching paths:', error);
   }
 };
 
 const getModelSrc = (modelSrc) => {
-  if (paths.value.resourcesPath) {
-    return `${paths.value.resourcesPath}${modelSrc}`;
+  if (modelSrc.startsWith('file://')) {
+    return modelSrc;
   }
+
+  if (paths.value.resourcesPath) {
+    return `file://${paths.value.resourcesPath.replace(/\\/g, '/')}/${modelSrc.replace(/\\/g, '/')}`;
+  }
+
   return modelSrc;
 };
+
+
+onMounted(() => {
+  fetchPaths();
+});
 
 onMounted(() => {
   fetchPaths();

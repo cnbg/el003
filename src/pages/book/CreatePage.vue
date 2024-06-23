@@ -16,8 +16,8 @@ const userSt = useUserStore()
 const bookSt = useBookStore()
 bookSt.getBook(props.bookId)
 
-// const book = reactive(bookSt.book || {
-const book = reactive({
+const book = reactive(bookSt.book || {
+  id: '',
   title: '',
   desc: '',
   tags: [],
@@ -39,12 +39,12 @@ const generateFileName = (title) => {
 
 const save = async () => {
   if (book.title) {
-    // book.id = uuidv4();
+    book.id = uuidv4();
     const sanitizedBook = sanitizeObject(book);
     const fileName = generateFileName(book.title);
     const response = await electron.saveBook(sanitizedBook, fileName);
     if (response.success) {
-      book.id ? bookSt.updateBook(book) : bookSt.saveBook(book);
+      bookSt.books.push(book);  // Push the new book to the books array
       router.push({ name: 'book-list' });
     } else {
       console.error('Error saving book:', response.message);
