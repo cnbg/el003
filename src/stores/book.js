@@ -75,22 +75,27 @@ export const useBookStore = defineStore('book', {
         deleteBook(bookId) {
             this.books = this.books.filter(book => book.id !== bookId)
         },
-        saveChapter(chapter) {
-            this.book?.chapters?.push({
-                ...chapter,
-                ...{
-                    id: uuid(),
-                    date: new Date(),
-                },
-            })
-
-            if(chapter?.parent) {
+        async saveChapter(chapter) {
+            try {
+              const sanitizedChapter = JSON.parse(JSON.stringify(chapter));
+              sanitizedChapter.id = uuid();
+              sanitizedChapter.date = new Date();
+      
+              this.book?.chapters?.push(sanitizedChapter);
+      
+              if (chapter?.parent) {
                 this.book?.chapters?.map(ch => {
-                    if(ch.id === chapter.parent) ch.items++
-                    return ch
-                })
+                  if (ch.id === chapter.parent) ch.items++;
+                  return ch;
+                });
+              }
+      
+              const result = await window.electron.saveChapter(this.book.id, sanitizedChapter);
+              console.log('Chapter save result:', result);
+            } catch (error) {
+              console.error('Error saving chapter:', error);
             }
-        },
+          },
         updateBlockContent(index, content) {
             if (this.chapter && this.chapter.blocks && this.chapter.blocks[index]) {
                 this.chapter.blocks[index].content = content;
@@ -106,10 +111,26 @@ export const useBookStore = defineStore('book', {
                 this.chapter.blocks.splice(index, 1);
             }
         },
-        updateChapter(chapter) {
-            this.chapter = chapter
-            this.book.chapters = this.book.chapters?.map(ch => ch.id === chapter.id ? chapter : ch)
-            this.updateBook(this.book)
+
+        async updateChapter(chapter) {
+            try {              
+                const serializedChapter = JSON.parse(JSON.stringify(chapter));
+
+                this.book.chapters = this.book.chapters.map(ch => (ch.id === serializedChapter.id ? serializedChapter : ch));
+
+                const result = await window.electron.saveChapter(this.book.id, serializedChapter);
+                console.log('Chapter update result:', result);
+
+                const bookIndex = this.books.findIndex(b => b.id === this.book.id);
+                if (bookIndex !== -1) {
+                    this.books[bookIndex].chapters = this.book.chapters;
+                }
+
+                return true;
+            } catch (error) {
+                console.error('Error updating chapter:', error);
+                return false;
+            }
         },
         deleteChapter() {
             if(this.book && this.chapter) {
@@ -188,6 +209,7 @@ export const useBookStore = defineStore('book', {
                 ...{
                     id: '',
                     parent: null,
+                    book_id:'',
                     title: '',
                     desc: '',
                     tags: [],

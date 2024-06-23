@@ -43,7 +43,7 @@
         </ScrollPanel>
       </div>
       <Dialog v-model:visible="showEditDialog" modal :header="$t('general.add-chapter')" class="w-30rem">
-        <EditChapterDialog :chapter="chapter" @close="onCloseDialog" />
+        <EditChapterDialog :chapter="chapter" :bookId="bookSt.book.id" @close="onCloseDialog" />
       </Dialog>
     </Panel>
   </div>
@@ -80,14 +80,16 @@ const editChapterBtn = () => {
 }
 
 const onCloseDialog = (ch = {}) => {
-  if (ch.id) {
-    bookSt.updateChapter(ch)
-  } else {
-    bookSt.saveChapter(ch)
-  }
-  chapter.value = {}
-  showEditDialog.value = false
-}
+    const plainCh = JSON.parse(JSON.stringify(ch));
+
+    if (plainCh.id) {
+        bookSt.updateChapter(plainCh);
+    } else {
+        bookSt.saveChapter(plainCh);
+    }
+    chapter.value = {};
+    showEditDialog.value = false;
+};
 
 const copyLink = () => {
   const currentUrl = window.location.href
