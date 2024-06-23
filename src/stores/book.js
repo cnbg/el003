@@ -204,12 +204,12 @@ export const useBookStore = defineStore('book', {
             this.editing = false
             this.block = null
         },
-        chapterObj(obj) {
+        chapterObj(obj, bookId) {
             return {
                 ...{
                     id: '',
                     parent: null,
-                    book_id:'',
+                    book_id: bookId, 
                     title: '',
                     desc: '',
                     tags: [],
@@ -221,7 +221,8 @@ export const useBookStore = defineStore('book', {
                     blocks: [],
                 },
                 ...obj,
-            }
+            };
         },
+
     },
 })

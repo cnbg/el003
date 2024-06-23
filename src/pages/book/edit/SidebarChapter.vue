@@ -85,11 +85,13 @@ const onCloseDialog = (ch = {}) => {
     if (plainCh.id) {
         bookSt.updateChapter(plainCh);
     } else {
+        plainCh.book_id = bookSt.book.id;
         bookSt.saveChapter(plainCh);
     }
     chapter.value = {};
     showEditDialog.value = false;
 };
+
 
 const copyLink = () => {
   const currentUrl = window.location.href

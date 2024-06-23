@@ -8,8 +8,24 @@ const bookSt = useBookStore()
 const file = ref({})
 
 const fileUploader = async (event) => {
-  file.value = event.files[0]
-  console.log(file.value)
+  const selectedFile = event.files[0];
+  const filePath = selectedFile.path;
+  const fileName = selectedFile.name;
+
+  try {
+    const response = await window.electron.uploadModel(filePath, fileName);
+    if (response.success) {
+      file.value = {
+        ...selectedFile,
+        path: response.filePath,
+      };
+    } else {
+      console.error('response:', response);
+      console.error('Error uploading model:', response.message);
+    }
+  } catch (error) {
+    console.error('Error uploading model:', error);
+  }
 }
 
 const save = () => {
@@ -20,7 +36,7 @@ const save = () => {
 <template>
   <div>
     <div class="flex flex-wrap justify-between gap-5">
-      <FileUpload mode="basic" name="cover"
+      <FileUpload mode="basic" name="cover" accept=".obj,.fbx,.glb,.gltf,.stl,.amf,.iges,.max,.stp,.x3d,.vrml,.3ds,.3mf,.dae"
                   customUpload @uploader="fileUploader" auto
                   :chooseLabel="$t('general.select-file')" />
 

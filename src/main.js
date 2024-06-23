@@ -250,4 +250,31 @@ if (!gotTheLock) {
         }
     });
     
+    ipcMain.handle('upload-model', async (event, { filePath, fileName }) => {
+        try {
+            const resourcesPath = process.resourcesPath;
+            const appPath = app.getAppPath();
+    
+            if (!app.isPackaged) {
+                const uploadDir = path.join(appPath, 'src', 'data', 'models');
+                const uploadPath = path.join(uploadDir, fileName);
+    
+                await fs.promises.mkdir(uploadDir, { recursive: true });
+                await fs.promises.copyFile(filePath, uploadPath);
+                return { success: true, filePath: `${appPath}/src/data/models/${fileName}` };
+            } else {
+                const uploadDir = path.join(resourcesPath, 'data', 'models');
+                const uploadPath = path.join(uploadDir, fileName);
+    
+                await fs.promises.mkdir(uploadDir, { recursive: true });
+                await fs.promises.copyFile(filePath, uploadPath);
+                return { success: true, filePath: `${resourcesPath}/data/models/${fileName}` };
+            }
+    
+        } catch (error) {
+            console.error('upload-model-error:', error);
+            return { success: false, message: error.message };
+        }
+    });
+    
 }
