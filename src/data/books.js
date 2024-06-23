@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker'
 import bookData from './books.json'
-import algoData from './books/algo.json'
+import algoData from './books/8ccf930b-90a4-430a-bf64-49f61690456546.json'
 import kgData from './books/kg.json'
 import bioData from './books/bio.json'
 import mathData from './books/math.json'

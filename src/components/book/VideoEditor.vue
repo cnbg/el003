@@ -6,8 +6,24 @@ const bookSt = useBookStore()
 const file = ref({})
 
 const fileUploader = async (event) => {
-  file.value = event.files[0]
-  console.log(file.value)
+  const selectedFile = event.files[0];
+  const filePath = selectedFile.path;
+  const fileName = selectedFile.name;
+
+  try {
+    const response = await window.electron.uploadVideo(filePath, fileName);
+    if (response.success) {
+      file.value = {
+        ...selectedFile,
+        path: response.filePath,
+      };
+    } else {
+      console.error('response:', response);
+      console.error('Error uploading video:', response.message);
+    }
+  } catch (error) {
+    console.error('Error uploading video:', error);
+  }
 }
 
 const save = () => {
@@ -28,6 +44,7 @@ const save = () => {
 
     <VideoViewer v-if="file.path" :video="file" class="mt-12" />
   </div>
+
 </template>
 
 <style scoped>

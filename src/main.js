@@ -68,10 +68,8 @@ if (!gotTheLock) {
     }
 
     ipcMain.handle('upload-file', async (event, { filePath, fileName }) => {
-        console.error('upload-file:', filePath, fileName);
         try {
             const resourcesPath = process.resourcesPath;
-            const userDataPath = app.getPath('userData');
             const appPath = app.getAppPath();
 
             if (!app.isPackaged) {
@@ -82,7 +80,7 @@ if (!gotTheLock) {
                 await fs.promises.copyFile(filePath, uploadPath);
                 return { success: true, filePath: `${appPath}/src/data/images/${fileName}` };
             } else {
-                const uploadDir = path.join(resourcesPath, 'data', 'images');
+                const uploadDir = path.join(resourcesPath, 'src', 'data', 'images');
                 const uploadPath = path.join(uploadDir, fileName);
 
                 await fs.promises.mkdir(uploadDir, { recursive: true });
@@ -91,7 +89,6 @@ if (!gotTheLock) {
             }
 
         } catch (error) {
-            console.error('upload-file-error:', error);
             return { success: false, message: error.message };
         }
     });
@@ -161,20 +158,15 @@ if (!gotTheLock) {
             await fs.promises.mkdir(bookDir, {
                 recursive: true
             });
-            // Read existing book data
             const bookData = JSON.parse(await fs.promises.readFile(bookPath, 'utf8'));
-            // Update the book with the new chapter
             const existingChapterIndex = bookData.chapters.findIndex(ch => ch.id === chapter.id);
             if (existingChapterIndex >= 0) {
                 bookData.chapters[existingChapterIndex] = chapter;
             } else {
                 bookData.chapters.push(chapter);
             }
-            // Update order and items for all chapters in the book
             updateOrderAndItems(bookData.chapters);
-            // Write updated book data back to file
-            await fs.promises.writeFile(bookPath, JSON.stringify(bookData, null, 2), 'utf8');
-            // Read and update the main books.json file
+            await fs.promises.writeFile(bookPath, JSON.stringify(bookData, null, 2), 'utf8');   
             let booksJson = [];
             try {
                 const booksJsonData = await fs.promises.readFile(booksJsonPath, 'utf8');
@@ -182,14 +174,12 @@ if (!gotTheLock) {
             } catch (err) {
                 console.error('books.json read error:', err);
             }
-            // Update the specific book in books.json
             const bookIndex = booksJson.findIndex(b => b.id === bookId);
             if (bookIndex >= 0) {
                 booksJson[bookIndex].chapters = bookData.chapters;
             } else {
                 booksJson.push(bookData);
             }
-            // Write the updated books.json file
             await fs.promises.writeFile(booksJsonPath, JSON.stringify(booksJson, null, 2), 'utf8');
             return {
                 success: true,
@@ -205,7 +195,6 @@ if (!gotTheLock) {
     });
     
     function updateOrderAndItems(chapters) {
-        // Sort chapters based on their parent and order
         chapters.sort((a, b) => {
             if (a.parent === b.parent) {
                 return a.order - b.order;
@@ -214,7 +203,6 @@ if (!gotTheLock) {
             if (b.parent === null) return 1;
             return 0;
         });
-        // Assign items and order based on nesting
         let index = 0;
         let stack = [];
         for (const chapter of chapters) {
@@ -234,5 +222,32 @@ if (!gotTheLock) {
     function countChildren(chapters, parentId) {
         return chapters.filter(ch => ch.parent === parentId).length;
     }
+
+    ipcMain.handle('upload-video', async (event, { filePath, fileName }) => {
+        try {
+            const resourcesPath = process.resourcesPath;
+            const appPath = app.getAppPath();
+
+            if (!app.isPackaged) {
+                const uploadDir = path.join(appPath, 'src', 'data', 'videos');
+                const uploadPath = path.join(uploadDir, fileName);
+
+                await fs.promises.mkdir(uploadDir, { recursive: true });
+                await fs.promises.copyFile(filePath, uploadPath);
+                return { success: true, filePath: `${appPath}/src/data/videos/${fileName}` };
+            } else {
+                const uploadDir = path.join(resourcesPath, 'data', 'videos');
+                const uploadPath = path.join(uploadDir, fileName);
+
+                await fs.promises.mkdir(uploadDir, { recursive: true });
+                await fs.promises.copyFile(filePath, uploadPath);
+                return { success: true, filePath: `${resourcesPath}/data/videos/${fileName}` };
+            }
+
+        } catch (error) {
+            console.error('upload-video-error:', error);
+            return { success: false, message: error.message };
+        }
+    });
     
 }
