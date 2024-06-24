@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker'
 import bookData from './books.json'
-import algoData from './books/8ccf930b-90a4-430a-bf64-49f61690456546.json'
+import algoData from './books/algo.json'
 import kgData from './books/kg.json'
 import bioData from './books/bio.json'
 import mathData from './books/math.json'
@@ -87,14 +87,33 @@ const fillBooks = () => {
 // fillBooks()
 // console.log(books)
 
-const books = [
-    algoData,
-    kgData,
-    bioData,
-    mathData,
-    histData,
-    enData,
-    ...bookData,
-]
+// const books = [
+//     algoData,
+//     kgData,
+//     bioData,
+//     mathData,
+//     histData,
+//     enData,
+//     ...bookData,
+// ]
 
-export default books
+// export default books
+
+const loadBooks = async () => {
+    try {
+        const response = await window.electron.loadBooks();
+        if (response.success) {
+            return response.books;
+        } else {
+            console.error('Error loading books:', response.message);
+            return [];
+        }
+    } catch (error) {
+        console.error('Error loading books:', error);
+        return [];
+    }
+};
+
+const books = await loadBooks();
+
+export default books;

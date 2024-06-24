@@ -1,6 +1,5 @@
 <script setup>
 import { reactive } from 'vue'
-import axios from 'axios';
 import { useBookStore } from '../../stores/book'
 const { electron } = window;
 
@@ -27,12 +26,9 @@ const fileUploader = async (event, image) => {
       image.src = response.filePath;
       image.thumb = response.filePath;
     } else {
-      console.error('response:', response);
       console.error('Error uploading file:', response.message);
     }
   } catch (error) {
-    const sdfs = await electron.uploadFile(filePath, fileName);
-    console.error('response sdfs:', sdfs);
     console.error('Error uploading file:', error);
   }
 };

@@ -45,6 +45,10 @@ if (!gotTheLock) {
         mainWindow.on('closed', () => {
             mainWindow = null;
         });
+
+        if(!app.isPackaged) {
+            mainWindow.webContents.openDevTools()
+        }
     };
 
     app.whenReady().then(() => {
@@ -71,181 +75,188 @@ if (!gotTheLock) {
         try {
             const resourcesPath = process.resourcesPath;
             const appPath = app.getAppPath();
+            let uploadDir;
+            let uploadPath;
 
             if (!app.isPackaged) {
-                const uploadDir = path.join(appPath, 'src', 'data', 'images');
-                const uploadPath = path.join(uploadDir, fileName);
-
-                await fs.promises.mkdir(uploadDir, { recursive: true });
-                await fs.promises.copyFile(filePath, uploadPath);
-                return { success: true, filePath: `${appPath}/src/data/images/${fileName}` };
+                uploadDir = path.join(appPath, 'src', 'data', 'images');
+                uploadPath = path.join(uploadDir, fileName);
             } else {
-                const uploadDir = path.join(resourcesPath, 'src', 'data', 'images');
-                const uploadPath = path.join(uploadDir, fileName);
-
-                await fs.promises.mkdir(uploadDir, { recursive: true });
-                await fs.promises.copyFile(filePath, uploadPath);
-                return { success: true, filePath: `${resourcesPath}/data/images/${fileName}` };
+                uploadDir = path.join(resourcesPath, 'src', 'data', 'images');
+                uploadPath = path.join(uploadDir, fileName);
             }
 
+            await fs.promises.mkdir(uploadDir, { recursive: true });
+            await fs.promises.copyFile(filePath, uploadPath);
+
+            const fileUrl = `file://${uploadPath.replace(/\\/g, '/')}`;
+
+            return { success: true, filePath: fileUrl };
         } catch (error) {
             return { success: false, message: error.message };
         }
     });
 
-    ipcMain.handle('save-book', async (event, book) => {
-        try {
-            const resourcesPath = process.resourcesPath;
-            const appPath = app.getAppPath();
-            let bookDir;       
-            const standardBook = {
-                id: book.id,
-                title: book.title,
-                desc: book.desc,
-                author: book.author,
-                tags: book.tags,
-                date: book.date,
-                cover: book.cover,
-                pages: book.pages,
-                chapters: book.chapters || []  
-            };
-    
-            if (!app.isPackaged) {
-                bookDir = path.join(appPath, 'src', 'data', 'books');
-            } else {
-                bookDir = path.join(resourcesPath, 'data', 'books');
-            }
-    
-            const bookPath = path.join(bookDir, `${book.id}.json`);
-    
-            await fs.promises.mkdir(bookDir, { recursive: true });
-            await fs.promises.writeFile(bookPath, JSON.stringify(standardBook, null, 2), 'utf8');
+    ipcMain.handle('get-paths', async () => {
+        const resourcesPath = process.resourcesPath;
+        const userDataPath = app.getPath('userData');
+        const appPath = app.getAppPath();
 
-            const booksJsonPath = path.join(appPath, 'src', 'data', 'books.json');
-            let booksJson = [];
-            try {
-                const booksJsonData = await fs.promises.readFile(booksJsonPath, 'utf8');
-                booksJson = JSON.parse(booksJsonData);
-            } catch (err) {
-                console.error('books.json read error:', err);
-            }
-            booksJson.push(standardBook);
-            await fs.promises.writeFile(booksJsonPath, JSON.stringify(booksJson, null, 2), 'utf8');
-
-           return { success: true, filePath: bookPath };
-        } catch (error) {
-            console.error('save-book-error:', error);
-            return { success: false, message: error.message };
-        }
+        return {
+            success: true,
+            resourcesPath,
+            userDataPath,
+            appPath,
+        };
     });
 
-    ipcMain.handle('save-chapter', async (event, {bookId, chapter}) => {
+    ipcMain.handle('save-book', async (event, book, fileName) => {
+
         try {
             const resourcesPath = process.resourcesPath;
             const appPath = app.getAppPath();
-            let bookDir;
+            let booksDir;
             let bookPath;
-            let booksJsonPath;
+
             if (!app.isPackaged) {
-                bookDir = path.join(appPath, 'src', 'data', 'books');
-                booksJsonPath = path.join(appPath, 'src', 'data', 'books.json');
-                bookPath = path.join(bookDir, `${bookId}.json`);
+                booksDir = path.join(appPath, 'src', 'data', 'books');
+                bookPath = path.join(booksDir, fileName);
             } else {
-                bookDir = path.join(resourcesPath, 'data', 'books');
-                booksJsonPath = path.join(resourcesPath, 'data', 'books.json');
-                bookPath = path.join(bookDir, `${bookId}.json`);
+                booksDir = path.join(resourcesPath, 'src', 'data', 'books');
+                bookPath = path.join(booksDir, fileName);
             }
-            await fs.promises.mkdir(bookDir, {
-                recursive: true
-            });
-            const bookData = JSON.parse(await fs.promises.readFile(bookPath, 'utf8'));
-            const existingChapterIndex = bookData.chapters.findIndex(ch => ch.id === chapter.id);
-            if (existingChapterIndex >= 0) {
-                bookData.chapters[existingChapterIndex] = chapter;
-            } else {
-                bookData.chapters.push(chapter);
-            }
-            updateOrderAndItems(bookData.chapters);
-            await fs.promises.writeFile(bookPath, JSON.stringify(bookData, null, 2), 'utf8');   
-            let booksJson = [];
-            try {
-                const booksJsonData = await fs.promises.readFile(booksJsonPath, 'utf8');
-                booksJson = JSON.parse(booksJsonData);
-            } catch (err) {
-                console.error('books.json read error:', err);
-            }
-            const bookIndex = booksJson.findIndex(b => b.id === bookId);
-            if (bookIndex >= 0) {
-                booksJson[bookIndex].chapters = bookData.chapters;
-            } else {
-                booksJson.push(bookData);
-            }
-            await fs.promises.writeFile(booksJsonPath, JSON.stringify(booksJson, null, 2), 'utf8');
-            return {
-                success: true,
-                filePath: bookPath
-            };
+
+            await fs.promises.mkdir(booksDir, { recursive: true });
+            await fs.promises.writeFile(bookPath, JSON.stringify(book, null, 2));
+
+            return { success: true, message: 'Book saved successfully.' };
         } catch (error) {
-            console.error('save-chapter-error:', error);
-            return {
-                success: false,
-                message: error.message
-            };
+            return { success: false, message: error.message };
         }
     });
-    
-    function updateOrderAndItems(chapters) {
-        chapters.sort((a, b) => {
-            if (a.parent === b.parent) {
-                return a.order - b.order;
-            }
-            if (a.parent === null) return -1;
-            if (b.parent === null) return 1;
-            return 0;
-        });
-        let index = 0;
-        let stack = [];
-        for (const chapter of chapters) {
-            if (chapter.parent === null) {
-                chapter.items = countChildren(chapters, chapter.id);
-            } else {
-                const parentIndex = stack.findIndex(item => item.id === chapter.parent);
-                if (parentIndex !== -1) {
-                    stack[parentIndex].items++;
-                }
-            }
-            chapter.order = index++;
-            stack.push(chapter);
-        }
-    }
-    
-    function countChildren(chapters, parentId) {
-        return chapters.filter(ch => ch.parent === parentId).length;
-    }
 
+    ipcMain.handle('update-book', async (event, { book, fileName }) => {
+        try {
+            const resourcesPath = process.resourcesPath;
+            const appPath = app.getAppPath();
+            let booksDir;
+            let bookPath;
+
+            if (!app.isPackaged) {
+                booksDir = path.join(appPath, 'src', 'data', 'books');
+                bookPath = path.join(booksDir, fileName);
+            } else {
+                booksDir = path.join(resourcesPath, 'src', 'data', 'books');
+                bookPath = path.join(booksDir, fileName);
+            }
+
+            await fs.promises.mkdir(booksDir, { recursive: true });
+            await fs.promises.writeFile(bookPath, JSON.stringify(book, null, 2));
+
+            return { success: true, message: 'Book updated successfully.' };
+        } catch (error) {
+            console.error('Error updating book:', error);
+            return { success: false, message: error.message };
+        }
+    });
+
+    ipcMain.handle('load-books', async () => {
+        try {
+            const resourcesPath = process.resourcesPath;
+            const appPath = app.getAppPath();
+
+            let booksDir;
+
+            if (!app.isPackaged) {
+                booksDir = path.join(appPath, 'src/data/books');
+            } else {
+                booksDir = path.join(resourcesPath, 'src/data/books');
+            }
+
+            const bookFiles = fs.readdirSync(booksDir).filter(file => path.extname(file) === '.json');
+            const books = bookFiles.map(file => {
+                const filePath = path.join(booksDir, file);
+                const bookData = fs.readFileSync(filePath, 'utf-8');
+                return JSON.parse(bookData);
+            });
+            return { success: true, books };
+        } catch (error) {
+            console.error('Error loading books:', error);
+            return { success: false, message: error.message };
+        }
+    });
+
+    ipcMain.handle('delete-book', async (event, fileName) => {
+        try {
+            const resourcesPath = process.resourcesPath;
+            const appPath = app.getAppPath();
+            let booksDir;
+            let bookPath;
+
+            if (!app.isPackaged) {
+                booksDir = path.join(appPath, 'src', 'data', 'books');
+                bookPath = path.join(booksDir, fileName);
+            } else {
+                booksDir = path.join(resourcesPath, 'src', 'data', 'books');
+                bookPath = path.join(booksDir, fileName);
+            }
+
+            await fs.promises.unlink(bookPath);
+
+            return { success: true, message: 'Book deleted successfully.' };
+        } catch (error) {
+            console.error('Error deleting book:', error);
+            return { success: false, message: error.message };
+        }
+    });
+
+    ipcMain.handle('get-book-filename', async (event, bookId) => {
+        try {
+            const resourcesPath = process.resourcesPath;
+            const appPath = app.getAppPath();
+            let booksDir;
+
+            if (!app.isPackaged) {
+                booksDir = path.join(appPath, 'src', 'data', 'books');
+            } else {
+                booksDir = path.join(resourcesPath, 'src', 'data', 'books');
+            }
+
+            const bookFiles = fs.readdirSync(booksDir).filter(file => path.extname(file) === '.json');
+            const bookFileName = bookFiles.find(file => {
+                const filePath = path.join(booksDir, file);
+                const bookData = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+                return bookData.id === bookId;
+            });
+
+            return bookFileName || null;
+        } catch (error) {
+            console.error('Error getting book file name:', error);
+            return null;
+        }
+    });
     ipcMain.handle('upload-video', async (event, { filePath, fileName }) => {
         try {
             const resourcesPath = process.resourcesPath;
             const appPath = app.getAppPath();
+            let uploadDir;
+            let uploadPath;
 
             if (!app.isPackaged) {
-                const uploadDir = path.join(appPath, 'src', 'data', 'videos');
-                const uploadPath = path.join(uploadDir, fileName);
-
-                await fs.promises.mkdir(uploadDir, { recursive: true });
-                await fs.promises.copyFile(filePath, uploadPath);
-                return { success: true, filePath: `${appPath}/src/data/videos/${fileName}` };
+                uploadDir = path.join(appPath, 'src', 'data', 'videos');
+                uploadPath = path.join(uploadDir, fileName);
             } else {
-                const uploadDir = path.join(resourcesPath, 'data', 'videos');
-                const uploadPath = path.join(uploadDir, fileName);
-
-                await fs.promises.mkdir(uploadDir, { recursive: true });
-                await fs.promises.copyFile(filePath, uploadPath);
-                return { success: true, filePath: `${resourcesPath}/data/videos/${fileName}` };
+                uploadDir = path.join(resourcesPath, 'src', 'data', 'videos');
+                uploadPath = path.join(uploadDir, fileName);
             }
 
+            await fs.promises.mkdir(uploadDir, { recursive: true });
+            await fs.promises.copyFile(filePath, uploadPath);
+
+            const fileUrl = `file://${uploadPath.replace(/\\/g, '/')}`;
+
+            return { success: true, filePath: fileUrl };
         } catch (error) {
-            console.error('upload-video-error:', error);
             return { success: false, message: error.message };
         }
     });
@@ -254,25 +265,24 @@ if (!gotTheLock) {
         try {
             const resourcesPath = process.resourcesPath;
             const appPath = app.getAppPath();
-    
+            let uploadDir;
+            let uploadPath;
+
             if (!app.isPackaged) {
-                const uploadDir = path.join(appPath, 'src', 'data', 'models');
-                const uploadPath = path.join(uploadDir, fileName);
-    
-                await fs.promises.mkdir(uploadDir, { recursive: true });
-                await fs.promises.copyFile(filePath, uploadPath);
-                return { success: true, filePath: `${appPath}/src/data/models/${fileName}` };
+                uploadDir = path.join(appPath, 'src', 'data', 'models');
+                uploadPath = path.join(uploadDir, fileName);
             } else {
-                const uploadDir = path.join(resourcesPath, 'data', 'models');
-                const uploadPath = path.join(uploadDir, fileName);
-    
-                await fs.promises.mkdir(uploadDir, { recursive: true });
-                await fs.promises.copyFile(filePath, uploadPath);
-                return { success: true, filePath: `${resourcesPath}/data/models/${fileName}` };
+                uploadDir = path.join(resourcesPath, 'src', 'data', 'models');
+                uploadPath = path.join(uploadDir, fileName);
             }
-    
+
+            await fs.promises.mkdir(uploadDir, { recursive: true });
+            await fs.promises.copyFile(filePath, uploadPath);
+
+            const fileUrl = `file://${uploadPath.replace(/\\/g, '/')}`;
+
+            return { success: true, filePath: fileUrl };
         } catch (error) {
-            console.error('upload-model-error:', error);
             return { success: false, message: error.message };
         }
     });

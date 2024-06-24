@@ -1,30 +1,26 @@
 <script setup>
 import { ref } from 'vue'
 import { useBookStore } from '../../stores/book'
-
+const { electron } = window;
 const bookSt = useBookStore()
 const file = ref({})
 
 const fileUploader = async (event) => {
-  const selectedFile = event.files[0];
-  const filePath = selectedFile.path;
-  const fileName = selectedFile.name;
+  const video = event.files[0];
+  const filePath = video.path;
+  const fileName = video.name;
 
   try {
-    const response = await window.electron.uploadVideo(filePath, fileName);
+    const response = await electron.uploadVideo(filePath, fileName);
     if (response.success) {
-      file.value = {
-        ...selectedFile,
-        path: response.filePath,
-      };
+      file.value.path = response.filePath;
     } else {
-      console.error('response:', response);
       console.error('Error uploading video:', response.message);
     }
   } catch (error) {
     console.error('Error uploading video:', error);
   }
-}
+};
 
 const save = () => {
   bookSt.block?.id ? bookSt.updateBlock(file.value || '') : bookSt.saveBlock(file.value || '')

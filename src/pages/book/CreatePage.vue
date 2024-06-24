@@ -4,6 +4,8 @@ import { useRouter } from 'vue-router'
 
 import { useUserStore } from '../../stores/user'
 import { useBookStore } from '../../stores/book'
+import { v4 as uuidv4 } from 'uuid';
+const { electron } = window;
 
 const props = defineProps({
   bookId: {type: String},
@@ -12,10 +14,10 @@ const props = defineProps({
 const router = useRouter()
 const userSt = useUserStore()
 const bookSt = useBookStore()
-
 bookSt.getBook(props.bookId)
 
 const book = reactive(bookSt.book || {
+  id: '',
   title: '',
   desc: '',
   tags: [],
@@ -25,23 +27,28 @@ const book = reactive(bookSt.book || {
   },
   cover: '',
 })
+const sanitizeObject = (obj) => {
+  return JSON.parse(JSON.stringify(obj));
+};
+
+const generateFileName = (title) => {
+  const sanitizedTitle = title.replace(/[^a-zA-Z0-9]/g, '_'); // Replace non-alphanumeric characters with underscores
+  const randomNumber = Math.floor(Math.random() * 10000); // Generate a random number
+  return `${sanitizedTitle}_${randomNumber}.json`;
+};
 
 const save = async () => {
-  if(book.title) {
-    if (book.id) {
-      bookSt.updateBook(book)
+  if (book.title) {
+    book.id = uuidv4();
+    const sanitizedBook = sanitizeObject(book);
+    const fileName = generateFileName(book.title);
+    const response = await electron.saveBook(sanitizedBook, fileName);
+    if (response.success) {
+      bookSt.books.push(book);  // Push the new book to the books array
+      router.push({ name: 'book-list' });
     } else {
-      
-      const newBook = {
-        title: book.title,
-        desc: book.desc,
-        tags: book.tags,
-        author: book.author,
-        cover: book.cover,
-      }
-      await bookSt.saveBook(newBook)
+      console.error('Error saving book:', response.message);
     }
-    router.push({name: 'book-list'})
   }
 }
 
@@ -93,4 +100,5 @@ const customBase64Uploader = async (event) => {
 </template>
 
 <style scoped>
+
 </style>
