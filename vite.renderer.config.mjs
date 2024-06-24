@@ -15,6 +15,7 @@ export default defineConfig((env) => {
         base: './',
         build: {
             outDir: `.vite/renderer/${name}`,
+            target: 'esnext',
         },
         plugins: [
             pluginExposeRenderer(name),

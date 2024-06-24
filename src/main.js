@@ -3,6 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import fs from 'original-fs';
+const fsOld = require('fs');
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -32,7 +33,7 @@ if (!gotTheLock) {
                 preload: path.join(__dirname, 'preload.js'),
                 devTools: true,
                 webSecurity: false,
-                // nodeIntegration: true,  // nodeIntegration should be false for security
+                nodeIntegration: true,  // nodeIntegration should be false for security
             },
         });
 

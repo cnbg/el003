@@ -22,6 +22,7 @@ export default defineConfig((env) => {
                     assetFileNames: '[name].[ext]',
                 },
             },
+            target: 'esnext',
         },
         plugins: [pluginHotRestart('reload')],
     }
