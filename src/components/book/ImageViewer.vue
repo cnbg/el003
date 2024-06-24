@@ -81,7 +81,7 @@ const startEdit = () => {
 const startEditForImage = (index) => {
   editing.value = true;
   editingIndex.value = index;
-  originalImage.value = JSON.parse(JSON.stringify(props.images[index])); // deep copy
+  originalImage.value = JSON.parse(JSON.stringify(props.images[index])); 
 };
 
 const saveEdit = () => {
@@ -94,7 +94,7 @@ const saveEdit = () => {
 };
 
 const cancelEdit = () => {
-  props.images[editingIndex.value] = originalImage.value; // revert changes
+  props.images[editingIndex.value] = originalImage.value; 
   editing.value = false;
   editingIndex.value = null;
   originalImage.value = {};

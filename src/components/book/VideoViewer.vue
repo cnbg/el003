@@ -2,8 +2,9 @@
   <div>
     <div v-if="!editing" class="video-container" @mouseover="showEdit" @mouseleave="hideEdit">
       <video-player
+        v-if="video.path || file.path || defaultVideoPath"
         class="video-player vjs-big-play-centered"
-        :src="video.path"
+        :src="file.path || video.path || defaultVideoPath"
         poster=""
         crossorigin="anonymous"
         playsinline
@@ -41,8 +42,9 @@
         <Button @click="cancelEdit" icon="pi pi-times" :label="$t('general.cancel')" class="p-button-danger" severity="secondary" />
       </div>
       <video-player
+        v-if="file.path || video.path || defaultVideoPath"
         class="video-player vjs-big-play-centered"
-        :src="video.path"
+        :src="file.path || video.path || defaultVideoPath"
         poster=""
         crossorigin="anonymous"
         playsinline
@@ -67,74 +69,83 @@
 </template>
 
 <script setup>
-import { defineProps, ref, defineEmits } from 'vue'
-import { VideoPlayer } from '@videojs-player/vue'
-import { useBookStore } from '../../stores/book'
-import videojs from 'video.js'
-import 'video.js/dist/video-js.css'
+import { defineProps, ref, defineEmits } from 'vue';
+import { VideoPlayer } from '@videojs-player/vue';
+import videojs from 'video.js';
+import 'video.js/dist/video-js.css';
 
 const props = defineProps({
   video: {
     type: Object,
     required: true
   }
-})
+});
 
-const emit = defineEmits(['content-updated', 'delete-video'])
+const emit = defineEmits(['content-updated', 'delete-video']);
 
-const bookSt = useBookStore()
-const file = ref({})
-const editing = ref(false)
-const player = ref(null)
-const isHovered = ref(false)
+const file = ref({});
+const editing = ref(false);
+const player = ref(null);
+const isHovered = ref(false);
+const defaultVideoPath = ref('path/to/default/video.mp4'); // Add a default video path here
+const originalVideo = ref({ ...props.video });
 
 const handleMounted = (payload) => {
-  player.value = payload.player
-}
+  player.value = payload.player;
+};
 
 const handleEvent = (log) => {
-  console.log('Player event:', log)
-}
+  console.log('Player event:', log);
+};
 
 const startEdit = () => {
-  editing.value = true
-}
+  editing.value = true;
+};
 
 const saveEdit = () => {
   if (file.value.path) {
-    props.video.path = file.value.path
+    props.video.path = file.value.path;
   }
-  emit('content-updated', props.video)
-  editing.value = false
-}
+  if (JSON.stringify(originalVideo.value) !== JSON.stringify(props.video)) {
+    emit('content-updated', props.video);
+    originalVideo.value = { ...props.video };  // update the original video to the new state
+  }
+  editing.value = false;
+};
 
 const cancelEdit = () => {
-  editing.value = false
-}
+  props.video.path = originalVideo.value.path;  // revert changes
+  editing.value = false;
+};
 
 const deleteVideo = () => {
-  emit('delete-video')
-}
+  emit('delete-video');
+};
 
 const fileUploader = async (event) => {
-  file.value = event.files[0]
-  const reader = new FileReader()
-  let blob = await fetch(file.value.objectURL).then((r) => r.blob())
+  const video = event.files[0];
+  const filePath = video.path;
+  const fileName = video.name;
 
-  reader.readAsDataURL(blob)
-
-  reader.onloadend = function() {
-    file.value.path = reader.result
+  try {
+    const response = await electron.uploadVideo(filePath, fileName);
+    if (response.success) {
+      file.value.path = response.filePath;
+    } else {
+      console.error('Error uploading video:', response.message);
+    }
+  } catch (error) {
+    console.error('Error uploading video:', error);
   }
-}
+};
 
 const showEdit = () => {
-  isHovered.value = true
-}
+  isHovered.value = true;
+};
 
 const hideEdit = () => {
-  isHovered.value = false
-}
+  isHovered.value = false;
+};
 </script>
 
 <style scoped>
