@@ -171,6 +171,19 @@ export const useBookStore = defineStore('book', {
             this.block = null
             this.editing = false
         },
+        async updateBlockContent(index, updatedContent) {
+            if (this.chapter && this.chapter.blocks && this.chapter.blocks[index]) {
+                this.chapter.blocks[index].content = updatedContent;
+                await this.saveBookToFile();
+            }
+        },
+        async saveBookToFile() {
+            if (!this.bookFileName) {
+                console.error('Cannot save book: missing file name.');
+                return;
+            }
+            await window.electron.updateBook(JSON.parse(JSON.stringify(this.book)), this.bookFileName);
+        },
         setEditor(type = 'html') {
             this.editing = true
             this.block = {
