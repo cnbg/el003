@@ -7,8 +7,9 @@
     </div>
     <div v-else class="model-container">
       <div class="flex justify-end gap-2 edit-controls">
-        <FileUpload mode="basic" name="cover" accept=".glb,.gltf" customUpload @uploader="fileUploader" auto
-          :chooseLabel="$t('general.select-file')" />
+        <FileUpload mode="basic" name="cover" accept=".obj,.fbx,.glb,.gltf,.stl,.amf,.iges,.max,.stp,.x3d,.vrml,.3ds,.3mf,.dae"
+                  customUpload @uploader="fileUploader" auto
+                  :chooseLabel="$t('general.select-file')" />
         <Button @click="deleteModel" icon="pi pi-trash" severity="danger" />
         <Button @click="saveEdit" icon="pi pi-save" :label="$t('general.save')" severity="success" />
         <Button @click="cancelEdit" icon="pi pi-times" :label="$t('general.cancel')" class="p-button-danger"
@@ -21,79 +22,89 @@
 </template>
 
 <script setup>
-  import {
-    ref
-  } from 'vue'
-  import '@google/model-viewer'
+import { ref, defineEmits, defineProps } from 'vue';
+import '@google/model-viewer';
 
-  const emit = defineEmits(['content-updated', 'delete-model'])
-  const props = defineProps(['model'])
-  const file = ref({})
-  const editing = ref(false)
-  const isHovered = ref(false)
+const emit = defineEmits(['content-updated', 'delete-model']);
+const props = defineProps(['model']);
+const file = ref({});
+const editing = ref(false);
+const isHovered = ref(false);
 
-  const startEdit = () => {
-    editing.value = true
+const startEdit = () => {
+  editing.value = true;
+};
+
+const saveEdit = () => {
+  if (!file.value.path || file.value.path === props.model.path) {
+    // No changes made, do not save
+    editing.value = false;
+    return;
   }
 
-  const saveEdit = () => {
-    if (file.value.path) {
-      props.model.path = file.value.path
+  props.model.path = file.value.path;
+  emit('content-updated', props.model);
+  editing.value = false;
+};
+
+const cancelEdit = () => {
+  editing.value = false;
+};
+
+const deleteModel = () => {
+  emit('delete-model');
+};
+
+const fileUploader = async (event) => {
+  const selectedFile = event.files[0];
+  const filePath = selectedFile.path;
+  const fileName = selectedFile.name;
+
+  try {
+    const response = await window.electron.uploadModel(filePath, fileName);
+    if (response.success) {
+      file.value = {
+        ...selectedFile,
+        path: response.filePath,
+      };
+    } else {
+      console.error('Error uploading model:', response.message);
     }
-    emit('content-updated', props.model)
-    editing.value = false
+  } catch (error) {
+    console.error('Error uploading model:', error);
   }
+};
 
-  const cancelEdit = () => {
-    editing.value = false
-  }
+const showEdit = () => {
+  isHovered.value = true;
+};
 
-  const deleteModel = () => {
-    emit('delete-model')
-  }
-
-  const fileUploader = async (event) => {
-    const uploadedFile = event.files[0]
-    const reader = new FileReader()
-    let blob = await fetch(uploadedFile.objectURL).then((r) => r.blob())
-
-    reader.readAsDataURL(blob)
-
-    reader.onloadend = function () {
-      file.value.path = reader.result
-    }
-  }
-
-  const showEdit = () => {
-    isHovered.value = true
-  }
-
-  const hideEdit = () => {
-    isHovered.value = false
-  }
+const hideEdit = () => {
+  isHovered.value = false;
+};
 </script>
 
 <style scoped>
-  .edit-button {
-    width: 30px;
-    height: 30px;
-    padding: 0;
-    font-size: 14px;
-    position: absolute;
-    top: 5px;
-    right: 10px;
-    visibility: hidden;
-  }
+.edit-button {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  font-size: 14px;
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  visibility: hidden;
+}
 
-  .model-container {
-    position: relative;
-  }
+.model-container {
+  position: relative;
+}
 
-  .model-container:hover .edit-button {
-    visibility: visible;
-  }
+.model-container:hover .edit-button {
+  visibility: visible;
+}
 
-  .edit-controls {
-    margin-bottom: 10px;
-  }
+.edit-controls {
+  margin-bottom: 10px;
+}
 </style>
