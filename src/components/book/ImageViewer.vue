@@ -50,94 +50,112 @@
 </template>
 
 <script setup>
-  import { defineProps, ref } from 'vue';
-  
-  const props = defineProps({
-    images: {
-      type: Array,
-      default: () => []
-    }
-  });
-  
-  const activeIndex = ref(0);
-  const displayGallery = ref(false);
-  const editing = ref(false);
-  const editingIndex = ref(null); 
-  const hoveredIndex = ref(null);
-  
-  const imageClick = (index) => {
-    activeIndex.value = index;
-    displayGallery.value = true;
-  };
-  
-  const startEdit = () => {
-    editing.value = true;
-  };
-  
-  const startEditForImage = (index) => {
-    editing.value = true;
-    editingIndex.value = index;
-  };
-  
-  const saveEdit = () => {
+import { defineProps, defineEmits, ref, watch } from 'vue';
+
+const props = defineProps({
+  images: {
+    type: Array,
+    default: () => []
+  }
+});
+
+const emit = defineEmits(['image-updated', 'image-deleted']);
+
+const activeIndex = ref(0);
+const displayGallery = ref(false);
+const editing = ref(false);
+const editingIndex = ref(null);
+const hoveredIndex = ref(null);
+
+const originalImage = ref({});
+
+const imageClick = (index) => {
+  activeIndex.value = index;
+  displayGallery.value = true;
+};
+
+const startEdit = () => {
+  editing.value = true;
+};
+
+const startEditForImage = (index) => {
+  editing.value = true;
+  editingIndex.value = index;
+  originalImage.value = JSON.parse(JSON.stringify(props.images[index])); // deep copy
+};
+
+const saveEdit = () => {
+  if (JSON.stringify(originalImage.value) !== JSON.stringify(props.images[editingIndex.value])) {
+    emit('image-updated', { index: editingIndex.value, image: props.images[editingIndex.value] });
+  }
+  editing.value = false;
+  editingIndex.value = null;
+  originalImage.value = {};
+};
+
+const cancelEdit = () => {
+  props.images[editingIndex.value] = originalImage.value; // revert changes
+  editing.value = false;
+  editingIndex.value = null;
+  originalImage.value = {};
+};
+
+const deleteImage = (index) => {
+  emit('image-deleted', index);
+  if (props.images.length === 0) {
     editing.value = false;
-    editingIndex.value = null; 
-  };
-  
-  const cancelEdit = () => {
+  } else if (editingIndex.value === index) {
     editing.value = false;
-    editingIndex.value = null; 
-  };
-  
-  const deleteImage = (index) => {
-    props.images.splice(index, 1);
-    if (props.images.length === 0) {
-      editing.value = false;
-    } else if (editingIndex.value === index) {
-      editing.value = false;
-      editingIndex.value = null;
+    editingIndex.value = null;
+  }
+};
+
+const fileUploader = async (event, image) => {
+  const file = event.files[0];
+  const filePath = file.path;
+  const fileName = file.name;
+
+  try {
+    const response = await electron.uploadFile(filePath, fileName);
+    if (response.success) {
+      image.src = response.filePath;
+      image.thumb = response.filePath;
+    } else {
+      console.error('Error uploading file:', response.message);
     }
-  };
-  
-  const fileUploader = async (event, image) => {
-    const file = event.files[0];
-    const reader = new FileReader();
-    let blob = await fetch(file.objectURL).then((r) => r.blob());
-    reader.readAsDataURL(blob);
-    reader.onloadend = function() {
-      image.src = reader.result;
-      image.thumb = reader.result;
-    };
-  };
-  
-  const showEdit = (index) => {
-    hoveredIndex.value = index;
-  };
-  
-  const hideEdit = (index) => {
-    hoveredIndex.value = null;
-  };
+  } catch (error) {
+    console.error('Error uploading file:', error);
+  }
+};
+
+const showEdit = (index) => {
+  hoveredIndex.value = index;
+};
+
+const hideEdit = (index) => {
+  hoveredIndex.value = null;
+};
 </script>
 
 <style scoped>
-  .edit-button {
-    top: 5px;
-    right: 5px;
-    width: 30px;
-    height: 30px;
-    padding: 0;
-    font-size: 14px;
-    bottom: 10px;
-    position: absolute;
-    visibility: hidden;
-  }
-  
-  .image-container {
-    position: relative;
-    display: inline-block;
-  }
-  
-  .image-container:hover .edit-button {
-    visibility: visible;
-  }
+.edit-button {
+  top: 5px;
+  right: 5px;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  font-size: 14px;
+  bottom: 10px;
+  position: absolute;
+  visibility: hidden;
+}
+
+.image-container {
+  position: relative;
+  display: inline-block;
+}
+
+.image-container:hover .edit-button {
+  visibility: visible;
+}
 </style>
