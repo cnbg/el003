@@ -1,47 +1,68 @@
 <script setup>
-import { reactive } from 'vue'
-import { useBookStore } from '../../stores/book'
-const { electron } = window;
+import { reactive } from 'vue';
+import { useBookStore } from '../../stores/book';
+import { useToast } from 'primevue/usetoast';
+import { useI18n } from 'vue-i18n';
 
-const bookSt = useBookStore()
+const { electron } = window;
+const toast = useToast();
+const { t } = useI18n();
+const bookSt = useBookStore();
+
 const imgObj = {
     title: '',
     alt: '',
     src: '',
     thumb: '',
-}
+};
 
 const images = reactive([{
     ...imgObj
-}])
+}]);
 
 const fileUploader = async (event, image) => {
-  const file = event.files[0];
-  const filePath = file.path;
-  const fileName = file.name;
+    const file = event.files[0];
+    const filePath = file.path;
+    const fileName = file.name;
 
-  try {
-    const response = await electron.uploadFile(filePath, fileName);
-    if (response.success) {
-      image.src = response.filePath;
-      image.thumb = response.filePath;
-    } else {
-      console.error('Error uploading file:', response.message);
+    try {
+        const response = await electron.uploadFile(filePath, fileName);
+        if (response.success) {
+            image.src = response.filePath;
+            image.thumb = response.filePath;
+        } else {
+            console.error('Error uploading file:', response.message);
+        }
+    } catch (error) {
+        console.error('Error uploading file:', error);
     }
-  } catch (error) {
-    console.error('Error uploading file:', error);
-  }
 };
 
 const save = () => {
-    bookSt.block?.id ? bookSt.updateBlock(images || '') : bookSt.saveBlock(images || '')
-}
+    const isValid = images.some(image => image.src !== '' && (image.title.trim() !== '' || image.alt.trim() !== ''));
+
+    if (isValid) {
+        bookSt.block?.id ? bookSt.updateBlock(images) : bookSt.saveBlock(images);
+    } else {
+        if (images.some(image => image.title.trim() === '')) {
+            toast.add({ severity: 'error', summary: t('general.enter-book-title'), life: 3000 });
+        }
+        if (images.some(image => image.alt.trim() === '')) {
+            toast.add({ severity: 'error', summary: t('general.enter-description'), life: 3000 });
+        }
+        if (images.every(image => image.src === '')) {
+            toast.add({ severity: 'error', summary: t('general.select-file'), life: 3000 });
+        }
+    }
+};
+
 const addNewBlock = () => {
     images.push({
         ...imgObj
-    })
-}
+    });
+};
 </script>
+
 
 <template>
   <div>
