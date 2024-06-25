@@ -32,8 +32,6 @@ if (!gotTheLock) {
             webPreferences: {
                 preload: path.join(__dirname, 'preload.js'),
                 devTools: true,
-                webSecurity: false,
-                nodeIntegration: true,  // nodeIntegration should be false for security
             },
         });
 

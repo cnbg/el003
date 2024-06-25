@@ -7,15 +7,13 @@
         <Button @click="saveEdit" :label="$t('general.save')" icon="pi pi-save" class="mr-2" severity="success" />
         <Button @click="cancelEdit" :label="$t('general.cancel')" icon="pi pi-times" severity="secondary" />
       </div>
-      <Editor v-model="editedContent" :init="editorConfig" />
+      <textarea id="editor"></textarea>
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref, watch } from 'vue';
-import 'quill/dist/quill.snow.css'
-import Editor from '@tinymce/tinymce-vue';
 import { useUserStore } from '../../stores/user';
 
 const props = defineProps({ html: { type: String, default: '' } });
@@ -23,8 +21,9 @@ const emit = defineEmits(['content-updated']);
 const userSt = useUserStore();
 const editorConfig = ref(getEditorConfig(userSt.darkMode));
 const editing = ref(false);
-const editedContent = ref(props.html); 
+const editedContent = ref(props.html);
 const originalContent = ref(props.html);
+let editorInstance = null;
 
 watch(() => userSt.darkMode, (newVal) => {
   editorConfig.value = getEditorConfig(newVal);
@@ -33,8 +32,10 @@ watch(() => userSt.darkMode, (newVal) => {
 function getEditorConfig(isDarkMode) {
   return {
     license_key: 'gpl',
+    base_url: '',
+    suffix: '.min',
     height: 'calc(100vh - 330px)',
-    plugins: "preview importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons",
+    plugins: 'preview importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help quickbars emoticons',
     automatic_uploads: false,
     promotion: false,
     file_picker_types: 'image media',
@@ -64,10 +65,17 @@ function getEditorConfig(isDarkMode) {
     statusbar: false,
     language: 'ru',
     setup: (editor) => {
+      editorInstance = editor;
       editor.on('init', () => {
         import('../../tinymce/js/tinymce/langs/ru.js').catch((error) => {
           console.error('Failed to load translation file:', error);
         });
+        if (editing.value) {
+          editor.setContent(editedContent.value);
+        }
+      });
+      editor.on('change', () => {
+        editedContent.value = editor.getContent();
       });
     },
   };
@@ -75,12 +83,14 @@ function getEditorConfig(isDarkMode) {
 
 const startEdit = () => {
   editing.value = true;
-  editedContent.value = props.html; 
+  editedContent.value = props.html;
+  initTinyMCE();
 };
 
 const cancelEdit = () => {
   editing.value = false;
-  editedContent.value = originalContent.value; 
+  editedContent.value = originalContent.value;
+  destroyTinyMCE();
 };
 
 const saveEdit = () => {
@@ -102,7 +112,24 @@ const saveEdit = () => {
   if (originalContent.value !== props.html) {
     emit('content-updated', originalContent.value);
   }
+  destroyTinyMCE();
 };
+
+function initTinyMCE() {
+  setTimeout(() => {
+    tinymce.init({
+      ...editorConfig.value,
+      target: document.getElementById('editor')
+    });
+  });
+}
+
+function destroyTinyMCE() {
+  if (editorInstance) {
+    editorInstance.remove();
+    editorInstance = null;
+  }
+}
 </script>
 
 <style scoped>

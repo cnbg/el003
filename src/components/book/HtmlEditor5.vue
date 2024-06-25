@@ -3,14 +3,13 @@
     <div class="flex flex-wrap justify-end gap-5 mb-5">
       <Button @click="save" icon="pi pi-save" :label="$t('general.save')" severity="success" />
     </div>
-    <Editor v-model="content" :init="editorConfig" />
+    <textarea id="editor" v-model="content"></textarea>
   </div>
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
 import { useBookStore } from '../../stores/book';
-import Editor from '@tinymce/tinymce-vue';
 import { useUserStore } from '../../stores/user';
 
 const props = defineProps({ html: { type: String, default: '' } });
@@ -19,26 +18,51 @@ const userSt = useUserStore();
 const content = ref("");
 
 const save = () => {
-  if (content.value !== props.html) {
-    bookSt.saveBlock(content.value);
+  const editor = tinymce.get('editor');
+  if (editor) {
+    const editorContent = editor.getContent();
+    if (editorContent !== props.html) {
+      bookSt.saveBlock(editorContent);
+    }
   }
 };
 
 watch(() => props.html, (newVal) => {
-  content.value = newVal;
+  if (!content.value) {
+    content.value = newVal;
+  }
+  const editor = tinymce.get('editor');
+  if (editor && !editor.initialized) {
+    editor.setContent(newVal);
+  }
 });
 
 const editorConfig = ref(getEditorConfig(userSt.darkMode));
 
 watch(() => userSt.darkMode, (newVal) => {
   editorConfig.value = getEditorConfig(newVal);
+  const editor = tinymce.get('editor');
+  if (editor) {
+    editor.destroy();
+    tinymce.init({
+      ...editorConfig.value,
+      target: document.getElementById('editor'),
+      setup: (editor) => {
+        editor.on('change', () => {
+          content.value = editor.getContent();
+        });
+      }
+    });
+  }
 });
 
 function getEditorConfig(isDarkMode) {
   return {
+    base_url: '',
+    suffix: '.min',
     license_key: 'gpl',
     height: 'calc(100vh - 330px)',
-    plugins: "preview importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons",
+    plugins: 'preview importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help quickbars emoticons',
     automatic_uploads: false,
     promotion: false,
     file_picker_types: 'image media',
@@ -69,6 +93,7 @@ function getEditorConfig(isDarkMode) {
     language: 'ru',
     setup: (editor) => {
       editor.on('init', () => {
+        editor.setContent(props.html);
         import('../../tinymce/js/tinymce/langs/ru.js').catch((error) => {
           console.error('Failed to load translation file:', error);
         });
@@ -76,6 +101,25 @@ function getEditorConfig(isDarkMode) {
     },
   };
 }
+
+onMounted(() => {
+  tinymce.init({
+    ...editorConfig.value,
+    target: document.getElementById('editor'),
+    setup: (editor) => {
+      editor.on('change', () => {
+        content.value = editor.getContent();
+      });
+    }
+  });
+});
+
+onBeforeUnmount(() => {
+  const editor = tinymce.get('editor');
+  if (editor) {
+    editor.remove();
+  }
+});
 </script>
 
 <style>
