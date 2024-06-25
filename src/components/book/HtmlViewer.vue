@@ -18,71 +18,60 @@ import 'quill/dist/quill.snow.css'
 import Editor from '@tinymce/tinymce-vue';
 import { useUserStore } from '../../stores/user';
 
-const props = defineProps({
-  html: {
-    type: String,
-    default: ''
-  }
-});
-
+const props = defineProps({ html: { type: String, default: '' } });
 const emit = defineEmits(['content-updated']);
-
 const userSt = useUserStore();
 const editorConfig = ref(getEditorConfig(userSt.darkMode));
+const editing = ref(false);
+const editedContent = ref(props.html); 
+const originalContent = ref(props.html);
 
 watch(() => userSt.darkMode, (newVal) => {
   editorConfig.value = getEditorConfig(newVal);
 });
 
-const editing = ref(false);
-const editedContent = ref(props.html); 
-const originalContent = ref(props.html);
-
 function getEditorConfig(isDarkMode) {
-    return {
-      license_key: 'gpl',
-      height: 'calc(100vh - 330px)',
-      plugins: "preview importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons",
-      automatic_uploads: false,
-      promotion: false,
-      file_picker_types: 'image media',
-      file_picker_callback: (cb, value, meta) => {
-        const input = document.createElement('input');
-        input.setAttribute('type', 'file');
-        input.setAttribute('accept', meta.filetype === 'image' ? 'image/*' : 'video/*');
-        input.onchange = function () {
-          const file = this.files[0];
-          const reader = new FileReader();
-          reader.onload = function () {
-            const id = 'blobid' + (new Date()).getTime();
-            const blobCache = tinymce.activeEditor.editorUpload.blobCache;
-            const base64 = reader.result.split(',')[1];
-            const blobInfo = blobCache.create(id, file, base64);
-            blobCache.add(blobInfo);
-            cb(blobInfo.blobUri(), {
-              title: file.name
-            });
-          };
-          reader.readAsDataURL(file);
+  return {
+    license_key: 'gpl',
+    height: 'calc(100vh - 330px)',
+    plugins: "preview importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons",
+    automatic_uploads: false,
+    promotion: false,
+    file_picker_types: 'image media',
+    file_picker_callback: (cb, value, meta) => {
+      const input = document.createElement('input');
+      input.setAttribute('type', 'file');
+      input.setAttribute('accept', meta.filetype === 'image' ? 'image/*' : 'video/*');
+      input.onchange = function () {
+        const file = this.files[0];
+        const reader = new FileReader();
+        reader.onload = function () {
+          const id = 'blobid' + (new Date()).getTime();
+          const blobCache = tinymce.activeEditor.editorUpload.blobCache;
+          const base64 = reader.result.split(',')[1];
+          const blobInfo = blobCache.create(id, file, base64);
+          blobCache.add(blobInfo);
+          cb(blobInfo.blobUri(), { title: file.name });
         };
-        input.click();
-      },
-      extended_valid_elements: '*[.*]',
-      draggable_modal: true,
-      skin: isDarkMode ? 'oxide-dark' : 'oxide',
-      content_css: isDarkMode ? 'dark' : 'default',
-      statusbar: false,
-      language: 'ru',
-      setup: (editor) => {
-        editor.on('init', () => {
-          import('../../tinymce/js/tinymce/langs/ru.js').catch((error) => {
-            console.error('Failed to load translation file:', error);
-          });
+        reader.readAsDataURL(file);
+      };
+      input.click();
+    },
+    extended_valid_elements: '*[.*]',
+    draggable_modal: true,
+    skin: isDarkMode ? 'oxide-dark' : 'oxide',
+    content_css: isDarkMode ? 'dark' : 'default',
+    statusbar: false,
+    language: 'ru',
+    setup: (editor) => {
+      editor.on('init', () => {
+        import('../../tinymce/js/tinymce/langs/ru.js').catch((error) => {
+          console.error('Failed to load translation file:', error);
         });
-      },
-
-    }
+      });
+    },
   };
+}
 
 const startEdit = () => {
   editing.value = true;
@@ -110,10 +99,10 @@ const saveEdit = () => {
     editing.value = false;
     originalContent.value = editedContent.value;
   }
-  emit('content-updated', originalContent.value);
+  if (originalContent.value !== props.html) {
+    emit('content-updated', originalContent.value);
+  }
 };
-
-
 </script>
 
 <style scoped>

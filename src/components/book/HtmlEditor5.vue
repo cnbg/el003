@@ -18,9 +18,10 @@ const bookSt = useBookStore();
 const userSt = useUserStore();
 const content = ref("");
 
-
 const save = () => {
-  bookSt.saveBlock(content.value);
+  if (content.value !== props.html) {
+    bookSt.saveBlock(content.value);
+  }
 };
 
 watch(() => props.html, (newVal) => {
