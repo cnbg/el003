@@ -105,10 +105,10 @@ const copyLink = () => {
 const copyToClipboard = () => {
   navigator.clipboard.writeText(copiedLink.value)
     .then(() => {     
-      toast.add({severity: 'success', summary: t('general.link-copied'), life: 1300})         
+      toast.add({severity: 'success', summary: t('general.link-copied'), life: 1000})
       setTimeout(() => {
         linkCopied.value = false
-      }, 1300)
+      }, 1000)
     })
 }
 </script>
