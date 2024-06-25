@@ -221,21 +221,24 @@ export const useBookStore = defineStore('book', {
             await window.electron.updateBook(JSON.parse(JSON.stringify(this.book)), this.bookFileName);
         },
         setEditor(type = 'html') {
-            this.editing = true
+            this.editing = true;
             this.block = {
-                ...{
-                    id: '',
-                    type: type,
-                    content: '',
-                },
-                ...this.block,
+              ...{
+                id: '',
+                type: type,
+                content: '',
+              },
+              ...this.block,
+            };
+            if (type === 'html') {
+              const existingHtmlBlock = this.chapter.blocks.find(b => b.type === 'html');
+              if (existingHtmlBlock) {
+                this.block = { ...existingHtmlBlock };
+              }
             }
-            if(type === 'html') {
-                this.block = {
-                    ...this.chapter.blocks.find(b => b.type === 'html')
-                }
-            }
-        },
+          },
+          
+          
         closeEditor() {
             this.editing = false
             this.block = null

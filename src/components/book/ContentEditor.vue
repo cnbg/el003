@@ -7,7 +7,7 @@ const bookSt = useBookStore()
 
 <template>
   <div v-if="bookSt.block" style="height: calc(100vh - 259px)">
-    <HtmlEditor v-if="bookSt.block.type === 'html'" />
+    <HtmlEditor v-if="bookSt.block.type === 'html'" :html="bookSt.block.content" />
     <ImageEditor v-else-if="bookSt.block.type === 'image'" />
     <VideoEditor v-else-if="bookSt.block.type === 'video'" />
     <Model3DEditor v-else-if="bookSt.block.type === 'model'" />
