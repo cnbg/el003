@@ -32,8 +32,8 @@ const sanitizeObject = (obj) => {
 };
 
 const generateFileName = (title) => {
-  const sanitizedTitle = title.replace(/[^a-zA-Z0-9]/g, '_'); // Replace non-alphanumeric characters with underscores
-  const randomNumber = Math.floor(Math.random() * 10000); // Generate a random number
+  const sanitizedTitle = title.replace(/[^a-zA-Z0-9]/g, '_');
+  const randomNumber = Math.floor(Math.random() * 10000); 
   return `${sanitizedTitle}_${randomNumber}.json`;
 };
 
@@ -44,7 +44,7 @@ const save = async () => {
     const fileName = generateFileName(book.title);
     const response = await electron.saveBook(sanitizedBook, fileName);
     if (response.success) {
-      bookSt.books.push(book);  // Push the new book to the books array
+      bookSt.books.push(book); 
       router.push({ name: 'book-list' });
     } else {
       console.error('Error saving book:', response.message);
@@ -55,7 +55,7 @@ const save = async () => {
 const customBase64Uploader = async (event) => {
   const file = event.files[0]
   const reader = new FileReader()
-  let blob = await fetch(file.objectURL).then((r) => r.blob()) //blob:url
+  let blob = await fetch(file.objectURL).then((r) => r.blob()) 
 
   reader.readAsDataURL(blob)
 

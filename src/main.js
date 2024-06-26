@@ -41,6 +41,7 @@ if (!gotTheLock) {
             mainWindow.loadURL(process.env.MAIN_WINDOW_VITE_DEV_SERVER_URL);
         } else {
             mainWindow.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`));
+           
         }
 
         mainWindow.on('closed', () => {
@@ -82,7 +83,7 @@ if (!gotTheLock) {
                 uploadDir = path.join(appPath, 'src', 'data', 'images');
                 uploadPath = path.join(uploadDir, fileName);
             } else {
-                uploadDir = path.join(resourcesPath, 'src', 'data', 'images');
+                uploadDir = path.join(resourcesPath, 'data', 'images');
                 uploadPath = path.join(uploadDir, fileName);
             }
 
@@ -122,7 +123,7 @@ if (!gotTheLock) {
                 booksDir = path.join(appPath, 'src', 'data', 'books');
                 bookPath = path.join(booksDir, fileName);
             } else {
-                booksDir = path.join(resourcesPath, 'src', 'data', 'books');
+                booksDir = path.join(resourcesPath, 'data', 'books');
                 bookPath = path.join(booksDir, fileName);
             }
 
@@ -146,7 +147,7 @@ if (!gotTheLock) {
                 booksDir = path.join(appPath, 'src', 'data', 'books');
                 bookPath = path.join(booksDir, fileName);
             } else {
-                booksDir = path.join(resourcesPath, 'src', 'data', 'books');
+                booksDir = path.join(resourcesPath, 'data', 'books');
                 bookPath = path.join(booksDir, fileName);
             }
 
@@ -197,7 +198,7 @@ if (!gotTheLock) {
                 booksDir = path.join(appPath, 'src', 'data', 'books');
                 bookPath = path.join(booksDir, fileName);
             } else {
-                booksDir = path.join(resourcesPath, 'src', 'data', 'books');
+                booksDir = path.join(resourcesPath,'data', 'books');
                 bookPath = path.join(booksDir, fileName);
             }
 
@@ -219,7 +220,7 @@ if (!gotTheLock) {
             if (!app.isPackaged) {
                 booksDir = path.join(appPath, 'src', 'data', 'books');
             } else {
-                booksDir = path.join(resourcesPath, 'src', 'data', 'books');
+                booksDir = path.join(resourcesPath, 'data', 'books');
             }
 
             const bookFiles = fs.readdirSync(booksDir).filter(file => path.extname(file) === '.json');
@@ -246,7 +247,7 @@ if (!gotTheLock) {
                 uploadDir = path.join(appPath, 'src', 'data', 'videos');
                 uploadPath = path.join(uploadDir, fileName);
             } else {
-                uploadDir = path.join(resourcesPath, 'src', 'data', 'videos');
+                uploadDir = path.join(resourcesPath,'data', 'videos');
                 uploadPath = path.join(uploadDir, fileName);
             }
 
@@ -272,7 +273,7 @@ if (!gotTheLock) {
                 uploadDir = path.join(appPath, 'src', 'data', 'models');
                 uploadPath = path.join(uploadDir, fileName);
             } else {
-                uploadDir = path.join(resourcesPath, 'src', 'data', 'models');
+                uploadDir = path.join(resourcesPath, 'data', 'models');
                 uploadPath = path.join(uploadDir, fileName);
             }
 

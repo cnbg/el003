@@ -67,7 +67,7 @@ function getEditorConfig(isDarkMode) {
     setup: (editor) => {
       editorInstance = editor;
       editor.on('init', () => {
-        import('../../tinymce/js/tinymce/langs/ru.js').catch((error) => {
+        import('../../tinymce/langs/ru').catch((error) => {
           console.error('Failed to load translation file:', error);
         });
         if (editing.value) {
