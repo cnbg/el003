@@ -1,63 +1,3 @@
-<script setup>
-import 'quill/dist/quill.snow.css'
-import 'katex/dist/katex.min.css'
-
-const props = defineProps(['html'])
-
-import { onMounted, onUnmounted, ref } from 'vue'
-import Quill from 'quill'
-import katex from 'katex'
-import ImageResize from 'quill-image-resize-vue'
-import VideoResize from 'quill-video-resize-module'
-import { useBookStore } from '../../stores/book'
-
-const bookSt = useBookStore()
-const content = ref(props.html || bookSt.block?.content || '')
-
-window.katex = katex
-
-Quill.prototype.setHTML = function(html) {
-  this.container.querySelector('.ql-editor').innerHTML = html
-}
-
-Quill.prototype.getHTML = function(html) {
-  return this.container.querySelector('.ql-editor').innerHTML
-}
-
-// const Clipboard = Quill.import('modules/clipboard')
-// class PlainClipboard extends Clipboard {
-//   convert(html = null) {
-//     this.setHTML(html)
-//   }
-// }
-//
-Quill.register("modules/imageResize", ImageResize)
-Quill.register('modules/videoResize', VideoResize)
-
-const save = () => {
-  bookSt.block?.id ? bookSt.updateBlock(content.value) : bookSt.saveBlock(content.value)
-}
-
-onMounted(() => {
-  const quill = new Quill('#quill-editor', {
-    modules: {
-      toolbar: '#quill-toolbar',
-      imageResize: {},
-      videoResize: {},
-      table: true,
-    },
-    theme: 'snow',
-    placeholder: '...',
-  })
-
-  quill.setHTML(content.value)
-
-  quill.on('text-change', (delta, oldDelta, source) => {
-    content.value = quill.getHTML()
-  })
-})
-</script>
-
 <template>
   <div>
     <div class="flex flex-wrap justify-end gap-5 mb-5">
@@ -114,6 +54,45 @@ onMounted(() => {
     <div id="quill-editor" style="height: calc(100vh - 390px)"></div>
   </div>
 </template>
+
+<script setup>
+import { ref, onMounted } from 'vue';
+import Quill from 'quill';
+import 'quill/dist/quill.snow.css';
+import { useBookStore } from '../../stores/book'; 
+
+const props = defineProps(['html']);
+const content = ref(props.html || '');
+
+let quill; 
+const bookSt = useBookStore();
+
+const save = () => {
+  if (quill) {
+    const htmlContent = quill.root.innerHTML;
+    bookSt.saveBlock(htmlContent); 
+  }
+};
+
+onMounted(() => {
+  quill = new Quill('#quill-editor', {
+    modules: {
+      toolbar: '#quill-toolbar',
+      imageResize: {},
+      videoResize: {},
+      table: true,
+    },
+    theme: 'snow',
+    placeholder: '...',
+  });
+
+  quill.root.innerHTML = content.value; 
+
+  quill.on('text-change', () => {
+    content.value = quill.root.innerHTML; 
+  });
+});
+</script>
 
 <style>
 #quill-editor iframe {

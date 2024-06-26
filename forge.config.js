@@ -5,7 +5,14 @@ const fs = require('fs-extra');
 
 module.exports = {
   packagerConfig: {
-    asar: true,
+    asar: {
+      unpack: '**/tinymce/**',
+      unpack: '**/data/**', 
+    },
+    extraResource: [
+      path.resolve(__dirname, 'src/tinymce'),
+      path.resolve(__dirname, 'src/data'),
+    ],
   },
   rebuildConfig: {},
   makers: [
@@ -57,5 +64,5 @@ module.exports = {
       [FuseV1Options.EnableEmbeddedAsarIntegrityValidation]: true,
       [FuseV1Options.OnlyLoadAppFromAsar]: true,
     }),
-  ]
+  ],
 };
