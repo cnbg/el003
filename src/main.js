@@ -32,6 +32,8 @@ if (!gotTheLock) {
             webPreferences: {
                 preload: path.join(__dirname, 'preload.js'),
                 devTools: true,
+                webSecurity: false,
+                nodeIntegration: true,  // nodeIntegration should be false for security
             },
         });
 
@@ -69,7 +71,6 @@ if (!gotTheLock) {
     if (require('electron-squirrel-startup')) {
         app.quit();
     }
-
     ipcMain.handle('upload-file', async (event, { filePath, fileName }) => {
         try {
             const resourcesPath = process.resourcesPath;
@@ -169,7 +170,7 @@ if (!gotTheLock) {
             if (!app.isPackaged) {
                 booksDir = path.join(appPath, 'src/data/books');
             } else {
-                booksDir = path.join(resourcesPath, 'src/data/books');
+                booksDir = path.join(resourcesPath, 'data/books');
             }
 
             const bookFiles = fs.readdirSync(booksDir).filter(file => path.extname(file) === '.json');

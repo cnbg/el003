@@ -62,7 +62,7 @@ import 'quill/dist/quill.snow.css';
 import { useBookStore } from '../../stores/book'; 
 
 const props = defineProps(['html']);
-const content = ref(props.html || '');
+const content = ref('');
 
 let quill; 
 const bookSt = useBookStore();
