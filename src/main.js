@@ -72,6 +72,20 @@ if (!gotTheLock) {
     if (require('electron-squirrel-startup')) {
         app.quit();
     }
+    
+    ipcMain.handle('get-tinymce-base-path', async () => {
+
+        if (!app.isPackaged) {
+
+            return '/src/tinymce/';
+
+        } else {
+
+            return path.join(process.resourcesPath, 'tinymce');
+
+        }
+
+    });
     ipcMain.handle('upload-file', async (event, { filePath, fileName }) => {
         try {
             const resourcesPath = process.resourcesPath;
