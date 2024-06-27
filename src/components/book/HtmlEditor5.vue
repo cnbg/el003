@@ -62,6 +62,7 @@ function getEditorConfig(isDarkMode) {
     suffix: '.min',
     license_key: 'gpl',
     height: 'calc(100vh - 330px)',
+    width: 'calc(100vw - 440px)',
     plugins: 'preview importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help quickbars emoticons',
     automatic_uploads: false,
     promotion: false,
