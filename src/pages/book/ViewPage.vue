@@ -53,6 +53,19 @@ const panelMenuItems = ref([
 ])
 
 let totalChapters = (bookSt.book?.chapters?.length || 1) - 1
+
+const goTo = (route, params = {}) => {
+  if(bookSt.editing) {
+    toast.add({severity: 'error', summary: t('general.dont-forget-to-save'), life: 4000})
+  } else {
+    if (route === 'home') {
+      router.push({ path: '/' }); 
+    } else {
+      router.push({ name: route, params: params });
+    }
+  }
+}
+
 </script>
 
 <template>
@@ -62,6 +75,8 @@ let totalChapters = (bookSt.book?.chapters?.length || 1) - 1
       <div class="bg-surface-0 dark:bg-surface-900 py-3 px-5 rounded-lg flex items-center gap-3">
         <div class="text-2xl m-0 flex-auto">{{ bookSt.book.title }}</div>
         <Button @click="toggleMenu" icon="pi pi-cog" text plain />
+        <Button  icon="pi pi-times" text plain   @click="goTo('home')">
+        </Button>
         <Menu ref="menu" :model="panelMenuItems" popup />
       </div>
       <div v-if="chapterId && bookSt.chapter">
