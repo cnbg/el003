@@ -10,4 +10,11 @@ contextBridge.exposeInMainWorld('electron', {
   updateBook: (book, fileName) => ipcRenderer.invoke('update-book', { book, fileName }),
   getBookFileName: (bookId) => ipcRenderer.invoke('get-book-filename', bookId),
   deleteBook: (fileName) => ipcRenderer.invoke('delete-book', fileName),
+  getTinyMCEBaseUrl: () => {
+    if (!app.isPackaged) {
+      return '/src/tinymce/';
+    } else {
+      return path.join(process.resourcesPath, 'src', 'tinymce');
+    }
+  }
 });

@@ -1,13 +1,13 @@
 <template>
   <div class="editor-container">
-    <!-- <Button v-if="!editing" @click="startEdit" icon="pi pi-pencil" class="edit-button" /> -->
+    <Button v-if="!editing" @click="startEdit" icon="pi pi-pencil" class="edit-button" />
     <div v-if="!editing" v-html="html" class="ql-editor"></div>
     <div v-else>
       <div class="flex justify-end mt-2 edit-controls">
         <Button @click="saveEdit" :label="$t('general.save')" icon="pi pi-save" class="mr-2" severity="success" />
         <Button @click="cancelEdit" :label="$t('general.cancel')" icon="pi pi-times" severity="secondary" />
       </div>
-      <!-- <textarea id="editor"></textarea> -->
+      <textarea id="editor"></textarea>
     </div>
   </div>
 </template>

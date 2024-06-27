@@ -5,14 +5,11 @@ const fs = require('fs-extra');
 
 module.exports = {
   packagerConfig: {
-    asar: {
-      unpack: '**/tinymce/**',
-      unpack: '**/data/**', 
-    },
-    extraResource: [
-      path.resolve(__dirname, 'src/tinymce'),
-      path.resolve(__dirname, 'src/data'),
-    ],
+     asar: true,
+    "extraResource": [
+      "./src/tinymce",
+      "./src/data"
+    ]
   },
   rebuildConfig: {},
   makers: [
