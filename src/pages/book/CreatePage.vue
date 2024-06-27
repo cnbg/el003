@@ -77,6 +77,18 @@ const customBase64Uploader = async (event) => {
     book.cover = reader.result
   }
 }
+
+const goTo = (route, params = {}) => {
+  if(bookSt.editing) {
+    toast.add({severity: 'error', summary: t('general.dont-forget-to-save'), life: 4000})
+  } else {
+    if (route === 'home') {
+      router.push({ path: '/' }); 
+    } else {
+      router.push({ name: route, params: params });
+    }
+  }
+}
 </script>
 
 <template>
@@ -100,10 +112,14 @@ const customBase64Uploader = async (event) => {
       <FileUpload mode="basic" name="cover" accept="image/*" :maxFileSize="90000000"
                   auto customUpload @uploader="customBase64Uploader"
                   :chooseLabel="$t('general.select-cover')" />
-
-      <Button @click="save" icon="pi pi-save"
-              class="sm:w-56 ml-auto" size="large"
-              :label="$t('general.save')" severity="success" outlined />
+     <div class="flex flex-wrap justify-between gap-5"> 
+        <Button @click="save" icon="pi pi-save"
+                class="sm:w-56 ml-auto" size="large"
+                :label="$t('general.save')" severity="success" outlined />
+        <Button @click="goTo('home')" icon="pi pi-times"
+                class="sm:w-56 ml-auto" size="large"
+                :label="$t('general.cancel')" severity="secondary" outlined />
+      </div>
     </div>
 
     <div v-if="book.cover" class=" p-5">
