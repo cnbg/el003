@@ -13,7 +13,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
 import { useUserStore } from '../../stores/user';
 
 const props = defineProps({ html: { type: String, default: '' } });
@@ -28,6 +28,10 @@ let editorInstance = null;
 watch(() => userSt.darkMode, (newVal) => {
   editorConfig.value = getEditorConfig(newVal);
 });
+
+async function getTinyMCEBaseUrl() {
+  return await window.electron.getTinyMCEBaseUrl();
+}
 
 function getEditorConfig(isDarkMode) {
   return {
@@ -115,10 +119,12 @@ const saveEdit = () => {
   destroyTinyMCE();
 };
 
-function initTinyMCE() {
+async function initTinyMCE() {
+  const baseUrl = await getTinyMCEBaseUrl();
   setTimeout(() => {
     tinymce.init({
       ...editorConfig.value,
+      base_url: baseUrl,
       target: document.getElementById('editor')
     });
   });
@@ -130,6 +136,33 @@ function destroyTinyMCE() {
     editorInstance = null;
   }
 }
+
+onMounted(async () => {
+  const baseUrl = await getTinyMCEBaseUrl();
+  tinymce.init({
+    ...editorConfig.value,
+    base_url: baseUrl,
+    target: document.getElementById('editor'),
+    setup: (editor) => {
+      editorInstance = editor;
+      editor.on('init', () => {
+        import('../../tinymce/langs/ru').catch((error) => {
+          console.error('Failed to load translation file:', error);
+        });
+        if (editing.value) {
+          editor.setContent(editedContent.value);
+        }
+      });
+      editor.on('change', () => {
+        editedContent.value = editor.getContent();
+      });
+    }
+  });
+});
+
+onBeforeUnmount(() => {
+  destroyTinyMCE();
+});
 </script>
 
 <style scoped>

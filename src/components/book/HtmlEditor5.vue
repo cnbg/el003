@@ -102,9 +102,11 @@ function getEditorConfig(isDarkMode) {
   };
 }
 
-onMounted(() => {
+onMounted(async () => {
+  const baseUrl = await window.electron.getTinyMCEBaseUrl();
   tinymce.init({
     ...editorConfig.value,
+    base_url: baseUrl,
     target: document.getElementById('editor'),
     setup: (editor) => {
       editor.on('change', () => {
