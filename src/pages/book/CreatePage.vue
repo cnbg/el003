@@ -38,19 +38,33 @@ const generateFileName = (title) => {
 };
 
 const save = async () => {
-  if (book.title) {
-    book.id = uuidv4();
-    const sanitizedBook = sanitizeObject(book);
-    const fileName = generateFileName(book.title);
-    const response = await electron.saveBook(sanitizedBook, fileName);
-    if (response.success) {
-      bookSt.books.push(book); 
-      router.push({ name: 'book-list' });
-    } else {
-      console.error('Error saving book:', response.message);
+    try {
+        if (book.title) {
+            if (!book.id) {
+                book.id = uuidv4();
+                const sanitizedBook = sanitizeObject(book);
+                const fileName = generateFileName(book.title);
+                const response = await electron.saveBook(sanitizedBook, fileName);
+                if (response.success) {
+                    bookSt.books.push(book);
+                    router.push({ name: 'book-list' });
+                } else {
+                    console.error('Error saving book:', response.message);
+                }
+            } else {
+                const response = await electron.updateBook(sanitizeObject(book), bookSt.bookFileName);
+                if (response.success) {
+                    await bookSt.updateBook(book);
+                    router.push({ name: 'book-list' });
+                } else {
+                    console.error('Error updating book:', response.message);
+                }
+            }
+        }
+    } catch (error) {
+        console.error('Error saving or updating book:', error);
     }
-  }
-}
+};
 
 const customBase64Uploader = async (event) => {
   const file = event.files[0]
