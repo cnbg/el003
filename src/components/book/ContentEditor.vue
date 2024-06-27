@@ -11,6 +11,7 @@ const bookSt = useBookStore()
     <ImageEditor v-else-if="bookSt.block.type === 'image'" />
     <VideoEditor v-else-if="bookSt.block.type === 'video'" />
     <Model3DEditor v-else-if="bookSt.block.type === 'model'" />
+    <TestEditor v-else-if="bookSt.block.type === 'test'" />
   </div>
 </template>
 

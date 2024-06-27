@@ -64,6 +64,7 @@ const items = ref([
   {label: t('general.add-image'), icon: 'pi pi-image', command: () => {bookSt.setEditor('image')}},
   {label: t('general.add-video'), icon: 'pi pi-video', command: () => {bookSt.setEditor('video')}},
   {label: t('general.add-model'), icon: 'pi pi-box', command: () => {bookSt.setEditor('model')}},
+  {label: t('general.add-test'), icon: 'pi pi-list', command: () => {dev()}},
   {separator: true},
   {label: t('general.delete'), icon: 'pi pi-times', command: () => {confirmDeleteDialog()}},
 ])
@@ -93,6 +94,7 @@ const items = ref([
         <Button @click="bookSt.setEditor('image')" size="small" icon="pi pi-file-word" :label="t('general.add-image')" text />
         <Button @click="bookSt.setEditor('video')" size="small" icon="pi pi-file-word" :label="t('general.add-video')" text />
         <Button @click="bookSt.setEditor('model')" size="small" icon="pi pi-file-word" :label="t('general.add-model')" text />
+        <Button @click="bookSt.setEditor('test')" size="small" icon="pi pi-file-word" :label="t('general.add-test')" text />
       </div>
       <hr class="my-2">
       <div v-if="bookSt.editing">

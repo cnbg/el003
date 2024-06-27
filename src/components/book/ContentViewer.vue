@@ -5,6 +5,7 @@
       <ImageViewer v-else-if="block.type === 'image'" :images="block.content" @image-updated="updateImage(index, $event)" @image-deleted="deleteImage(index, $event)" />
       <VideoViewer v-else-if="block.type === 'video'" :video="block.content" @content-updated="updateVideo(index, $event)" @delete-video="deleteVideo(index)" />
       <Model3DViewer v-else-if="block.type === 'model'" :model="block.content" @content-updated="updateModel(index, $event)" @delete-model="deleteModel(index)" />
+      <TestViewer v-else-if="block.type === 'test'" :test="block.content" />
     </div>
   </div>
 </template>
