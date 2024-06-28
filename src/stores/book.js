@@ -237,8 +237,8 @@ export const useBookStore = defineStore('book', {
               }
             }
           },
-          
-          
+
+
         closeEditor() {
             this.editing = false
             this.block = null
@@ -248,7 +248,7 @@ export const useBookStore = defineStore('book', {
                 ...{
                     id: '',
                     parent: null,
-                    book_id: bookId, 
+                    book_id: bookId,
                     title: '',
                     desc: '',
                     tags: [],

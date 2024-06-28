@@ -10,5 +10,7 @@ contextBridge.exposeInMainWorld('electron', {
   loadBooks: () => ipcRenderer.invoke('load-books'),
   getBookFileName: (bookId) => ipcRenderer.invoke('get-book-filename', bookId),
   deleteBook: (fileName) => ipcRenderer.invoke('delete-book', fileName),
-  getTinyMCEBaseUrl: async () => await ipcRenderer.invoke('get-tinymce-base-path')
+  getTinyMCEBaseUrl: async () => await ipcRenderer.invoke('get-tinymce-base-path'),
+  saveSurvey: (survey, fileName) => ipcRenderer.invoke('save-survey', survey, fileName),
+  getSurvey: (fileName) => ipcRenderer.invoke('get-survey', fileName)
 });

@@ -1,13 +1,18 @@
 <script setup>
 import { ref } from 'vue'
 import { useUserStore } from "./stores/user"
-
+import { slk } from 'survey-core';
 const userSt = useUserStore()
 const darkMode = ref(userSt.darkMode)
 const locale = ref('kg')
 const setDarkMode = async () => {
   await userSt.setDarkMode(darkMode.value)
 }
+import './locale/survey/settings'
+slk(
+    "OTEzNTJlNTMtYTI2MC00OWU3LWIwOWQtOTg4ODJlYjEwNzgyOzE9MjAyNS0wNC0xMiwyPTIwMjUtMDQtMTIsND0yMDI1LTA0LTEy"
+);
+
 </script>
 
 <template>

@@ -1,0 +1,1 @@
+"{\n \"logoPosition\": \"right\",\n \"pages\": [\n  {\n   \"name\": \"страница1\",\n   \"elements\": [\n    {\n     \"type\": \"radiogroup\",\n     \"name\": \"вопрос1\",\n     \"tag\": \"d1113465-4876-8d27-379b-9fc2f4eb0481\",\n     \"choices\": [\n      \"Item 1\",\n      \"Item 2\",\n      \"Item 3\"\n     ]\n    }\n   ]\n  }\n ]\n}"

@@ -1,0 +1,25 @@
+{
+ "logoPosition": "right",
+ "pages": [
+  {
+   "name": "страница1",
+   "elements": [
+    {
+     "type": "checkbox",
+     "name": "вопрос1",
+     "title": "123123",
+     "correctAnswer": [
+      "Item 1",
+      "Item 2"
+     ],
+     "tag": "65ceabd7-c0b0-b82d-4701-a1b7fa3fe65f",
+     "choices": [
+      "Item 1",
+      "Item 2",
+      "Item 3"
+     ]
+    }
+   ]
+  }
+ ]
+}
