@@ -1,4 +1,4 @@
-import { app, BrowserWindow, nativeTheme, ipcMain } from 'electron';
+import { app, BrowserWindow, nativeTheme, ipcMain, shell  } from 'electron';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
@@ -301,5 +301,44 @@ if (!gotTheLock) {
             return { success: false, message: error.message };
         }
     });
+
+    ipcMain.handle('upload-ppt', async (event, { filePath, fileName }) => {
+        try {
+        const resourcesPath = process.resourcesPath;
+        const appPath = app.getAppPath();
+        let uploadDir;
+        let uploadPath;
     
+        if (!app.isPackaged) {
+            uploadDir = path.join(appPath, 'src', 'data', 'ppt');
+            uploadPath = path.join(uploadDir, fileName);
+        } else {
+            uploadDir = path.join(resourcesPath, 'data', 'ppt');
+            uploadPath = path.join(uploadDir, fileName);
+        }
+    
+        await fs.promises.mkdir(uploadDir, { recursive: true });
+        await fs.promises.copyFile(filePath, uploadPath);
+    
+        const fileUrl = `file://${uploadPath.replace(/\\/g, '/')}`;
+    
+        return { success: true, filePath: fileUrl };
+        } catch (error) {
+        return { success: false, message: error.message };
+        }
+    }); 
+    ipcMain.handle('open-ppt-file', async (event, filePath) => {
+        try {
+            if (filePath) {
+                shell.openPath(filePath);
+                return { success: true };
+            } else {
+                throw new Error('File path is not provided.');
+            }
+        } catch (error) {
+            console.error('Error opening PowerPoint file:', error);
+            return { success: false, message: error.message };
+        }
+    });
+   
 }

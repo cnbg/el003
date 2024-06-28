@@ -18,6 +18,8 @@ import TestViewer from './components/book/TestViewer.vue'
 import TestEditor from './components/book/TestEditor.vue'
 import BoardViewer from './components/book/BoardViewer.vue'
 import BoardEditor from './components/book/BoardEditor.vue'
+import PptEditor from './components/book/PptEditor.vue'
+import PptViewer from './components/book/PptViewer.vue'
 
 import TopMenu from './components/common/TopMenu.vue'
 import SearchInput from './components/common/SearchInput.vue'
@@ -39,6 +41,8 @@ app.component('TestViewer', TestViewer)
 app.component('TestEditor', TestEditor)
 app.component('BoardViewer', BoardViewer)
 app.component('BoardEditor', BoardEditor)
+app.component('PptEditor', PptEditor)
+app.component('PptViewer', PptViewer)
 
 app.component('TopMenu', TopMenu)
 app.component('SearchInput', SearchInput)

@@ -12,6 +12,7 @@ const bookSt = useBookStore()
     <VideoEditor v-else-if="bookSt.block.type === 'video'" />
     <Model3DEditor v-else-if="bookSt.block.type === 'model'" />
     <TestEditor v-else-if="bookSt.block.type === 'test'" />
+    <PptEditor v-else-if="bookSt.block.type === 'powerpoint'" />
   </div>
 </template>
 

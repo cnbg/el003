@@ -10,5 +10,7 @@ contextBridge.exposeInMainWorld('electron', {
   loadBooks: () => ipcRenderer.invoke('load-books'),
   getBookFileName: (bookId) => ipcRenderer.invoke('get-book-filename', bookId),
   deleteBook: (fileName) => ipcRenderer.invoke('delete-book', fileName),
-  getTinyMCEBaseUrl: async () => await ipcRenderer.invoke('get-tinymce-base-path')
+  getTinyMCEBaseUrl: async () => await ipcRenderer.invoke('get-tinymce-base-path'),
+  uploadPpt: (filePath, fileName) => ipcRenderer.invoke('upload-ppt', { filePath, fileName }),
+  openPptFile: (filePath) => ipcRenderer.invoke('open-ppt-file', filePath),
 });

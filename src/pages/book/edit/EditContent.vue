@@ -65,6 +65,8 @@ const items = ref([
   {label: t('general.add-video'), icon: 'pi pi-video', command: () => {bookSt.setEditor('video')}},
   {label: t('general.add-model'), icon: 'pi pi-box', command: () => {bookSt.setEditor('model')}},
   {label: t('general.add-test'), icon: 'pi pi-list', command: () => {dev()}},
+  {label: t('general.add-powerpoint'), icon: 'pi pi-file-plus', command: () => {dev()}},
+  
   {separator: true},
   {label: t('general.delete'), icon: 'pi pi-times', command: () => {confirmDeleteDialog()}},
 ])
@@ -89,12 +91,14 @@ const items = ref([
           <Menu ref="editMenu" :model="items" popup />
         </div>
       </template>
-      <div class="flex flex-wrap gap-1 items-center justify-between">
+      <div class="flex flex-wrap items-center justify-between">
         <Button @click="bookSt.setEditor('html')" size="small" icon="pi pi-file-word" :label="t('general.add-text')" text />
-        <Button @click="bookSt.setEditor('image')" size="small" icon="pi pi-file-word" :label="t('general.add-image')" text />
-        <Button @click="bookSt.setEditor('video')" size="small" icon="pi pi-file-word" :label="t('general.add-video')" text />
-        <Button @click="bookSt.setEditor('model')" size="small" icon="pi pi-file-word" :label="t('general.add-model')" text />
-        <Button @click="bookSt.setEditor('test')" size="small" icon="pi pi-file-word" :label="t('general.add-test')" text />
+        <Button @click="bookSt.setEditor('image')" size="small" icon="pi pi-image" :label="t('general.add-image')" text />
+        <Button @click="bookSt.setEditor('video')" size="small" icon="pi pi-video" :label="t('general.add-video')" text />
+        <Button @click="bookSt.setEditor('model')" size="small" icon="pi pi-box" :label="t('general.add-model')" text />
+        <Button @click="bookSt.setEditor('test')" size="small" icon="pi pi-list" :label="t('general.add-test')" text />
+        <Button @click="bookSt.setEditor('powerpoint')" size="small" icon="pi pi-file-plus" :label="t('general.add-powerpoint')" text />
+        
       </div>
       <hr class="my-2">
       <div v-if="bookSt.editing">
