@@ -1,0 +1,44 @@
+{
+ "logoPosition": "right",
+ "pages": [
+  {
+   "name": "страница1",
+   "elements": [
+    {
+     "type": "radiogroup",
+     "name": "вопрос1",
+     "tag": "d0801950-577a-bbef-34c2-245146cb23fd",
+     "choices": [
+      "Item 1",
+      "Item 2",
+      "Item 3"
+     ]
+    },
+    {
+     "type": "imagepicker",
+     "name": "вопрос2",
+     "tag": "3b8385c2-2e61-b893-d131-71388d22f9f5",
+     "choices": [
+      {
+       "value": "Image 1",
+       "imageLink": "https://surveyjs.io/Content/Images/examples/image-picker/lion.jpg"
+      },
+      {
+       "value": "Image 2",
+       "imageLink": "https://surveyjs.io/Content/Images/examples/image-picker/giraffe.jpg"
+      },
+      {
+       "value": "Image 3",
+       "imageLink": "https://surveyjs.io/Content/Images/examples/image-picker/panda.jpg"
+      },
+      {
+       "value": "Image 4",
+       "imageLink": "https://surveyjs.io/Content/Images/examples/image-picker/camel.jpg"
+      }
+     ],
+     "imageFit": "cover"
+    }
+   ]
+  }
+ ]
+}

@@ -54,10 +54,11 @@ creator.onQuestionAdded.add(function(sender, creatorOptions){
 });
 
 // let data = bookSt.getBook(props.bookId, props.chapterId)
-const fileName = 'survey_'+bookSt.bookFileName;
+const sfileName = 'survey_'+bookSt.bookFileName;
+
 creator.saveSurveyFunc = async () => {
     try {
-        const response = await electron.saveSurvey(creator.text, fileName);
+        const response = await electron.saveSurvey(creator.text, sfileName);
         if (!response.success) {
             console.error('Error saving survey:', response.message);
         }
@@ -66,15 +67,14 @@ creator.saveSurveyFunc = async () => {
     }
 };
 
-const save = (fileName) => {
-  console.log(fileName);
-
-  bookSt.block?.id ? bookSt.updateBlock(fileName) : bookSt.saveBlock(fileName);
+const save = () => {
+  let fileNameS = 'survey_'+bookSt.bookFileName;
+  bookSt.block?.id ? bookSt.updateBlock(fileNameS) : bookSt.saveBlock(fileNameS);
 }
 
 onMounted(async () => {
     try {
-        const response = await electron.getSurvey(fileName);
+        const response = await electron.getSurvey(sfileName);
         if (response.success) {
           creator.JSON = response.data;
         }

@@ -18,6 +18,17 @@
       "Item 2",
       "Item 3"
      ]
+    },
+    {
+     "type": "checkbox",
+     "name": "вопрос2",
+     "title": "222222",
+     "tag": "3bdddd69-c28e-c157-ead9-6ad19a5bb88a",
+     "choices": [
+      "Item 1",
+      "Item 2",
+      "Item 3"
+     ]
     }
    ]
   }
