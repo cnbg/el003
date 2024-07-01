@@ -262,4 +262,50 @@ if (!gotTheLock) {
     });
 
     ipcMain.handle('is-packaged', () => app.isPackaged);
+
+    ipcMain.handle('save-survey', async (event, survey, fileName) => {
+        try {
+            const resourcesPath = process.resourcesPath;
+            const appPath = app.getAppPath();
+            let surveyDir;
+            let surveyPath;
+
+            if (!app.isPackaged) {
+                surveyDir = path.join(appPath, 'src', 'data', 'survey');
+                surveyPath = path.join(surveyDir, fileName);
+            } else {
+                surveyDir = path.join(resourcesPath, 'data', 'survey');
+                surveyPath = path.join(surveyDir, fileName);
+            }
+
+            await fs.promises.mkdir(surveyDir, { recursive: true });
+            await fs.promises.writeFile(surveyPath, survey);
+
+            return { success: true, path: surveyPath, name: fileName, message: 'Survey saved successfully.' };
+        } catch (error) {
+            return { success: false, message: error.message };
+        }
+    });
+
+    ipcMain.handle('get-survey', async (event, fileName) => {
+        try {
+            const resourcesPath = process.resourcesPath;
+            const appPath = app.getAppPath();
+            let surveyDir;
+            let surveyPath;
+
+            if (!app.isPackaged) {
+                surveyDir = path.join(appPath, 'src', 'data', 'survey');
+                surveyPath = path.join(surveyDir, fileName);
+            } else {
+                surveyDir = path.join(resourcesPath, 'data', 'survey');
+                surveyPath = path.join(surveyDir, fileName);
+            }
+
+            const data = await fs.promises.readFile(surveyPath, 'utf-8');
+            return { success: true, data: JSON.parse(data) };
+        } catch (error) {
+            return { success: false, message: error.message };
+        }
+    });
 }
