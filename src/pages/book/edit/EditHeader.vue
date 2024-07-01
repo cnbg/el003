@@ -42,10 +42,10 @@ const confirmDialog = () => {
   })
 }
 
-const syncToServe = () => {
+/* const syncToServe = () => {
   console.log(JSON.stringify(bookSt.book))
   toast.add({severity: 'info', summary: t('general.under-development'), life: 4000})
-}
+} */
 
 const items = ref([
   {label: t('general.book-list'), icon: 'pi pi-list', command: () => {goto('book-list')}},
@@ -55,8 +55,8 @@ const items = ref([
       goto('book-view', {bookId: bookSt.book.id})
     },
   },
-  {separator: true},
-  {label: t('general.sync-with-server'), icon: 'pi pi-sync', command: () => {syncToServe()}},
+  /* {separator: true},
+  {label: t('general.sync-with-server'), icon: 'pi pi-sync', command: () => {syncToServe()}}, */
   {separator: true},
   {label: t('general.delete'), icon: 'pi pi-times', command: () => {confirmDialog()}},
 ])
