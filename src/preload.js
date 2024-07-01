@@ -13,4 +13,6 @@ contextBridge.exposeInMainWorld('electron', {
   getTinyMCEBaseUrl: async () => await ipcRenderer.invoke('get-tinymce-base-path'),
   uploadPpt: (filePath, fileName) => ipcRenderer.invoke('upload-ppt', { filePath, fileName }),
   openPptFile: (filePath) => ipcRenderer.invoke('open-ppt-file', filePath),
+  resolvePath: (filePath) => ipcRenderer.invoke('resolve-path', filePath),
+  isPackaged: () => ipcRenderer.invoke('is-packaged'),
 });

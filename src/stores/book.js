@@ -213,6 +213,19 @@ export const useBookStore = defineStore('book', {
               await this.saveBookToFile();
             }
           },
+          async updatePptBlock(blockIndex, updatedPpt) {
+            if (this.chapter && this.chapter.blocks && this.chapter.blocks[blockIndex]) {
+              this.chapter.blocks[blockIndex].content = updatedPpt;
+              await this.saveBookToFile();
+            }
+          },
+      
+          async deletePptBlock(blockIndex) {
+            if (this.chapter && this.chapter.blocks) {
+              this.chapter.blocks.splice(blockIndex, 1);
+              await this.saveBookToFile();
+            }
+          },
         async saveBookToFile() {
             if (!this.bookFileName) {
                 console.error('Cannot save book: missing file name.');

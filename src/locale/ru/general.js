@@ -61,6 +61,7 @@ export default {
     'add-test': 'Добавить тест',
     'add-powerpoint': 'Добавить PowerPoint',
     'powerPointFile':'PowerPoint Файл',
+    'openPowerPoint':'Открыть PowerPoint',
     'download-as-ppt':'Скачать презентацию',
     'fileSelected':'Файл выбран',
     'file':'Файл',

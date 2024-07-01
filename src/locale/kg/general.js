@@ -62,6 +62,7 @@ export default {
     'add-powerpoint': 'PowerPoint кошуу',
     'download-as-ppt':'Презентацияны жүктөө',
     'powerPointFile':'PowerPoint Файлы',
+    'openPowerPoint':'PowerPoint ачуу',
     'fileSelected':'Файл тандалды',
     'file':'Файл',
     'add-interactive-board': 'Интерактивдүү такта кошуу',

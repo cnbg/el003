@@ -1,4 +1,4 @@
-import { app, BrowserWindow, nativeTheme, ipcMain, shell  } from 'electron';
+import { app, BrowserWindow, nativeTheme, ipcMain, shell } from 'electron';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
@@ -33,7 +33,7 @@ if (!gotTheLock) {
                 preload: path.join(__dirname, 'preload.js'),
                 devTools: true,
                 webSecurity: false,
-                nodeIntegration: true,  // nodeIntegration should be false for security
+                nodeIntegration: true, // nodeIntegration should be false for security
             },
         });
 
@@ -41,15 +41,14 @@ if (!gotTheLock) {
             mainWindow.loadURL(process.env.MAIN_WINDOW_VITE_DEV_SERVER_URL);
         } else {
             mainWindow.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`));
-           
         }
 
         mainWindow.on('closed', () => {
             mainWindow = null;
         });
 
-        if(!app.isPackaged) {
-            mainWindow.webContents.openDevTools()
+        if (!app.isPackaged) {
+            mainWindow.webContents.openDevTools();
         }
     };
 
@@ -72,44 +71,55 @@ if (!gotTheLock) {
     if (require('electron-squirrel-startup')) {
         app.quit();
     }
-    
+
     ipcMain.handle('get-tinymce-base-path', async () => {
+        if (!app.isPackaged) {
+            return '/src/tinymce/';
+        } else {
+            return path.join(process.resourcesPath, 'tinymce');
+        }
+    });
+
+    const saveFile = async (filePath, fileName, subdir) => {
+        const resourcesPath = process.resourcesPath;
+        const appPath = app.getAppPath();
+        let uploadDir;
+        let uploadPath;
 
         if (!app.isPackaged) {
-
-            return '/src/tinymce/';
-
+            uploadDir = path.join(appPath, 'src', 'data', subdir);
+            uploadPath = path.join(uploadDir, fileName);
         } else {
-
-            return path.join(process.resourcesPath, 'tinymce');
-
+            uploadDir = path.join(resourcesPath, 'data', subdir);
+            uploadPath = path.join(uploadDir, fileName);
         }
 
-    });
+        await fs.promises.mkdir(uploadDir, { recursive: true });
+        await fs.promises.copyFile(filePath, uploadPath);
+
+        let relativePath;
+        if (app.isPackaged) {
+            relativePath = `../resources/data/${subdir}/${fileName}`;
+        } else {
+            relativePath = path.relative(appPath, uploadPath).replace(/\\/g, '/');
+        }
+        return { success: true, filePath: `/${relativePath}` };
+    };
+
     ipcMain.handle('upload-file', async (event, { filePath, fileName }) => {
-        try {
-            const resourcesPath = process.resourcesPath;
-            const appPath = app.getAppPath();
-            let uploadDir;
-            let uploadPath;
+        return saveFile(filePath, fileName, 'images');
+    });
 
-            if (!app.isPackaged) {
-                uploadDir = path.join(appPath, 'src', 'data', 'images');
-                uploadPath = path.join(uploadDir, fileName);
-            } else {
-                uploadDir = path.join(resourcesPath, 'data', 'images');
-                uploadPath = path.join(uploadDir, fileName);
-            }
+    ipcMain.handle('upload-video', async (event, { filePath, fileName }) => {
+        return saveFile(filePath, fileName, 'videos');
+    });
 
-            await fs.promises.mkdir(uploadDir, { recursive: true });
-            await fs.promises.copyFile(filePath, uploadPath);
+    ipcMain.handle('upload-model', async (event, { filePath, fileName }) => {
+        return saveFile(filePath, fileName, 'models');
+    });
 
-            const fileUrl = `file://${uploadPath.replace(/\\/g, '/')}`;
-
-            return { success: true, filePath: fileUrl };
-        } catch (error) {
-            return { success: false, message: error.message };
-        }
+    ipcMain.handle('upload-ppt', async (event, { filePath, fileName }) => {
+        return saveFile(filePath, fileName, 'ppt');
     });
 
     ipcMain.handle('get-paths', async () => {
@@ -126,18 +136,17 @@ if (!gotTheLock) {
     });
 
     ipcMain.handle('save-book', async (event, book, fileName) => {
-
-        try {
+        const saveBookFile = async (book, fileName, subdir) => {
             const resourcesPath = process.resourcesPath;
             const appPath = app.getAppPath();
             let booksDir;
             let bookPath;
 
             if (!app.isPackaged) {
-                booksDir = path.join(appPath, 'src', 'data', 'books');
+                booksDir = path.join(appPath, 'src', 'data', subdir);
                 bookPath = path.join(booksDir, fileName);
             } else {
-                booksDir = path.join(resourcesPath, 'data', 'books');
+                booksDir = path.join(resourcesPath, 'data', subdir);
                 bookPath = path.join(booksDir, fileName);
             }
 
@@ -145,34 +154,13 @@ if (!gotTheLock) {
             await fs.promises.writeFile(bookPath, JSON.stringify(book, null, 2));
 
             return { success: true, message: 'Book saved successfully.' };
-        } catch (error) {
-            return { success: false, message: error.message };
-        }
+        };
+
+        return saveBookFile(book, fileName, 'books');
     });
 
     ipcMain.handle('update-book', async (event, { book, fileName }) => {
-        try {
-            const resourcesPath = process.resourcesPath;
-            const appPath = app.getAppPath();
-            let booksDir;
-            let bookPath;
-
-            if (!app.isPackaged) {
-                booksDir = path.join(appPath, 'src', 'data', 'books');
-                bookPath = path.join(booksDir, fileName);
-            } else {
-                booksDir = path.join(resourcesPath, 'data', 'books');
-                bookPath = path.join(booksDir, fileName);
-            }
-
-            await fs.promises.mkdir(booksDir, { recursive: true });
-            await fs.promises.writeFile(bookPath, JSON.stringify(book, null, 2));
-
-            return { success: true, message: 'Book updated successfully.' };
-        } catch (error) {
-            console.error('Error updating book:', error);
-            return { success: false, message: error.message };
-        }
+        return saveBookFile(book, fileName, 'books');
     });
 
     ipcMain.handle('load-books', async () => {
@@ -212,7 +200,7 @@ if (!gotTheLock) {
                 booksDir = path.join(appPath, 'src', 'data', 'books');
                 bookPath = path.join(booksDir, fileName);
             } else {
-                booksDir = path.join(resourcesPath,'data', 'books');
+                booksDir = path.join(resourcesPath, 'data', 'books');
                 bookPath = path.join(booksDir, fileName);
             }
 
@@ -250,83 +238,7 @@ if (!gotTheLock) {
             return null;
         }
     });
-    ipcMain.handle('upload-video', async (event, { filePath, fileName }) => {
-        try {
-            const resourcesPath = process.resourcesPath;
-            const appPath = app.getAppPath();
-            let uploadDir;
-            let uploadPath;
 
-            if (!app.isPackaged) {
-                uploadDir = path.join(appPath, 'src', 'data', 'videos');
-                uploadPath = path.join(uploadDir, fileName);
-            } else {
-                uploadDir = path.join(resourcesPath,'data', 'videos');
-                uploadPath = path.join(uploadDir, fileName);
-            }
-
-            await fs.promises.mkdir(uploadDir, { recursive: true });
-            await fs.promises.copyFile(filePath, uploadPath);
-
-            const fileUrl = `file://${uploadPath.replace(/\\/g, '/')}`;
-
-            return { success: true, filePath: fileUrl };
-        } catch (error) {
-            return { success: false, message: error.message };
-        }
-    });
-    
-    ipcMain.handle('upload-model', async (event, { filePath, fileName }) => {
-        try {
-            const resourcesPath = process.resourcesPath;
-            const appPath = app.getAppPath();
-            let uploadDir;
-            let uploadPath;
-
-            if (!app.isPackaged) {
-                uploadDir = path.join(appPath, 'src', 'data', 'models');
-                uploadPath = path.join(uploadDir, fileName);
-            } else {
-                uploadDir = path.join(resourcesPath, 'data', 'models');
-                uploadPath = path.join(uploadDir, fileName);
-            }
-
-            await fs.promises.mkdir(uploadDir, { recursive: true });
-            await fs.promises.copyFile(filePath, uploadPath);
-
-            const fileUrl = `file://${uploadPath.replace(/\\/g, '/')}`;
-
-            return { success: true, filePath: fileUrl };
-        } catch (error) {
-            return { success: false, message: error.message };
-        }
-    });
-
-    ipcMain.handle('upload-ppt', async (event, { filePath, fileName }) => {
-        try {
-        const resourcesPath = process.resourcesPath;
-        const appPath = app.getAppPath();
-        let uploadDir;
-        let uploadPath;
-    
-        if (!app.isPackaged) {
-            uploadDir = path.join(appPath, 'src', 'data', 'ppt');
-            uploadPath = path.join(uploadDir, fileName);
-        } else {
-            uploadDir = path.join(resourcesPath, 'data', 'ppt');
-            uploadPath = path.join(uploadDir, fileName);
-        }
-    
-        await fs.promises.mkdir(uploadDir, { recursive: true });
-        await fs.promises.copyFile(filePath, uploadPath);
-    
-        const fileUrl = `file://${uploadPath.replace(/\\/g, '/')}`;
-    
-        return { success: true, filePath: fileUrl };
-        } catch (error) {
-        return { success: false, message: error.message };
-        }
-    }); 
     ipcMain.handle('open-ppt-file', async (event, filePath) => {
         try {
             if (filePath) {
@@ -340,5 +252,14 @@ if (!gotTheLock) {
             return { success: false, message: error.message };
         }
     });
-   
+
+    ipcMain.handle('resolve-path', (event, filePath) => {
+        if (app.isPackaged) {
+            return path.join(process.resourcesPath, filePath);
+        } else {
+            return path.join(app.getAppPath(), filePath);
+        }
+    });
+
+    ipcMain.handle('is-packaged', () => app.isPackaged);
 }

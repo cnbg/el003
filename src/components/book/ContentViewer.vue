@@ -6,7 +6,8 @@
       <VideoViewer v-else-if="block && block.type === 'video'" :video="block.content" @content-updated="updateVideo(index, $event)" @delete-video="deleteVideo(index)" />
       <Model3DViewer v-else-if="block && block.type === 'model'" :model="block.content" @content-updated="updateModel(index, $event)" @delete-model="deleteModel(index)" />
       <TestViewer v-else-if="block && block.type === 'test'" :test="block.content" />
-      <PptViewer v-else-if="block && block.type === 'powerpoint'" :pptFilePath="block.content.path" />
+      <PptViewer v-else-if="block && block.type === 'powerpoint'" :pptFilePath="block.content.path"
+                 @content-updated="updatePpt(index, $event)" @delete-ppt="deletePpt(index)" />
     </div>
   </div>
 </template>
@@ -44,6 +45,14 @@ const updateModel = (index, updatedModel) => {
 
 const deleteModel = (index) => {
   bookStore.deleteModelBlock(index);
+};
+
+const updatePpt = (index, updatedPpt) => {
+  bookStore.updatePptBlock(index, updatedPpt);
+};
+
+const deletePpt = (index) => {
+  bookStore.deletePptBlock(index);
 };
 </script>
 
