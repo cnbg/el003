@@ -173,10 +173,15 @@ export const useBookStore = defineStore('book', {
         },
         async updateBlockContent(index, updatedContent) {
             if (this.chapter && this.chapter.blocks && this.chapter.blocks[index]) {
-                this.chapter.blocks[index].content = updatedContent;
+                if (updatedContent.trim() === '') {
+                    this.chapter.blocks.splice(index, 1);
+                } else {
+                    this.chapter.blocks[index].content = updatedContent;
+                }
                 await this.saveBookToFile();
             }
         },
+        
         async updateImageBlock(blockIndex, imageIndex, updatedImage) {
             if (this.chapter && this.chapter.blocks && this.chapter.blocks[blockIndex] && this.chapter.blocks[blockIndex].content[imageIndex]) {
               this.chapter.blocks[blockIndex].content[imageIndex] = updatedImage;
@@ -184,9 +189,9 @@ export const useBookStore = defineStore('book', {
             }
           },
           async deleteImageBlock(blockIndex, imageIndex) {
-            if (this.chapter && this.chapter.blocks && this.chapter.blocks[blockIndex]) {
-              this.chapter.blocks[blockIndex].content.splice(imageIndex, 1);
-              await this.saveBookToFile();
+            if (this.chapter && this.chapter.blocks) {
+                this.chapter.blocks.splice(blockIndex, 1);
+                await this.saveBookToFile();
             }
           },
           async updateVideoBlock(blockIndex, updatedVideo) {
